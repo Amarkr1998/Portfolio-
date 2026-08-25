@@ -1,0 +1,263 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Bot, Send, X, Copy, RotateCcw, Trash2, Check, Sparkles } from "lucide-react";
+import { useUIState } from "@/components/providers/UIStateProvider";
+import { suggestedQuestions } from "@/data/portfolio";
+import Magnetic from "@/components/ui/Magnetic";
+
+type Role = "user" | "assistant";
+type Message = { id: string; role: Role; content: string; error?: boolean };
+
+function uid() {
+  return Math.random().toString(36).slice(2);
+}
+
+const WELCOME: Message = {
+  id: "welcome",
+  role: "assistant",
+  content:
+    "Ask me about Amar's experience, projects or technical skills — I only answer from his verified portfolio.",
+};
+
+export default function AIAssistant() {
+  const { aiChatOpen, setAiChatOpen } = useUIState();
+  const [messages, setMessages] = useState<Message[]>([WELCOME]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if (aiChatOpen) requestAnimationFrame(() => inputRef.current?.focus());
+  }, [aiChatOpen]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, loading]);
+
+  async function send(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed || loading) return;
+
+    const userMsg: Message = { id: uid(), role: "user", content: trimmed };
+    const history = [...messages.filter((m) => m.id !== "welcome"), userMsg];
+    const assistantId = uid();
+
+    setMessages((prev) => [...prev, userMsg, { id: assistantId, role: "assistant", content: "" }]);
+    setInput("");
+    setLoading(true);
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    try {
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: history.map(({ role, content }) => ({ role, content })),
+        }),
+        signal: controller.signal,
+      });
+
+      if (!res.ok || !res.body) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "The AI assistant is temporarily unavailable.");
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        setMessages((prev) =>
+          prev.map((m) => (m.id === assistantId ? { ...m, content: m.content + chunk } : m))
+        );
+      }
+    } catch (err) {
+      if ((err as Error).name === "AbortError") return;
+      const message = err instanceof Error ? err.message : "Something went wrong.";
+      setMessages((prev) =>
+        prev.map((m) => (m.id === assistantId ? { ...m, content: message, error: true } : m))
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function retryLast() {
+    const lastUser = [...messages].reverse().find((m) => m.role === "user");
+    if (lastUser) {
+      setMessages((prev) => prev.filter((m) => !(m.role === "assistant" && m.error)));
+      send(lastUser.content);
+    }
+  }
+
+  function clearChat() {
+    setMessages([WELCOME]);
+  }
+
+  function copy(msg: Message) {
+    navigator.clipboard.writeText(msg.content).then(() => {
+      setCopiedId(msg.id);
+      setTimeout(() => setCopiedId(null), 1500);
+    });
+  }
+
+  return (
+    <>
+      <Magnetic className="fixed bottom-6 right-6 z-[90]">
+        <motion.button
+          onClick={() => setAiChatOpen(!aiChatOpen)}
+          whileTap={{ scale: 0.94 }}
+          className="flex items-center gap-2 px-5 py-3.5 rounded-full glass-strong glow-accent text-sm font-medium text-foreground"
+          data-cursor="interactive"
+          aria-label="Open Ask Amar AI"
+        >
+          <Sparkles size={16} className="text-accent" />
+          Ask Amar AI
+        </motion.button>
+      </Magnetic>
+
+      <AnimatePresence>
+        {aiChatOpen && (
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Ask Amar AI chat"
+            initial={{ opacity: 0, y: 24, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 16, scale: 0.97 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed z-[95] bottom-0 right-0 sm:bottom-24 sm:right-6 w-full sm:w-[420px] h-[85vh] sm:h-[600px] max-h-[85vh] glass-strong sm:rounded-2xl rounded-t-2xl flex flex-col overflow-hidden"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setAiChatOpen(false);
+            }}
+          >
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+              <div className="flex items-center gap-2.5">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-accent/10 border border-accent/25">
+                  <Bot size={15} className="text-accent" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">Ask Amar AI</p>
+                  <p className="text-[0.68rem] text-muted-2">Verified portfolio data only</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={clearChat}
+                  className="p-2 rounded-md text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors"
+                  aria-label="Clear chat"
+                  data-cursor="interactive"
+                >
+                  <Trash2 size={15} />
+                </button>
+                <button
+                  onClick={() => setAiChatOpen(false)}
+                  className="p-2 rounded-md text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors"
+                  aria-label="Close chat"
+                  data-cursor="interactive"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+
+            <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-4">
+              {messages.map((m) => (
+                <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <div
+                    className={`group relative max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                      m.role === "user"
+                        ? "bg-foreground text-background"
+                        : m.error
+                          ? "bg-red-500/10 border border-red-500/30 text-red-300"
+                          : "bg-white/[0.05] border border-border text-foreground/90"
+                    }`}
+                  >
+                    {m.content || (loading && m.role === "assistant" ? (
+                      <span className="inline-flex gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-muted-2 animate-bounce [animation-delay:-0.3s]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-muted-2 animate-bounce [animation-delay:-0.15s]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-muted-2 animate-bounce" />
+                      </span>
+                    ) : null)}
+
+                    {m.role === "assistant" && m.content && !m.error && (
+                      <button
+                        onClick={() => copy(m)}
+                        className="absolute -bottom-2 -right-2 p-1.5 rounded-full glass-strong opacity-0 group-hover:opacity-100 transition-opacity text-muted hover:text-foreground"
+                        aria-label="Copy response"
+                      >
+                        {copiedId === m.id ? <Check size={11} className="text-success" /> : <Copy size={11} />}
+                      </button>
+                    )}
+
+                    {m.error && (
+                      <button
+                        onClick={retryLast}
+                        className="mt-2 flex items-center gap-1.5 text-xs text-red-300 hover:text-red-200"
+                      >
+                        <RotateCcw size={11} /> Retry
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {messages.length === 1 && (
+                <div className="flex flex-col gap-2 mt-2">
+                  <p className="mono-label">TRY ASKING</p>
+                  {suggestedQuestions.slice(0, 5).map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => send(q)}
+                      className="text-left text-xs px-3 py-2 rounded-lg border border-border text-muted hover:text-foreground hover:border-border-strong transition-colors"
+                      data-cursor="interactive"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                send(input);
+              }}
+              className="flex items-center gap-2 p-3 border-t border-border"
+            >
+              <input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask about Amar's experience..."
+                className="flex-1 bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-2 outline-none focus:border-accent/50"
+                aria-label="Ask a question"
+                disabled={loading}
+              />
+              <button
+                type="submit"
+                disabled={loading || !input.trim()}
+                className="p-2.5 rounded-lg bg-accent text-background disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Send message"
+                data-cursor="interactive"
+              >
+                <Send size={15} />
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

@@ -1,0 +1,103 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Command, Menu, X } from "lucide-react";
+import { navSections, socials } from "@/data/portfolio";
+import { useUIState } from "@/components/providers/UIStateProvider";
+
+function scrollTo(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+}
+
+export default function Navbar() {
+  const { setCommandPaletteOpen } = useUIState();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <motion.header
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
+      className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${
+        scrolled ? "glass-strong" : "bg-transparent"
+      }`}
+    >
+      <nav className="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-8 h-16">
+        <button
+          onClick={() => scrollTo("hero")}
+          className="mono-label text-foreground/90 tracking-[0.2em]"
+          data-cursor="interactive"
+        >
+          AK<span className="text-accent">.</span>
+        </button>
+
+        <div className="hidden lg:flex items-center gap-1">
+          {navSections.slice(1).map((s) => (
+            <button
+              key={s.id}
+              onClick={() => scrollTo(s.id)}
+              className="px-3 py-2 text-xs text-muted hover:text-foreground transition-colors rounded-md hover:bg-white/[0.04]"
+              data-cursor="interactive"
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setCommandPaletteOpen(true)}
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md border border-border text-xs text-muted hover:text-foreground hover:border-border-strong transition-colors"
+            data-cursor="interactive"
+            aria-label="Open command palette"
+          >
+            <Command size={12} />
+            <span className="mono-label">K</span>
+          </button>
+          <a
+            href={socials.resumeFile}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center px-4 py-1.5 rounded-md bg-foreground text-background text-xs font-medium hover:opacity-90 transition-opacity"
+            data-cursor="interactive"
+          >
+            Resume
+          </a>
+          <button
+            className="lg:hidden text-foreground"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </nav>
+
+      {mobileOpen && (
+        <div className="lg:hidden bg-background border-t border-border px-5 py-4 flex flex-col gap-1">
+          {navSections.slice(1).map((s) => (
+            <button
+              key={s.id}
+              onClick={() => {
+                scrollTo(s.id);
+                setMobileOpen(false);
+              }}
+              className="text-left px-2 py-2.5 text-sm text-muted hover:text-foreground"
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </motion.header>
+  );
+}
