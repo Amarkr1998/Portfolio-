@@ -16,7 +16,7 @@ export default function AIWorkflow() {
         </h2>
 
         <div className="grid lg:grid-cols-2 gap-14 items-start mb-16">
-          <div className="glass rounded-2xl p-6 sm:p-8">
+          <div className="card rounded-2xl p-6 sm:p-8">
             <FlowDiagram steps={aiWorkflow} accent="var(--accent-2)" />
           </div>
 

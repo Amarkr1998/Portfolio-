@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { streamAzureChatCompletion, isAzureAIConfigured, type ChatMessage } from "@/lib/azure-ai";
 import { AI_SYSTEM_PROMPT, buildPortfolioContext } from "@/lib/portfolio-context";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -23,7 +24,28 @@ function isValidHistory(value: unknown): value is ClientMessage[] {
   );
 }
 
+function getClientKey(req: NextRequest): string {
+  // Best-effort client identifier for rate limiting — trusts the first hop's
+  // forwarded-for header when present (typical behind Vercel/a reverse proxy).
+  const forwardedFor = req.headers.get("x-forwarded-for");
+  return forwardedFor?.split(",")[0]?.trim() || "unknown";
+}
+
 export async function POST(req: NextRequest) {
+  const { allowed, retryAfterSeconds } = checkRateLimit(getClientKey(req));
+  if (!allowed) {
+    return new Response(
+      JSON.stringify({ error: "Too many requests. Please wait a moment before trying again." }),
+      {
+        status: 429,
+        headers: {
+          "Content-Type": "application/json",
+          ...(retryAfterSeconds ? { "Retry-After": String(retryAfterSeconds) } : {}),
+        },
+      }
+    );
+  }
+
   if (!isAzureAIConfigured()) {
     return new Response(
       JSON.stringify({
@@ -78,10 +100,17 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     // Never leak upstream error details (may contain endpoint/config info).
-    console.error("AI chat error:", err instanceof Error ? err.message : "unknown error");
+    const message = err instanceof Error ? err.message : "unknown error";
+    console.error("AI chat error:", message);
+
+    const isTimeout = message === "AZURE_REQUEST_TIMEOUT";
     return new Response(
-      JSON.stringify({ error: "The AI assistant is temporarily unavailable. Please try again." }),
-      { status: 502, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({
+        error: isTimeout
+          ? "The AI assistant took too long to respond. Please try again."
+          : "The AI assistant is temporarily unavailable. Please try again.",
+      }),
+      { status: isTimeout ? 504 : 502, headers: { "Content-Type": "application/json" } }
     );
   }
 }

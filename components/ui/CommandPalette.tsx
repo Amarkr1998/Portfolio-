@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Home,
+  User,
   Briefcase,
   FolderGit2,
   Network,
@@ -11,18 +12,20 @@ import {
   Wrench,
   FileDown,
   MessageCircleQuestion,
+  UserRound,
   Mail,
   Search,
 } from "lucide-react";
 import { useUIState } from "@/components/providers/UIStateProvider";
 import { socials } from "@/data/portfolio";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 type Command = {
   id: string;
   label: string;
   group: string;
-  icon: React.ElementType;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
   action: () => void;
 };
 
@@ -31,14 +34,18 @@ function scrollTo(id: string) {
 }
 
 export default function CommandPalette() {
-  const { commandPaletteOpen, setCommandPaletteOpen, setAiChatOpen } = useUIState();
+  const { commandPaletteOpen, setCommandPaletteOpen, setAiChatOpen, setRecruiterViewOpen } = useUIState();
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useFocusTrap(panelRef, commandPaletteOpen);
 
   const commands: Command[] = useMemo(
     () => [
       { id: "home", label: "Go Home", group: "Navigate", icon: Home, action: () => scrollTo("hero") },
+      { id: "about", label: "View About", group: "Navigate", icon: User, action: () => scrollTo("about") },
       { id: "experience", label: "View Experience", group: "Navigate", icon: Briefcase, action: () => scrollTo("experience") },
       { id: "projects", label: "View Projects", group: "Navigate", icon: FolderGit2, action: () => scrollTo("projects") },
       { id: "architecture", label: "View Architecture", group: "Navigate", icon: Network, action: () => scrollTo("architecture") },
@@ -48,9 +55,10 @@ export default function CommandPalette() {
       { id: "linkedin", label: "Open LinkedIn", group: "Links", icon: LinkedinIcon, action: () => window.open(socials.linkedin, "_blank") },
       { id: "resume", label: "Download Resume", group: "Links", icon: FileDown, action: () => window.open(socials.resumeFile, "_blank") },
       { id: "ask-ai", label: "Ask Amar AI", group: "Actions", icon: MessageCircleQuestion, action: () => setAiChatOpen(true) },
+      { id: "recruiter", label: "Open Recruiter View", group: "Actions", icon: UserRound, action: () => setRecruiterViewOpen(true) },
       { id: "contact", label: "Contact Amar", group: "Actions", icon: Mail, action: () => scrollTo("contact") },
     ],
-    [setAiChatOpen]
+    [setAiChatOpen, setRecruiterViewOpen]
   );
 
   const filtered = useMemo(() => {
@@ -126,6 +134,7 @@ export default function CommandPalette() {
             aria-hidden="true"
           />
           <motion.div
+            ref={panelRef}
             role="dialog"
             aria-modal="true"
             aria-label="Command palette"
@@ -145,10 +154,14 @@ export default function CommandPalette() {
                 placeholder="Type a command or search..."
                 className="w-full bg-transparent outline-none text-sm text-foreground placeholder:text-muted-2"
                 aria-label="Command search"
+                role="combobox"
+                aria-expanded="true"
+                aria-controls="command-palette-list"
+                aria-activedescendant={filtered[activeIndex] ? `command-${filtered[activeIndex].id}` : undefined}
               />
               <kbd className="mono-label border border-border rounded px-1.5 py-0.5 text-[10px]">ESC</kbd>
             </div>
-            <div className="max-h-80 overflow-y-auto py-2">
+            <div id="command-palette-list" role="listbox" aria-label="Commands" className="max-h-80 overflow-y-auto py-2">
               {filtered.length === 0 && (
                 <p className="px-4 py-6 text-sm text-muted text-center">No matching commands.</p>
               )}
@@ -158,10 +171,13 @@ export default function CommandPalette() {
                 return (
                   <button
                     key={cmd.id}
+                    id={`command-${cmd.id}`}
+                    role="option"
+                    aria-selected={active}
                     onClick={() => runCommand(cmd)}
                     onMouseEnter={() => setActiveIndex(i)}
                     className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors ${
-                      active ? "bg-white/[0.06] text-foreground" : "text-muted"
+                      active ? "bg-[var(--fill-subtle-strong)] text-foreground" : "text-muted"
                     }`}
                   >
                     <Icon size={15} className={active ? "text-accent" : "text-muted-2"} />

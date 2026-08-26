@@ -18,7 +18,7 @@ export default function ArchitectureGraph() {
         </p>
 
         <div className="grid lg:grid-cols-2 gap-14 items-start">
-          <div className="glass rounded-2xl p-6 sm:p-8">
+          <div className="card rounded-2xl p-6 sm:p-8">
             <FlowDiagram steps={systemArchitecture} />
           </div>
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Command, Menu, X } from "lucide-react";
+import { Command, Menu, X, UserRound } from "lucide-react";
 import { navSections, socials } from "@/data/portfolio";
 import { useUIState } from "@/components/providers/UIStateProvider";
 
@@ -11,7 +11,7 @@ function scrollTo(id: string) {
 }
 
 export default function Navbar() {
-  const { setCommandPaletteOpen } = useUIState();
+  const { setCommandPaletteOpen, setRecruiterViewOpen } = useUIState();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -45,7 +45,7 @@ export default function Navbar() {
             <button
               key={s.id}
               onClick={() => scrollTo(s.id)}
-              className="px-3 py-2 text-xs text-muted hover:text-foreground transition-colors rounded-md hover:bg-white/[0.04]"
+              className="px-3 py-2 text-xs text-muted hover:text-foreground transition-colors rounded-md hover:bg-[var(--fill-subtle)]"
               data-cursor="interactive"
             >
               {s.label}
@@ -54,6 +54,15 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setRecruiterViewOpen(true)}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-xs text-muted hover:text-foreground hover:border-border-strong transition-colors"
+            data-cursor="interactive"
+            aria-label="Open recruiter summary"
+          >
+            <UserRound size={12} />
+            Recruiter View
+          </button>
           <button
             onClick={() => setCommandPaletteOpen(true)}
             className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md border border-border text-xs text-muted hover:text-foreground hover:border-border-strong transition-colors"
@@ -96,6 +105,15 @@ export default function Navbar() {
               {s.label}
             </button>
           ))}
+          <button
+            onClick={() => {
+              setRecruiterViewOpen(true);
+              setMobileOpen(false);
+            }}
+            className="text-left px-2 py-2.5 text-sm text-muted hover:text-foreground border-t border-border mt-1 pt-3"
+          >
+            Recruiter View
+          </button>
         </div>
       )}
     </motion.header>

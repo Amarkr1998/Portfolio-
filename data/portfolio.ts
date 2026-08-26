@@ -103,12 +103,12 @@ export type TechCategory = {
 export const techStack: TechCategory[] = [
   { category: "Languages", items: ["Java 17/21", "Python", "SQL"] },
   { category: "Backend", items: ["Spring Boot", "Spring Cloud", "Spring AI", "Spring MVC", "Spring Security", "JPA/Hibernate", "REST APIs"] },
-  { category: "Database & Caching", items: ["MySQL", "PostgreSQL", "Redis"] },
+  { category: "Database & Caching", items: ["MySQL", "PostgreSQL", "PostGIS", "pgvector", "Redis"] },
   { category: "Generative AI", items: ["LangGraph", "RAG", "LLM Orchestration", "AI Agents"] },
-  { category: "Frontend", items: ["React.js", "JavaScript", "HTML5", "CSS3"] },
+  { category: "Frontend", items: ["React.js", "Next.js", "React Native", "JavaScript", "HTML5", "CSS3"] },
   { category: "Security & Messaging", items: ["OAuth2", "JWT", "Keycloak", "RBAC", "Kafka", "RabbitMQ"] },
-  { category: "DevOps & Cloud", items: ["Docker", "Kubernetes", "CI/CD", "AWS", "Azure"] },
-  { category: "Testing & Monitoring", items: ["JUnit 5", "Mockito", "Integration Testing", "Azure Monitor", "AWS CloudWatch"] },
+  { category: "DevOps & Cloud", items: ["Docker", "Kubernetes", "Helm", "Terraform", "CI/CD", "AWS", "Azure"] },
+  { category: "Testing & Monitoring", items: ["JUnit 5", "Mockito", "Integration Testing", "OpenTelemetry", "Prometheus", "Grafana", "Azure Monitor", "AWS CloudWatch"] },
   { category: "Architecture", items: ["Microservices", "API Gateway", "Service Discovery", "Event-Driven Architecture", "Distributed Systems"] },
   { category: "Tools", items: ["Git", "GitHub", "Maven", "Postman", "IntelliJ IDEA", "VS Code"] },
 ];
@@ -150,6 +150,14 @@ export type Project = {
   title: string;
   subtitle: string;
   date?: string;
+  // "professional" = built as part of Amar's role at Migun India Pvt. Ltd.
+  // "personal" = self-directed project for learning and skill development.
+  type: "professional" | "personal";
+  context: string;
+  // Only set for projects still under active development — omitted (i.e.
+  // treated as shipped/complete) otherwise.
+  status?: string;
+  repoUrl?: string;
   positioning: string;
   technology: string[];
   capabilities: string[];
@@ -171,6 +179,8 @@ export const projects: Project[] = [
     slug: "credassist360",
     title: "CredAssist360",
     subtitle: "AI-Powered Healthcare Provider Credentialing Platform",
+    type: "professional",
+    context: "Built at Migun India Pvt. Ltd.",
     positioning: "An AI-powered healthcare provider credentialing platform.",
     technology: [
       "Python",
@@ -225,6 +235,8 @@ export const projects: Project[] = [
     title: "FitTrack",
     subtitle: "AI-Enabled Fitness Management Platform",
     date: "December 2025",
+    type: "personal",
+    context: "Personal project — built for learning and skill development.",
     positioning: "An AI-enabled fitness management platform built on a Spring Cloud microservices architecture.",
     technology: [
       "Java 17",
@@ -280,6 +292,8 @@ export const projects: Project[] = [
     title: "IntelliMail",
     subtitle: "AI-Driven Email Automation Platform",
     date: "January 2026",
+    type: "personal",
+    context: "Personal project — built for learning and skill development.",
     positioning: "An AI-driven email automation platform for generation, rewriting, summarization and translation.",
     technology: [
       "Java 21",
@@ -319,6 +333,73 @@ export const projects: Project[] = [
       deployment: "Dockerized services with automated testing (JUnit 5, Mockito) and GitHub Actions CI/CD.",
       engineeringDecisions: [
         "Kept AI orchestration in the backend via Spring AI rather than calling the model directly from the client, keeping API keys and prompt logic server-side.",
+      ],
+    },
+  },
+  {
+    slug: "foodloop",
+    title: "FoodLoop",
+    subtitle: "AI-Powered Hyperlocal Surplus-Food Redistribution Platform",
+    type: "personal",
+    context: "Personal project — built for learning and skill development.",
+    status: "In active development — Phase 1: Platform Foundation.",
+    repoUrl: "https://github.com/Amarkr1998/FoodLoop",
+    positioning:
+      "An enterprise-grade, AI-powered, hyperlocal surplus-food redistribution platform coordinating donor–receiver matching, expiry rescue and NGO pickup.",
+    technology: [
+      "Java 21",
+      "Spring Boot",
+      "Maven",
+      "Next.js",
+      "React Native",
+      "Expo",
+      "PostgreSQL",
+      "PostGIS",
+      "pgvector",
+      "Redis",
+      "Kafka",
+      "RabbitMQ",
+      "Keycloak",
+      "Docker",
+      "Kubernetes",
+      "Helm",
+      "Terraform",
+      "Azure OpenAI",
+      "OpenTelemetry",
+      "Prometheus",
+      "Grafana",
+    ],
+    capabilities: [
+      "Surplus-food discovery",
+      "AI-driven donor–receiver matching",
+      "Expiry-window rescue coordination",
+      "NGO pickup coordination",
+      "Geospatial matching (PostGIS)",
+      "Multi-tenant architecture",
+      "Deterministic fallback mode (works without live AI calls)",
+    ],
+    architecture: [
+      "WEB / MOBILE APPS",
+      "API GATEWAY",
+      "SPRING BOOT MICROSERVICES (BOUNDED CONTEXTS)",
+      "AI AGENTS (DONOR-RECEIVER MATCHING)",
+      "EVENT BUS (KAFKA / RABBITMQ)",
+      "POSTGIS + PGVECTOR",
+      "NGO PICKUP COORDINATION",
+    ],
+    detail: {
+      problem:
+        "Surplus food goes to waste because donors, receivers and NGOs lack a coordinated, real-time way to match, verify expiry windows, and arrange pickup within a local area.",
+      solution:
+        "FoodLoop coordinates surplus-food discovery, AI-driven donor–receiver matching, expiry-window rescue and NGO pickup logistics through an event-driven, geospatial, multi-tenant microservices architecture, organized into bounded-context Spring Boot modules with shared OpenAPI contracts and event schemas.",
+      ai: "AI agent modules handle donor–receiver matching via Azure OpenAI/Azure AI Foundry, with a deterministic-only fallback mode so core flows (listing, claiming, pickup) work without live AI calls.",
+      security: "Keycloak-based identity across a secure, multi-tenant architecture.",
+      database: "PostgreSQL with PostGIS for geospatial queries and pgvector for similarity search, plus Redis.",
+      messaging: "Kafka and RabbitMQ coordinate events across bounded-context microservices.",
+      deployment: "Docker, Kubernetes and Helm for containerized deployment, Terraform for infrastructure, with OpenTelemetry, Prometheus and Grafana for observability.",
+      engineeringDecisions: [
+        "Organized the domain into bounded-context Spring Boot microservices with OpenAPI contracts and shared event schemas as the source of truth.",
+        "Built a deterministic-only fallback mode so core flows work without live AI calls, decoupling the platform from AI provider availability.",
       ],
     },
   },
@@ -374,14 +455,46 @@ export const aiTechnologies = [
 ] as const;
 
 export const engineeringProcess = [
-  { step: "01", label: "UNDERSTAND" },
-  { step: "02", label: "DESIGN" },
-  { step: "03", label: "BUILD" },
-  { step: "04", label: "SECURE" },
-  { step: "05", label: "TEST" },
-  { step: "06", label: "MONITOR" },
-  { step: "07", label: "DEPLOY" },
+  { step: "01", label: "UNDERSTAND", description: "Clarify the problem, constraints and users before writing code." },
+  { step: "02", label: "DESIGN", description: "Shape services, data models and API contracts up front." },
+  { step: "03", label: "BUILD", description: "Implement in Java/Spring Boot and React with clean, focused commits." },
+  { step: "04", label: "SECURE", description: "Bake in OAuth2/JWT, Keycloak and RBAC rather than bolting it on later." },
+  { step: "05", label: "TEST", description: "Cover behavior with JUnit 5 and Mockito before it ships." },
+  { step: "06", label: "OPTIMIZE", description: "Tune database queries and service boundaries under real load." },
+  { step: "07", label: "DEPLOY", description: "Automate releases with Docker, GitHub Actions and Azure Container Apps." },
+  { step: "08", label: "MONITOR", description: "Track health with Azure Monitor and AWS CloudWatch, then iterate." },
 ] as const;
+
+export type ImpactPillar = { title: string; description: string; tags: string[] };
+
+// Qualitative engineering strengths grounded in verified experience/skills —
+// no invented metrics, since none exist in the source resume.
+export const engineeringImpact: ImpactPillar[] = [
+  {
+    title: "Scalable Backend Systems",
+    description:
+      "Designs and ships Spring Boot microservices behind an API Gateway with service discovery and event-driven messaging.",
+    tags: ["Spring Boot", "Microservices", "API Gateway", "Eureka", "RabbitMQ"],
+  },
+  {
+    title: "Secure by Design",
+    description:
+      "Builds authentication and authorization into services from the start with OAuth2, JWT and Keycloak-backed RBAC.",
+    tags: ["Spring Security", "OAuth2", "JWT", "Keycloak", "RBAC"],
+  },
+  {
+    title: "Applied AI Engineering",
+    description:
+      "Ships production AI features — multi-agent LangGraph workflows, Spring AI orchestration and Human-in-the-Loop review — on Azure AI.",
+    tags: ["LangGraph", "Spring AI", "Azure AI Foundry", "Azure OpenAI", "RAG"],
+  },
+  {
+    title: "Cloud-Native Delivery",
+    description:
+      "Automates the path from commit to production with Docker, GitHub Actions and Azure Container Apps, backed by Azure Monitor and AWS CloudWatch.",
+    tags: ["Docker", "CI/CD", "GitHub Actions", "Azure", "AWS"],
+  },
+];
 
 export const certification = {
   name: "Microsoft Certified: Azure AI Apps and Agents Developer Associate",
@@ -401,14 +514,14 @@ export const contact = {
 } as const;
 
 export const suggestedQuestions = [
-  "What is Amar's Java experience?",
-  "Explain FitTrack.",
+  "What technologies does Amar specialize in?",
+  "Tell me about Amar's projects.",
+  "What is Amar's backend experience?",
+  "Tell me about Amar's AI experience.",
+  "What kind of roles is Amar looking for?",
   "Explain CredAssist360.",
-  "What AI technologies does Amar use?",
   "What is Amar's experience with microservices?",
-  "Tell me about IntelliMail.",
   "What security technologies has Amar worked with?",
-  "Summarize Amar's technical profile.",
 ] as const;
 
 export const navSections = [

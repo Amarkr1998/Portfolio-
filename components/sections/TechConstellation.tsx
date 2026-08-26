@@ -7,8 +7,8 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 const CATEGORY_COLOR: Record<string, string> = {
   language: "#ffb37c",
-  backend: "#6ee7ff",
-  frontend: "#7c8cff",
+  backend: "#8b5cf6",
+  frontend: "#38bdf8",
   ai: "#f472b6",
   cloud: "#5eead4",
   data: "#facc15",
@@ -59,7 +59,7 @@ export default function TechConstellation() {
               y1={pa.y}
               x2={pb.x}
               y2={pb.y}
-              stroke={highlighted ? "rgba(110,231,255,0.75)" : "rgba(255,255,255,0.12)"}
+              stroke={highlighted ? "rgba(139,92,246,0.7)" : "rgba(255,255,255,0.12)"}
               strokeWidth={highlighted ? 0.5 : 0.25}
               initial={reducedMotion ? undefined : { pathLength: 0, opacity: 0 }}
               whileInView={reducedMotion ? undefined : { pathLength: 1, opacity: 1 }}
@@ -68,7 +68,7 @@ export default function TechConstellation() {
             />
           );
         })}
-        <circle cx={50} cy={50} r={9} fill="rgba(110,231,255,0.08)" stroke="rgba(110,231,255,0.4)" strokeWidth={0.3} />
+        <circle cx={50} cy={50} r={9} fill="rgba(139,92,246,0.1)" stroke="rgba(139,92,246,0.45)" strokeWidth={0.3} />
       </svg>
 
       <div className="absolute inset-0">
@@ -100,8 +100,11 @@ export default function TechConstellation() {
                 width: isActive ? "15%" : "10.5%",
                 aspectRatio: "1/1",
                 transform: "translate(-50%,-50%)",
-                background: "rgba(13,15,20,0.9)",
+                background: "var(--surface)",
                 borderColor: isActive ? color : "rgba(255,255,255,0.14)",
+                boxShadow: isActive
+                  ? `0 4px 20px -4px ${color}88`
+                  : "0 1px 2px rgba(0,0,0,0.3)",
                 opacity: isDimmed ? 0.35 : 1,
               }}
               initial={reducedMotion ? undefined : { opacity: 0, scale: 0.6 }}
@@ -126,7 +129,7 @@ export default function TechConstellation() {
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass rounded-lg px-4 py-3 mx-auto inline-block"
+            className="glass-strong rounded-lg px-4 py-3 mx-auto inline-block"
           >
             <p className="mono-label text-accent mb-1">{activeNode.label}</p>
             <p className="text-xs text-muted max-w-xs">{activeNode.description}</p>

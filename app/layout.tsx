@@ -3,11 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { UIStateProvider } from "@/components/providers/UIStateProvider";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
+import ClientWidgets from "@/components/providers/ClientWidgets";
 import Navbar from "@/components/Navbar";
-import CustomCursor from "@/components/ui/CustomCursor";
-import CommandPalette from "@/components/ui/CommandPalette";
-import AIAssistant from "@/components/AIAssistant";
-import { profile } from "@/data/portfolio";
+import Footer from "@/components/Footer";
+import { profile, socials } from "@/data/portfolio";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,13 +61,12 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
+const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  name: "Amar Kumar",
-  jobTitle: "Java Full Stack Developer",
-  description:
-    "Java Full Stack Developer specializing in scalable applications, secure REST APIs, microservices, distributed systems and AI/LLM integrations.",
+  name: profile.name,
+  jobTitle: profile.identity,
+  description: profile.positioning,
   address: {
     "@type": "PostalAddress",
     addressLocality: "New Delhi",
@@ -76,8 +74,19 @@ const jsonLd = {
   },
   worksFor: {
     "@type": "Organization",
-    name: "Migun India Pvt. Ltd.",
+    name: profile.currentCompany,
   },
+  sameAs: [socials.github, socials.linkedin],
+  url: SITE_URL,
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: `${profile.name} — Portfolio`,
+  url: SITE_URL,
+  description: DESCRIPTION,
+  author: { "@type": "Person", name: profile.name },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -86,18 +95,27 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body
+        className="min-h-full flex flex-col bg-background text-foreground"
+        suppressHydrationWarning
+      >
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <UIStateProvider>
           <SmoothScrollProvider>
-            <CustomCursor />
             <Navbar />
-            <CommandPalette />
             {children}
-            <AIAssistant />
+            <Footer />
+            <ClientWidgets />
           </SmoothScrollProvider>
         </UIStateProvider>
       </body>

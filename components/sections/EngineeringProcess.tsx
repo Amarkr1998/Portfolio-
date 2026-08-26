@@ -10,7 +10,7 @@ export default function EngineeringProcess() {
         <p className="section-heading mb-4">PROCESS</p>
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-14">How I Build</h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {engineeringProcess.map((step, i) => (
             <motion.div
               key={step.step}
@@ -18,15 +18,11 @@ export default function EngineeringProcess() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.4, delay: i * 0.06 }}
-              className="relative glass rounded-xl p-4 sm:p-5 text-center"
+              className="card rounded-xl p-4 sm:p-5"
             >
               <p className="mono-label text-accent mb-2">{step.step}</p>
-              <p className="text-xs sm:text-sm font-medium text-foreground/85">{step.label}</p>
-              {i < engineeringProcess.length - 1 && (
-                <span className="hidden lg:block absolute top-1/2 -right-2.5 -translate-y-1/2 text-muted-2 text-xs">
-                  →
-                </span>
-              )}
+              <p className="text-xs sm:text-sm font-medium text-foreground/85 mb-1.5">{step.label}</p>
+              <p className="text-[0.72rem] text-muted leading-relaxed">{step.description}</p>
             </motion.div>
           ))}
         </div>

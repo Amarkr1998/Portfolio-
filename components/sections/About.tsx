@@ -35,8 +35,9 @@ export default function About() {
               initial={{ opacity: 0, y: 8 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
+              whileHover={{ y: -2, borderColor: "var(--accent)", color: "var(--accent)" }}
               transition={{ duration: 0.35, delay: i * 0.03 }}
-              className="mono-label px-3 py-1.5 rounded-full border border-border text-foreground/80"
+              className="mono-label px-3 py-1.5 rounded-full border border-border text-foreground/80 cursor-default"
             >
               {h}
             </motion.span>

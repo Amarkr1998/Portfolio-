@@ -8,6 +8,8 @@ type UIState = {
   toggleCommandPalette: () => void;
   aiChatOpen: boolean;
   setAiChatOpen: (v: boolean) => void;
+  recruiterViewOpen: boolean;
+  setRecruiterViewOpen: (v: boolean) => void;
 };
 
 const UIStateContext = createContext<UIState | null>(null);
@@ -15,6 +17,7 @@ const UIStateContext = createContext<UIState | null>(null);
 export function UIStateProvider({ children }: { children: ReactNode }) {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [aiChatOpen, setAiChatOpen] = useState(false);
+  const [recruiterViewOpen, setRecruiterViewOpen] = useState(false);
 
   const toggleCommandPalette = useCallback(() => {
     setCommandPaletteOpen((v) => !v);
@@ -28,6 +31,8 @@ export function UIStateProvider({ children }: { children: ReactNode }) {
         toggleCommandPalette,
         aiChatOpen,
         setAiChatOpen,
+        recruiterViewOpen,
+        setRecruiterViewOpen,
       }}
     >
       {children}

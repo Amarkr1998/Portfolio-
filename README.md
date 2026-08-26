@@ -23,15 +23,18 @@ on the site.
 app/                 routes, layout, metadata, API route for the AI assistant
 components/
   sections/           one component per page section
-  providers/           Lenis + global UI state context
-  ui/                   CommandPalette, CustomCursor, Magnetic, FlowDiagram
+  providers/           Lenis, global UI state, ssr:false client-widget bundle
+  ui/                   CommandPalette, CustomCursor, Magnetic, FlowDiagram, MarkdownLite
   ProjectCard.tsx / ProjectDetails.tsx
   AIAssistant.tsx       chat widget UI
+  RecruiterView.tsx     fast recruiter-facing summary (Ctrl/Cmd+K → "Recruiter View")
+  Footer.tsx
 data/portfolio.ts     single source of truth for all resume-derived content
 lib/
   azure-ai.ts           server-side Azure AI client (never imported client-side)
   portfolio-context.ts  builds the AI assistant's grounded context + system prompt
-hooks/                 useReducedMotion, useIsTouchDevice
+  rate-limit.ts         best-effort in-memory rate limiting for /api/ai/chat
+hooks/                 useReducedMotion, useIsTouchDevice, useFocusTrap
 ```
 
 ## Getting started
@@ -68,22 +71,16 @@ If these variables are absent, the chat widget still renders but returns a clear
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000).
+Visit [http://localhost:3005](http://localhost:3005) (the dev/start scripts pin this port).
 
-### 4. Add the real resume PDF
-
-Drop the resume at `public/resume/Amar_Kumar_Resume.pdf` (see
-`public/resume/README.md`), and replace the placeholder GitHub/LinkedIn URLs in
-`data/portfolio.ts` (`socials`) with the real ones.
-
-### 5. Build
+### 4. Build
 
 ```bash
 npm run build
 npm run start
 ```
 
-### 6. Deploy to Vercel
+### 5. Deploy to Vercel
 
 1. Push this repository to GitHub.
 2. Import it in [Vercel](https://vercel.com/new).
@@ -95,6 +92,11 @@ npm run start
 ## Notes
 
 - All animations respect `prefers-reduced-motion`.
-- The custom cursor and command palette (`⌘K` / `Ctrl+K`) are desktop-only.
+- The custom cursor (with contextual VIEW/ASK/OPEN labels) and command palette
+  (`⌘K` / `Ctrl+K`) are desktop-only.
 - The AI assistant answers strictly from `data/portfolio.ts` — if something isn't in
   the data, it responds with "I don't have that information in Amar's portfolio."
+  It streams responses, renders basic markdown, and is rate-limited and
+  timeout-bounded server-side (`lib/rate-limit.ts`, `lib/azure-ai.ts`).
+- "Recruiter View" (Navbar, mobile menu, or the command palette) gives a
+  one-minute condensed summary of the profile for time-pressed recruiters.

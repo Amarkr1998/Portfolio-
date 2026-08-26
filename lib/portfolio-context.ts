@@ -1,11 +1,13 @@
 import {
   profile,
+  hero,
   experience,
   projects,
   techStack,
   certification,
   education,
   aiTechnologies,
+  engineeringImpact,
   socials,
 } from "@/data/portfolio";
 
@@ -23,6 +25,7 @@ export function buildPortfolioContext(): string {
   lines.push(`Current role: ${profile.currentRole} at ${profile.currentCompany} (${profile.employmentPeriod})`);
   lines.push(`Positioning: ${profile.positioning}`);
   lines.push(`Summary: ${profile.summary}`);
+  lines.push(`Availability: ${hero.status}`);
   lines.push("");
 
   lines.push(`EXPERIENCE`);
@@ -35,6 +38,10 @@ export function buildPortfolioContext(): string {
   lines.push(`PROJECTS`);
   for (const p of projects) {
     lines.push(`## ${p.title}${p.date ? ` (${p.date})` : ""} — ${p.subtitle}`);
+    lines.push(`Type: ${p.type === "professional" ? "Professional (built as part of Amar's role)" : "Personal project (self-directed, for learning and skill development)"}`);
+    lines.push(`Context: ${p.context}`);
+    if (p.status) lines.push(`Status: ${p.status}`);
+    if (p.repoUrl) lines.push(`Repository: ${p.repoUrl}`);
     lines.push(`Positioning: ${p.positioning}`);
     lines.push(`Technology: ${p.technology.join(", ")}`);
     lines.push(`Capabilities: ${p.capabilities.join(", ")}`);
@@ -62,6 +69,12 @@ export function buildPortfolioContext(): string {
   lines.push(aiTechnologies.join(", "));
   lines.push("");
 
+  lines.push(`ENGINEERING STRENGTHS`);
+  for (const pillar of engineeringImpact) {
+    lines.push(`${pillar.title}: ${pillar.description} (${pillar.tags.join(", ")})`);
+  }
+  lines.push("");
+
   lines.push(`CERTIFICATION`);
   lines.push(`${certification.name} — ${certification.issuer}`);
   lines.push("");
@@ -86,6 +99,12 @@ Rules:
 4. Speak about Amar in the third person, in a concise, confident, technical tone.
 5. Keep answers focused — a few sentences or a short list, not an essay.
 6. You may summarize or connect facts already present in the context, but do not extrapolate beyond them.
+7. Each project has a Type: "Professional" (built as part of Amar's job at Migun India) or "Personal project"
+   (self-directed, for learning). Only CredAssist360 is professional — FitTrack, IntelliMail and FoodLoop are
+   personal projects. Never imply a personal project was a work deliverable, and always make this distinction
+   clear when asked about work experience, employer deliverables, or "what Amar built at his job."
+8. If a project has a Status field (e.g. still in active development), mention that status when discussing it
+   so it isn't presented as a finished, shipped product.
 
 VERIFIED PORTFOLIO CONTEXT:
 `;

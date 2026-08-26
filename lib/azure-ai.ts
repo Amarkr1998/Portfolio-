@@ -26,6 +26,10 @@ function getAzureConfig(): AzureConfig {
   return { endpoint: endpoint.replace(/\/+$/, ""), apiKey, deployment, apiVersion };
 }
 
+// Bounds the entire request (connect + full stream) so a hung upstream
+// connection can't leave a client request open indefinitely.
+const REQUEST_TIMEOUT_MS = 45_000;
+
 export function isAzureAIConfigured(): boolean {
   return Boolean(
     process.env.AZURE_AI_ENDPOINT &&
@@ -44,18 +48,27 @@ export async function streamAzureChatCompletion(
 
   const url = `${endpoint}/openai/deployments/${deployment}/chat/completions?api-version=${apiVersion}`;
 
-  const upstream = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "api-key": apiKey,
-    },
-    body: JSON.stringify({
-      messages,
-      stream: true,
-      max_completion_tokens: 600,
-    }),
-  });
+  let upstream: Response;
+  try {
+    upstream = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "api-key": apiKey,
+      },
+      body: JSON.stringify({
+        messages,
+        stream: true,
+        max_completion_tokens: 600,
+      }),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+  } catch (err) {
+    if (err instanceof Error && err.name === "TimeoutError") {
+      throw new Error("AZURE_REQUEST_TIMEOUT");
+    }
+    throw err;
+  }
 
   if (!upstream.ok || !upstream.body) {
     const text = await upstream.text().catch(() => "");
@@ -69,8 +82,19 @@ export async function streamAzureChatCompletion(
 
   return new ReadableStream<Uint8Array>({
     async pull(controller) {
-      const { done, value } = await reader.read();
-      if (done) {
+      let done: boolean;
+      let value: Uint8Array | undefined;
+      try {
+        ({ done, value } = await reader.read());
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+          controller.enqueue(encoder.encode("\n\n[Response timed out. Please try again.]"));
+        }
+        controller.close();
+        return;
+      }
+
+      if (done || !value) {
         controller.close();
         return;
       }

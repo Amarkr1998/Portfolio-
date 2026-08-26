@@ -14,7 +14,7 @@ export default function Certification() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5 }}
-          className="card-border-anim glass rounded-2xl p-6 sm:p-8 flex items-start gap-5"
+          className="card-border-anim card rounded-2xl p-6 sm:p-8 flex items-start gap-5"
         >
           <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-xl bg-accent/10 border border-accent/25">
             <BadgeCheck size={22} className="text-accent" />

@@ -30,6 +30,8 @@ export default function ProjectCard({
   return (
     <motion.div
       ref={ref}
+      role="button"
+      tabIndex={0}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
@@ -38,19 +40,36 @@ export default function ProjectCard({
       onMouseMove={handleMove}
       onMouseLeave={() => setGlow((g) => ({ ...g, visible: false }))}
       onClick={() => onOpen(project)}
-      className="card-border-anim group relative cursor-pointer overflow-hidden rounded-2xl glass p-6 sm:p-8"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen(project);
+        }
+      }}
+      className="card-border-anim group relative cursor-pointer overflow-hidden rounded-2xl card p-6 sm:p-8"
       data-cursor="interactive"
+      data-cursor-label="VIEW"
+      aria-label={`View ${project.title} case study`}
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{
-          background: `radial-gradient(320px circle at ${glow.x}% ${glow.y}%, rgba(110,231,255,0.12), transparent 70%)`,
+          background: `radial-gradient(320px circle at ${glow.x}% ${glow.y}%, rgba(139,92,246,0.15), transparent 70%)`,
         }}
       />
 
       <div className="relative">
         <div className="flex items-start justify-between mb-6">
           <div>
+            <span
+              className={`inline-block text-[0.62rem] font-mono uppercase tracking-wider px-2 py-0.5 rounded mb-2 ${
+                project.type === "professional"
+                  ? "bg-accent/10 text-accent"
+                  : "bg-[var(--fill-subtle)] text-muted"
+              }`}
+            >
+              {project.type === "professional" ? "Professional" : "Personal Project"}
+            </span>
             <h3 className="text-xl sm:text-2xl font-semibold text-foreground">{project.title}</h3>
             {project.date && <p className="mono-label mt-1">{project.date}</p>}
           </div>
@@ -60,13 +79,14 @@ export default function ProjectCard({
           />
         </div>
 
-        <p className="text-sm text-muted leading-relaxed mb-6 max-w-md">{project.subtitle}</p>
+        <p className="text-sm text-muted leading-relaxed mb-1 max-w-md">{project.subtitle}</p>
+        {project.status && <p className="text-[0.68rem] text-accent-2 mb-1">{project.status}</p>}
 
-        <div className="flex flex-wrap gap-1.5 mb-6">
+        <div className="flex flex-wrap gap-1.5 mb-6 mt-5">
           {project.technology.slice(0, 5).map((t) => (
             <span
               key={t}
-              className="text-[0.68rem] px-2 py-0.5 rounded-md bg-white/[0.04] border border-border text-foreground/70"
+              className="text-[0.68rem] px-2 py-0.5 rounded-md bg-[var(--fill-subtle)] border border-border text-foreground/70"
             >
               {t}
             </span>

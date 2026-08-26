@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIsTouchDevice } from "@/hooks/useIsTouchDevice";
 
@@ -9,6 +9,8 @@ const INTERACTIVE_SELECTOR = 'a, button, [role="button"], input, textarea, [data
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLDivElement>(null);
+  const [label, setLabel] = useState<string | null>(null);
   const reducedMotion = useReducedMotion();
   const isTouch = useIsTouchDevice();
 
@@ -17,7 +19,8 @@ export default function CustomCursor() {
 
     const dot = dotRef.current;
     const ring = ringRef.current;
-    if (!dot || !ring) return;
+    const labelEl = labelRef.current;
+    if (!dot || !ring || !labelEl) return;
 
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
@@ -29,14 +32,18 @@ export default function CustomCursor() {
       mouseX = e.clientX;
       mouseY = e.clientY;
       dot.style.transform = `translate3d(${mouseX - 3}px, ${mouseY - 3}px, 0)`;
+      labelEl.style.transform = `translate3d(${mouseX + 18}px, ${mouseY + 14}px, 0)`;
     };
 
     const onOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target.closest(INTERACTIVE_SELECTOR)) {
+      const interactive = target.closest<HTMLElement>(INTERACTIVE_SELECTOR);
+      if (interactive) {
         ring.style.width = "56px";
         ring.style.height = "56px";
-        ring.style.borderColor = "rgba(110, 231, 255, 0.9)";
+        ring.style.borderColor = "rgba(139, 92, 246, 0.75)";
+        const cursorLabel = interactive.getAttribute("data-cursor-label");
+        setLabel(cursorLabel);
       }
     };
     const onOut = (e: MouseEvent) => {
@@ -44,7 +51,8 @@ export default function CustomCursor() {
       if (target.closest(INTERACTIVE_SELECTOR)) {
         ring.style.width = "32px";
         ring.style.height = "32px";
-        ring.style.borderColor = "rgba(110, 231, 255, 0.5)";
+        ring.style.borderColor = "rgba(139, 92, 246, 0.45)";
+        setLabel(null);
       }
     };
 
@@ -76,6 +84,14 @@ export default function CustomCursor() {
     <>
       <div ref={ringRef} className="cursor-ring" aria-hidden="true" />
       <div ref={dotRef} className="cursor-dot" aria-hidden="true" />
+      <div
+        ref={labelRef}
+        className="cursor-label"
+        style={{ opacity: label ? 1 : 0 }}
+        aria-hidden="true"
+      >
+        {label}
+      </div>
     </>
   );
 }

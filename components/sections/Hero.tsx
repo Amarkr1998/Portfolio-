@@ -2,11 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowRight, FileDown } from "lucide-react";
+import { ArrowDown, ArrowRight, FileDown, Mail } from "lucide-react";
 import { getGsap } from "@/lib/gsap";
 import { hero, profile, socials } from "@/data/portfolio";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import Magnetic from "@/components/ui/Magnetic";
+import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
+import HeroCrystalBackground from "@/components/three/HeroCrystalBackground";
 
 function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -74,9 +76,10 @@ export default function Hero() {
         className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at center, rgba(124,140,255,0.16) 0%, rgba(110,231,255,0.08) 40%, transparent 70%)",
+            "radial-gradient(ellipse at center, rgba(139,92,246,0.22) 0%, rgba(56,189,248,0.12) 40%, transparent 70%)",
         }}
       />
+      <HeroCrystalBackground />
 
       <div className="relative max-w-7xl mx-auto w-full">
         <div
@@ -118,6 +121,7 @@ export default function Hero() {
                 whileTap={{ scale: 0.96 }}
                 className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-foreground text-background text-sm font-medium glow-accent"
                 data-cursor="interactive"
+                data-cursor-label="VIEW"
               >
                 {hero.ctaPrimary}
                 <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
@@ -132,14 +136,50 @@ export default function Hero() {
                 target="_blank"
                 rel="noopener noreferrer"
                 whileTap={{ scale: 0.96 }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border-strong text-sm text-foreground hover:bg-white/[0.04] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border-strong text-sm text-foreground hover:bg-[var(--fill-subtle)] transition-colors"
                 data-cursor="interactive"
+                data-cursor-label="OPEN"
               >
                 <FileDown size={15} />
                 {hero.ctaSecondary}
               </motion.a>
             </Magnetic>
           </div>
+        </div>
+
+        <div
+          className={`hero-cta mt-8 flex items-center gap-4 ${reducedMotion ? "" : "opacity-0 translate-y-3"}`}
+        >
+          <a
+            href={socials.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Amar Kumar on GitHub"
+            className="text-muted-2 hover:text-foreground transition-colors"
+            data-cursor="interactive"
+            data-cursor-label="OPEN"
+          >
+            <GithubIcon size={18} />
+          </a>
+          <a
+            href={socials.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Amar Kumar on LinkedIn"
+            className="text-muted-2 hover:text-foreground transition-colors"
+            data-cursor="interactive"
+            data-cursor-label="OPEN"
+          >
+            <LinkedinIcon size={18} />
+          </a>
+          <a
+            href={socials.email}
+            aria-label="Email Amar Kumar"
+            className="text-muted-2 hover:text-foreground transition-colors"
+            data-cursor="interactive"
+          >
+            <Mail size={18} />
+          </a>
         </div>
       </div>
 

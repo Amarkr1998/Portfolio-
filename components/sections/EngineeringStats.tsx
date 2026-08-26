@@ -22,7 +22,7 @@ export default function EngineeringStats() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.5, delay: i * 0.08 }}
-                  className="glass rounded-xl p-5 card-border-anim"
+                  className="card rounded-xl p-5 card-border-anim"
                 >
                   <p className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
                     {stat.value}

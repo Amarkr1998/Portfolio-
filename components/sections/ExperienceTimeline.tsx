@@ -1,7 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { experience } from "@/data/portfolio";
+import { experience, techStack } from "@/data/portfolio";
+
+function normalize(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+// Derives a "technologies used" chip strip for an experience entry by
+// matching known tech-stack terms against its verified responsibility text —
+// no new facts, just a reorganized view of the same data.
+function technologiesIn(responsibilities: string[]): string[] {
+  const text = normalize(responsibilities.join(" "));
+  const allItems = techStack.flatMap((c) => c.items);
+  return allItems.filter((item) => text.includes(normalize(item)));
+}
 
 export default function ExperienceTimeline() {
   return (
@@ -37,7 +50,7 @@ export default function ExperienceTimeline() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.5 }}
-                className="glass rounded-xl p-6 sm:p-8"
+                className="card rounded-xl p-6 sm:p-8"
               >
                 <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
                   <h3 className="text-xl font-semibold text-foreground">{job.role}</h3>
@@ -61,6 +74,22 @@ export default function ExperienceTimeline() {
                     </motion.li>
                   ))}
                 </ul>
+
+                {technologiesIn(job.responsibilities).length > 0 && (
+                  <div className="mt-6 pt-5 border-t border-border">
+                    <p className="mono-label mb-2.5">TECHNOLOGIES</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {technologiesIn(job.responsibilities).map((t) => (
+                        <span
+                          key={t}
+                          className="text-[0.68rem] px-2 py-0.5 rounded-md bg-[var(--fill-subtle)] border border-border text-foreground/70"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </motion.div>
             </div>
           ))}

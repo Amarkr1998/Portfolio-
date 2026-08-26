@@ -20,7 +20,7 @@ export default function Contact() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(124,140,255,0.1), transparent 70%)",
+            "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.14), transparent 70%)",
         }}
       />
       <div className="relative max-w-3xl mx-auto text-center">
@@ -59,7 +59,7 @@ export default function Contact() {
                 className={`inline-flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-medium transition-colors ${
                   link.primary
                     ? "bg-foreground text-background hover:opacity-90 glow-accent"
-                    : "border border-border-strong text-foreground hover:bg-white/[0.04]"
+                    : "border border-border-strong text-foreground hover:bg-[var(--fill-subtle)]"
                 }`}
               >
                 <link.icon size={15} />

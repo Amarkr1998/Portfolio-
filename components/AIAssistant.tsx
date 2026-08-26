@@ -5,7 +5,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Bot, Send, X, Copy, RotateCcw, Trash2, Check, Sparkles } from "lucide-react";
 import { useUIState } from "@/components/providers/UIStateProvider";
 import { suggestedQuestions } from "@/data/portfolio";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 import Magnetic from "@/components/ui/Magnetic";
+import MarkdownLite from "@/components/ui/MarkdownLite";
 
 type Role = "user" | "assistant";
 type Message = { id: string; role: Role; content: string; error?: boolean };
@@ -29,11 +31,23 @@ export default function AIAssistant() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  useFocusTrap(panelRef, aiChatOpen);
 
   useEffect(() => {
     if (aiChatOpen) requestAnimationFrame(() => inputRef.current?.focus());
   }, [aiChatOpen]);
+
+  useEffect(() => {
+    if (!aiChatOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setAiChatOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [aiChatOpen, setAiChatOpen]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -118,6 +132,9 @@ export default function AIAssistant() {
           whileTap={{ scale: 0.94 }}
           className="flex items-center gap-2 px-5 py-3.5 rounded-full glass-strong glow-accent text-sm font-medium text-foreground"
           data-cursor="interactive"
+          data-cursor-label="ASK"
+          aria-haspopup="dialog"
+          aria-expanded={aiChatOpen}
           aria-label="Open Ask Amar AI"
         >
           <Sparkles size={16} className="text-accent" />
@@ -128,6 +145,7 @@ export default function AIAssistant() {
       <AnimatePresence>
         {aiChatOpen && (
           <motion.div
+            ref={panelRef}
             role="dialog"
             aria-modal="true"
             aria-label="Ask Amar AI chat"
@@ -153,15 +171,15 @@ export default function AIAssistant() {
               <div className="flex items-center gap-1">
                 <button
                   onClick={clearChat}
-                  className="p-2 rounded-md text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors"
-                  aria-label="Clear chat"
+                  className="p-2 rounded-md text-muted hover:text-foreground hover:bg-[var(--fill-subtle-strong)] transition-colors"
+                  aria-label="Clear conversation"
                   data-cursor="interactive"
                 >
                   <Trash2 size={15} />
                 </button>
                 <button
                   onClick={() => setAiChatOpen(false)}
-                  className="p-2 rounded-md text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors"
+                  className="p-2 rounded-md text-muted hover:text-foreground hover:bg-[var(--fill-subtle-strong)] transition-colors"
                   aria-label="Close chat"
                   data-cursor="interactive"
                 >
@@ -170,30 +188,48 @@ export default function AIAssistant() {
               </div>
             </div>
 
-            <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-4">
+            <div
+              ref={scrollRef}
+              role="log"
+              aria-live="polite"
+              aria-label="Conversation"
+              className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-4"
+            >
               {messages.map((m) => (
-                <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                <motion.div
+                  key={m.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                >
                   <div
                     className={`group relative max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed ${
                       m.role === "user"
                         ? "bg-foreground text-background"
                         : m.error
                           ? "bg-red-500/10 border border-red-500/30 text-red-300"
-                          : "bg-white/[0.05] border border-border text-foreground/90"
+                          : "bg-[var(--fill-subtle)] border border-border text-foreground/90"
                     }`}
                   >
-                    {m.content || (loading && m.role === "assistant" ? (
-                      <span className="inline-flex gap-1">
+                    {m.content ? (
+                      m.role === "assistant" && !m.error ? (
+                        <MarkdownLite text={m.content} />
+                      ) : (
+                        m.content
+                      )
+                    ) : loading && m.role === "assistant" ? (
+                      <span className="inline-flex gap-1" aria-label="Thinking">
                         <span className="w-1.5 h-1.5 rounded-full bg-muted-2 animate-bounce [animation-delay:-0.3s]" />
                         <span className="w-1.5 h-1.5 rounded-full bg-muted-2 animate-bounce [animation-delay:-0.15s]" />
                         <span className="w-1.5 h-1.5 rounded-full bg-muted-2 animate-bounce" />
                       </span>
-                    ) : null)}
+                    ) : null}
 
                     {m.role === "assistant" && m.content && !m.error && (
                       <button
                         onClick={() => copy(m)}
-                        className="absolute -bottom-2 -right-2 p-1.5 rounded-full glass-strong opacity-0 group-hover:opacity-100 transition-opacity text-muted hover:text-foreground"
+                        className="absolute -bottom-2 -right-2 p-1.5 rounded-full glass-strong opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity text-muted hover:text-foreground"
                         aria-label="Copy response"
                       >
                         {copiedId === m.id ? <Check size={11} className="text-success" /> : <Copy size={11} />}
@@ -203,13 +239,13 @@ export default function AIAssistant() {
                     {m.error && (
                       <button
                         onClick={retryLast}
-                        className="mt-2 flex items-center gap-1.5 text-xs text-red-300 hover:text-red-200"
+                        className="mt-2 flex items-center gap-1.5 text-xs text-red-300 hover:text-red-200 font-medium"
                       >
                         <RotateCcw size={11} /> Retry
                       </button>
                     )}
                   </div>
-                </div>
+                </motion.div>
               ))}
 
               {messages.length === 1 && (
@@ -241,14 +277,14 @@ export default function AIAssistant() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about Amar's experience..."
-                className="flex-1 bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-2 outline-none focus:border-accent/50"
+                className="flex-1 bg-[var(--fill-subtle)] border border-border rounded-lg px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-2 outline-none focus:border-accent/50"
                 aria-label="Ask a question"
                 disabled={loading}
               />
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="p-2.5 rounded-lg bg-accent text-background disabled:opacity-40 disabled:cursor-not-allowed"
+                className="p-2.5 rounded-lg bg-accent text-white disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label="Send message"
                 data-cursor="interactive"
               >

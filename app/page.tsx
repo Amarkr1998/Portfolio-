@@ -1,6 +1,7 @@
 import Hero from "@/components/sections/Hero";
 import EngineeringStats from "@/components/sections/EngineeringStats";
 import About from "@/components/sections/About";
+import EngineeringImpact from "@/components/sections/EngineeringImpact";
 import ExperienceTimeline from "@/components/sections/ExperienceTimeline";
 import Projects from "@/components/sections/Projects";
 import ArchitectureGraph from "@/components/sections/ArchitectureGraph";
@@ -13,10 +14,11 @@ import Contact from "@/components/sections/Contact";
 
 export default function Home() {
   return (
-    <main className="relative">
+    <main id="main-content" className="relative">
       <Hero />
       <EngineeringStats />
       <About />
+      <EngineeringImpact />
       <ExperienceTimeline />
       <Projects />
       <ArchitectureGraph />

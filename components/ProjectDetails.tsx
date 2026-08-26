@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import type { Project } from "@/data/portfolio";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { GithubIcon } from "@/components/ui/icons";
 
 const DETAIL_FIELDS: { key: keyof Project["detail"]; label: string }[] = [
   { key: "ai", label: "AI" },
@@ -20,6 +22,9 @@ export default function ProjectDetails({
   project: Project | null;
   onClose: () => void;
 }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(panelRef, project !== null);
+
   useEffect(() => {
     if (!project) return;
     const onKey = (e: KeyboardEvent) => {
@@ -45,6 +50,7 @@ export default function ProjectDetails({
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
 
           <motion.div
+            ref={panelRef}
             role="dialog"
             aria-modal="true"
             aria-label={`${project.title} details`}
@@ -56,16 +62,44 @@ export default function ProjectDetails({
           >
             <button
               onClick={onClose}
-              className="absolute top-5 right-5 p-2 rounded-full hover:bg-white/[0.06] text-muted hover:text-foreground transition-colors"
+              className="absolute top-5 right-5 p-2 rounded-full hover:bg-[var(--fill-subtle-strong)] text-muted hover:text-foreground transition-colors"
               aria-label="Close project details"
               data-cursor="interactive"
             >
               <X size={18} />
             </button>
 
-            <p className="mono-label text-accent mb-2">{project.date ?? "PROJECT"}</p>
+            <div className="flex items-center gap-2 mb-2">
+              <p className="mono-label text-accent">{project.date ?? "PROJECT"}</p>
+              <span
+                className={`text-[0.62rem] font-mono uppercase tracking-wider px-2 py-0.5 rounded ${
+                  project.type === "professional"
+                    ? "bg-accent/10 text-accent"
+                    : "bg-[var(--fill-subtle)] text-muted"
+                }`}
+              >
+                {project.type === "professional" ? "Professional" : "Personal Project"}
+              </span>
+            </div>
             <h3 className="text-2xl sm:text-3xl font-semibold text-foreground mb-2">{project.title}</h3>
-            <p className="text-muted mb-8">{project.subtitle}</p>
+            <p className="text-muted mb-1">{project.subtitle}</p>
+            <p className="text-xs text-muted-2 mb-1">{project.context}</p>
+            {project.status && (
+              <p className="text-xs text-accent-2 font-medium mb-1">{project.status}</p>
+            )}
+            {project.repoUrl && (
+              <a
+                href={project.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors mb-8 mt-1"
+                data-cursor="interactive"
+                data-cursor-label="OPEN"
+              >
+                <GithubIcon size={13} /> View Code
+              </a>
+            )}
+            {!project.repoUrl && <div className="mb-8" />}
 
             <div className="grid sm:grid-cols-2 gap-8 mb-8">
               <div>
@@ -80,10 +114,10 @@ export default function ProjectDetails({
 
             <div className="mb-8">
               <p className="mono-label mb-3">ARCHITECTURE</p>
-              <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-white/[0.02] p-4">
+              <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-[var(--fill-subtle)] p-4">
                 {project.architecture.map((step, i) => (
                   <span key={step} className="flex items-center gap-2">
-                    <span className="text-[0.68rem] font-mono text-foreground/80 px-2 py-1 rounded bg-white/[0.05] border border-border">
+                    <span className="text-[0.68rem] font-mono text-foreground/80 px-2 py-1 rounded bg-[var(--surface)] border border-border">
                       {step}
                     </span>
                     {i < project.architecture.length - 1 && (
@@ -100,7 +134,7 @@ export default function ProjectDetails({
                 {project.technology.map((t) => (
                   <span
                     key={t}
-                    className="text-xs px-2.5 py-1 rounded-md bg-white/[0.04] border border-border text-foreground/80"
+                    className="text-xs px-2.5 py-1 rounded-md bg-[var(--fill-subtle)] border border-border text-foreground/80"
                   >
                     {t}
                   </span>
