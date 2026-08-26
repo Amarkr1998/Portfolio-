@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Command, Menu, X, UserRound, LayoutGrid } from "lucide-react";
 import { navSections, socials } from "@/data/portfolio";
 import { useUIState } from "@/components/providers/UIStateProvider";
@@ -40,10 +41,11 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-8 h-16">
         <button
           onClick={() => (recruiterViewOpen ? window.scrollTo({ top: 0 }) : scrollTo("hero"))}
-          className="mono-label text-foreground/90 tracking-[0.2em]"
+          className="shrink-0"
+          aria-label="Amar Kumar — back to top"
           data-cursor="interactive"
         >
-          AK<span className="text-accent">.</span>
+          <Image src="/logo.png" alt="Amar Kumar" width={36} height={36} priority className="rounded-full" />
         </button>
 
         {!recruiterViewOpen && (
