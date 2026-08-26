@@ -281,35 +281,16 @@ body {
   height: 32px;
   border: 1px solid rgba(139, 92, 246, 0.45);
   opacity: 0.65;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1), height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.28s ease, opacity 0.28s ease;
-}
-.cursor-label {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 9999;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  font-weight: 600;
-  color: var(--background-elevated);
-  background: var(--foreground);
-  padding: 3px 7px;
-  border-radius: 999px;
-  white-space: nowrap;
-  opacity: 0;
-  will-change: transform, opacity;
+  /* Size is fixed — hover growth is driven entirely by `transform: scale()`
+     in CustomCursor's rAF loop, which is compositor-only and never
+     triggers layout. Only these two, event-driven (not per-frame)
+     properties animate via CSS transition. */
+  transition: border-color 0.28s ease, opacity 0.28s ease;
 }
 
 @media (max-width: 1024px), (pointer: coarse) {
   .cursor-dot,
-  .cursor-ring,
-  .cursor-label {
+  .cursor-ring {
     display: none;
   }
 }

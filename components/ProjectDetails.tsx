@@ -94,7 +94,6 @@ export default function ProjectDetails({
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors mb-8 mt-1"
                 data-cursor="interactive"
-                data-cursor-label="OPEN"
               >
                 <GithubIcon size={13} /> View Code
               </a>

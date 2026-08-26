@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { streamAzureChatCompletion, isAzureAIConfigured, type ChatMessage } from "@/lib/azure-ai";
 import { AI_SYSTEM_PROMPT, buildPortfolioContext } from "@/lib/portfolio-context";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { MAX_HISTORY, MAX_MESSAGE_LENGTH } from "@/lib/ai-constants";
+import { MAX_HISTORY, MAX_MESSAGE_LENGTH, MAX_ASSISTANT_MESSAGE_LENGTH } from "@/lib/ai-constants";
 
 export const runtime = "nodejs";
 
@@ -11,15 +11,16 @@ type ClientMessage = { role: "user" | "assistant"; content: string };
 function isValidHistory(value: unknown): value is ClientMessage[] {
   if (!Array.isArray(value)) return false;
   if (value.length > MAX_HISTORY) return false;
-  return value.every(
-    (m) =>
-      m &&
-      typeof m === "object" &&
-      (m.role === "user" || m.role === "assistant") &&
-      typeof m.content === "string" &&
-      m.content.length > 0 &&
-      m.content.length <= MAX_MESSAGE_LENGTH
-  );
+  return value.every((m) => {
+    if (!m || typeof m !== "object") return false;
+    if (m.role !== "user" && m.role !== "assistant") return false;
+    if (typeof m.content !== "string" || m.content.length === 0) return false;
+    // Assistant turns get a much higher cap than user turns — see
+    // MAX_ASSISTANT_MESSAGE_LENGTH's comment for why the two can't share
+    // one limit.
+    const limit = m.role === "user" ? MAX_MESSAGE_LENGTH : MAX_ASSISTANT_MESSAGE_LENGTH;
+    return m.content.length <= limit;
+  });
 }
 
 function getClientKey(req: NextRequest): string {

@@ -141,7 +141,6 @@ export default function Hero() {
                 className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white text-sm font-medium glow-accent"
                 style={{ background: "linear-gradient(120deg, var(--accent), var(--accent-2))" }}
                 data-cursor="interactive"
-                data-cursor-label="VIEW"
               >
                 {hero.ctaPrimary}
                 <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
@@ -158,7 +157,6 @@ export default function Hero() {
                 whileTap={{ scale: 0.96 }}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border-strong text-sm text-foreground hover:bg-[var(--fill-subtle)] transition-colors"
                 data-cursor="interactive"
-                data-cursor-label="OPEN"
               >
                 <FileDown size={15} />
                 {hero.ctaSecondary}
@@ -177,7 +175,6 @@ export default function Hero() {
             aria-label="Amar Kumar on GitHub"
             className="text-muted-2 hover:text-foreground transition-colors"
             data-cursor="interactive"
-            data-cursor-label="OPEN"
           >
             <GithubIcon size={18} />
           </a>
@@ -188,7 +185,6 @@ export default function Hero() {
             aria-label="Amar Kumar on LinkedIn"
             className="text-muted-2 hover:text-foreground transition-colors"
             data-cursor="interactive"
-            data-cursor-label="OPEN"
           >
             <LinkedinIcon size={18} />
           </a>

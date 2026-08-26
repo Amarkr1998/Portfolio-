@@ -9,13 +9,21 @@ import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useIsTouchDevice } from "@/hooks/useIsTouchDevice";
 import Magnetic from "@/components/ui/Magnetic";
 import MarkdownLite from "@/components/ui/MarkdownLite";
-import { MAX_HISTORY } from "@/lib/ai-constants";
+import { MAX_HISTORY, MAX_MESSAGE_LENGTH, MAX_ASSISTANT_MESSAGE_LENGTH } from "@/lib/ai-constants";
 
 type Role = "user" | "assistant";
 type Message = { id: string; role: Role; content: string; error?: boolean };
 
 function uid() {
   return Math.random().toString(36).slice(2);
+}
+
+// Defense in depth: the server enforces these same per-role caps and is the
+// real guard, but clamping here too means a single unusually long reply can
+// never get the whole conversation stuck rejecting every later message.
+function clampForServer(role: Role, content: string): string {
+  const limit = role === "user" ? MAX_MESSAGE_LENGTH : MAX_ASSISTANT_MESSAGE_LENGTH;
+  return content.length > limit ? content.slice(0, limit) : content;
 }
 
 const WELCOME: Message = {
@@ -122,7 +130,7 @@ export default function AIAssistant() {
     setInput("");
 
     await runRequest(
-      history.map(({ role, content }) => ({ role, content })),
+      history.map(({ role, content }) => ({ role, content: clampForServer(role, content) })),
       assistantId
     );
   }
@@ -157,7 +165,6 @@ export default function AIAssistant() {
           whileTap={{ scale: 0.94 }}
           className="flex items-center gap-3 pl-4 pr-5 py-3 rounded-full glass-strong glow-accent text-foreground"
           data-cursor="interactive"
-          data-cursor-label="ASK"
           aria-haspopup="dialog"
           aria-expanded={aiChatOpen}
           aria-label="Open Ask Amar AI"
@@ -320,6 +327,7 @@ export default function AIAssistant() {
                 placeholder="Ask about Amar's experience..."
                 className="flex-1 bg-[var(--fill-subtle)] border border-border rounded-lg px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-2 outline-none focus:border-accent/50"
                 aria-label="Ask a question"
+                maxLength={MAX_MESSAGE_LENGTH}
                 disabled={loading}
               />
               <button

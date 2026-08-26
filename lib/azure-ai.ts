@@ -59,7 +59,10 @@ export async function streamAzureChatCompletion(
       body: JSON.stringify({
         messages,
         stream: true,
-        max_completion_tokens: 600,
+        // A detailed multi-project answer runs well past 600 tokens and was
+        // getting cut off mid-sentence — 1200 gives real answers headroom
+        // while still bounding a single response's cost/latency.
+        max_completion_tokens: 1200,
       }),
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });

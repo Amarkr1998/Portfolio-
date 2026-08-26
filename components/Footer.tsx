@@ -43,7 +43,6 @@ export default function Footer() {
             aria-label="GitHub"
             className="text-muted-2 hover:text-foreground transition-colors"
             data-cursor="interactive"
-            data-cursor-label="OPEN"
           >
             <GithubIcon size={16} />
           </a>
@@ -54,7 +53,6 @@ export default function Footer() {
             aria-label="LinkedIn"
             className="text-muted-2 hover:text-foreground transition-colors"
             data-cursor="interactive"
-            data-cursor-label="OPEN"
           >
             <LinkedinIcon size={16} />
           </a>
