@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowRight, FileDown, Mail } from "lucide-react";
+import { ArrowRight, Box, Cloud, FileDown, Mail, Mouse, Sparkles } from "lucide-react";
 import { getGsap } from "@/lib/gsap";
 import { hero, profile, socials } from "@/data/portfolio";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -13,6 +13,12 @@ import HeroCrystalBackground from "@/components/three/HeroCrystalBackground";
 function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
+
+const HERO_TAG_ICONS: Record<string, typeof Sparkles> = {
+  AI: Sparkles,
+  Microservices: Box,
+  Cloud: Cloud,
+};
 
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -102,7 +108,20 @@ export default function Hero() {
           <p className="hero-title-sweep text-gradient text-2xl sm:text-4xl lg:text-5xl font-semibold tracking-tight bg-[length:200%_100%]">
             {hero.headline}
           </p>
-          <p className="mono-label mt-3 text-accent-2">{hero.secondaryIdentity}</p>
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+            {hero.heroTags.map((tag, i) => {
+              const Icon = HERO_TAG_ICONS[tag];
+              return (
+                <span key={tag} className="flex items-center gap-4">
+                  {i > 0 && <span className="h-3.5 w-px bg-border-strong" aria-hidden="true" />}
+                  <span className="flex items-center gap-1.5 text-sm text-muted">
+                    {Icon && <Icon size={14} className="text-accent-2" />}
+                    {tag}
+                  </span>
+                </span>
+              );
+            })}
+          </div>
         </div>
 
         <p
@@ -119,7 +138,8 @@ export default function Hero() {
               <motion.button
                 onClick={() => scrollTo("projects")}
                 whileTap={{ scale: 0.96 }}
-                className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-foreground text-background text-sm font-medium glow-accent"
+                className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white text-sm font-medium glow-accent"
+                style={{ background: "linear-gradient(120deg, var(--accent), var(--accent-2))" }}
                 data-cursor="interactive"
                 data-cursor-label="VIEW"
               >
@@ -188,13 +208,13 @@ export default function Hero() {
           reducedMotion ? "" : "opacity-0"
         }`}
       >
-        <span className="mono-label">SCROLL</span>
         <motion.div
-          animate={reducedMotion ? undefined : { y: [0, 8, 0] }}
+          animate={reducedMotion ? undefined : { y: [0, 6, 0] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
         >
-          <ArrowDown size={14} className="text-muted-2" />
+          <Mouse size={20} className="text-muted-2" strokeWidth={1.5} />
         </motion.div>
+        <span className="text-xs text-muted-2">Scroll Down</span>
       </div>
     </section>
   );

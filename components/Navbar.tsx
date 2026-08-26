@@ -5,6 +5,12 @@ import { motion } from "framer-motion";
 import { Command, Menu, X, UserRound } from "lucide-react";
 import { navSections, socials } from "@/data/portfolio";
 import { useUIState } from "@/components/providers/UIStateProvider";
+import ThemeToggle from "@/components/ui/ThemeToggle";
+
+// Primary desktop nav stays short and scannable — Certification/Education
+// are still on the page and reachable from the fuller footer/mobile lists.
+const PRIMARY_NAV_IDS = new Set(["about", "experience", "projects", "architecture", "ai-engineering", "tech-stack", "contact"]);
+const primaryNavSections = navSections.filter((s) => PRIMARY_NAV_IDS.has(s.id));
 
 function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -41,7 +47,7 @@ export default function Navbar() {
         </button>
 
         <div className="hidden lg:flex items-center gap-1">
-          {navSections.slice(1).map((s) => (
+          {primaryNavSections.map((s) => (
             <button
               key={s.id}
               onClick={() => scrollTo(s.id)}
@@ -54,6 +60,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <button
             onClick={() => setRecruiterViewOpen(true)}
             className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-xs text-muted hover:text-foreground hover:border-border-strong transition-colors"
@@ -76,7 +83,8 @@ export default function Navbar() {
             href={socials.resumeFile}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center px-4 py-1.5 rounded-md bg-foreground text-background text-xs font-medium hover:opacity-90 transition-opacity"
+            className="hidden sm:inline-flex items-center px-4 py-1.5 rounded-md text-white text-xs font-medium hover:opacity-90 transition-opacity"
+            style={{ background: "linear-gradient(120deg, var(--accent), var(--accent-2))" }}
             data-cursor="interactive"
           >
             Resume

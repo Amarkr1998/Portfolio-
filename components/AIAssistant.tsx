@@ -130,15 +130,23 @@ export default function AIAssistant() {
         <motion.button
           onClick={() => setAiChatOpen(!aiChatOpen)}
           whileTap={{ scale: 0.94 }}
-          className="flex items-center gap-2 px-5 py-3.5 rounded-full glass-strong glow-accent text-sm font-medium text-foreground"
+          className="flex items-center gap-3 pl-4 pr-5 py-3 rounded-full glass-strong glow-accent text-foreground"
           data-cursor="interactive"
           data-cursor-label="ASK"
           aria-haspopup="dialog"
           aria-expanded={aiChatOpen}
           aria-label="Open Ask Amar AI"
         >
-          <Sparkles size={16} className="text-accent" />
-          Ask Amar AI
+          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-accent/15">
+            <Sparkles size={15} className="text-accent" />
+          </span>
+          <span className="text-left leading-tight">
+            <span className="block text-sm font-medium">Ask Amar</span>
+            <span className="block text-[0.68rem] text-muted-2">AI Assistant</span>
+          </span>
+          <span className="relative flex h-2 w-2 ml-1">
+            <span className="status-dot absolute inline-flex h-full w-full rounded-full bg-success" />
+          </span>
         </motion.button>
       </Magnetic>
 

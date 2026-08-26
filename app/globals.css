@@ -22,6 +22,25 @@
   --font-mono: var(--font-geist-mono);
 }
 
+:root[data-theme="light"] {
+  --background: #faf9f7;
+  --background-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-glass: rgba(255, 255, 255, 0.78);
+  --border: rgba(15, 15, 20, 0.09);
+  --border-strong: rgba(15, 15, 20, 0.16);
+  --foreground: #0b0c0f;
+  --muted: #565f6d;
+  --muted-2: #8891a0;
+  --accent: #4338ca;
+  --accent-2: #2563eb;
+  --accent-warm: #b45309;
+  --success: #047857;
+
+  --fill-subtle: rgba(15, 15, 20, 0.035);
+  --fill-subtle-strong: rgba(15, 15, 20, 0.065);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-background-elevated: var(--background-elevated);
@@ -46,6 +65,10 @@
 html {
   background: var(--background);
   color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
 }
 
 body {
@@ -150,6 +173,29 @@ body {
 
 .glow-accent {
   box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.2), 0 0 44px -6px rgba(139, 92, 246, 0.45);
+}
+
+/* Light theme: re-tune the structural surfaces that use literal (not
+   var-based) colors above — grid lines, glass panels, and card elevation
+   all need lighter values than their dark-theme defaults. */
+[data-theme="light"] .bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(15, 15, 20, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 15, 20, 0.055) 1px, transparent 1px);
+}
+
+[data-theme="light"] .card,
+[data-theme="light"] .glass {
+  box-shadow: 0 1px 2px rgba(15, 15, 20, 0.03), 0 10px 28px -14px rgba(15, 15, 20, 0.1);
+}
+
+[data-theme="light"] .glass-strong {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 8px rgba(15, 15, 20, 0.05), 0 24px 48px -16px rgba(15, 15, 20, 0.16);
+}
+
+[data-theme="light"] .glow-accent {
+  box-shadow: 0 0 0 1px rgba(67, 56, 202, 0.12), 0 12px 32px -12px rgba(67, 56, 202, 0.3);
 }
 
 .mono-label {

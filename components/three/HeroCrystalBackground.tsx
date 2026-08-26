@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIsTouchDevice } from "@/hooks/useIsTouchDevice";
+import { useTheme } from "@/hooks/useTheme";
 
 // WebGL only makes sense client-side, and the scene is not needed for first
 // paint or SEO — deferred out of the initial bundle.
@@ -11,14 +12,17 @@ const CrystalScene = dynamic(() => import("@/components/three/CrystalScene"), {
   loading: () => null,
 });
 
-// Desktop-only, motion-respecting: on touch devices and under
-// prefers-reduced-motion, the Hero's CSS gradient glow is the only
-// background — no WebGL canvas is mounted at all.
+// Desktop-only, dark-theme-only, motion-respecting: the scene's sky, fog and
+// mountains are all tuned for the dark palette, so it's simply not mounted
+// under the light theme — the Hero's own CSS gradient glow (rendered by the
+// parent) is the only background there, same as it is under reduced motion
+// or on touch devices.
 export default function HeroCrystalBackground() {
   const reducedMotion = useReducedMotion();
   const isTouch = useIsTouchDevice();
+  const { theme } = useTheme();
 
-  if (reducedMotion || isTouch) return null;
+  if (reducedMotion || isTouch || theme === "light") return null;
 
   return (
     <div

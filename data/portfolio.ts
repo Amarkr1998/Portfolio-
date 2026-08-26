@@ -16,9 +16,9 @@ export const profile = {
 } as const;
 
 export const hero = {
-  headline: "JAVA FULL STACK ENGINEER",
-  secondaryIdentity: "AI • MICROSERVICES • CLOUD",
-  statement: "Building scalable, secure and AI-powered applications.",
+  headline: "Java Full Stack Engineer",
+  heroTags: ["AI", "Microservices", "Cloud"],
+  statement: "Building scalable, secure and AI-powered applications that create real impact.",
   status: "OPEN TO SOFTWARE ENGINEERING OPPORTUNITIES",
   ctaPrimary: "View My Work",
   ctaSecondary: "Download Resume",

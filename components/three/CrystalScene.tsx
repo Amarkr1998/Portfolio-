@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Instance, Instances, MeshReflectorMaterial, Sparkles } from "@react-three/drei";
+import { Environment, Instance, Instances, Lightformer, MeshReflectorMaterial, Sparkles } from "@react-three/drei";
 import type { Mesh } from "three";
 
 type CrystalGeometry = "icosahedron" | "octahedron" | "tetrahedron";
@@ -55,14 +55,12 @@ const TREES = Array.from({ length: 22 }, (_, i) => {
   };
 });
 
-// Faceted low-poly gems lit by colored point lights + a low-intensity
-// emissive glow of their own color, with a glossy clearcoat highlight.
-// Deliberately avoids meshPhysicalMaterial's `transmission`/env-map-heavy
-// path — true refractive glass needs an extra full-scene render pass per
-// object (drei's MeshTransmissionMaterial does one per mesh), which is
-// expensive enough to visibly stall a frame with more than one or two
-// instances on screen. This keeps the same faceted-glass read at a fraction
-// of the cost.
+// True see-through glass: meshPhysicalMaterial's native `transmission`
+// (not drei's MeshTransmissionMaterial). Three.js renders the opaque scene
+// behind transmissive objects into a single shared background render
+// target once per frame and every transmissive material samples from it —
+// one extra pass total, not one per mesh — so this stays cheap even with
+// five instances, unlike the per-object multi-pass technique.
 function Crystal({ position, scale, geometry, color, speed, rotationOffset, seed }: CrystalConfig) {
   const ref = useRef<Mesh>(null);
 
@@ -81,13 +79,18 @@ function Crystal({ position, scale, geometry, color, speed, rotationOffset, seed
       {geometry === "octahedron" && <octahedronGeometry args={[1, 0]} />}
       {geometry === "tetrahedron" && <tetrahedronGeometry args={[1, 0]} />}
       <meshPhysicalMaterial
-        color={color}
-        metalness={0.1}
-        roughness={0.15}
+        color="#f5f3ff"
+        metalness={0}
+        roughness={0.04}
+        transmission={0.95}
+        thickness={scale * 1.1}
+        ior={1.5}
+        attenuationColor={color}
+        attenuationDistance={2.5}
         clearcoat={1}
-        clearcoatRoughness={0.15}
+        clearcoatRoughness={0.05}
         emissive={color}
-        emissiveIntensity={0.35}
+        emissiveIntensity={0.06}
         flatShading
       />
     </mesh>
@@ -167,6 +170,16 @@ export default function CrystalScene() {
       {/* Low warm rim light grazing the peaks — a hint of dusk without
           pulling the palette away from the site's violet/blue accents. */}
       <pointLight position={[7, 1, -10]} intensity={80} color="#fb923c" distance={20} />
+      {/* Self-contained studio environment (no external HDR fetch) — the
+          glass crystals need something to reflect or they read flat/dark. */}
+      <Environment resolution={64}>
+        <group>
+          <Lightformer form="rect" intensity={3} color="#8b5cf6" position={[-4, 3, 2]} scale={[4, 3, 1]} />
+          <Lightformer form="rect" intensity={2.5} color="#38bdf8" position={[4, -2, 3]} scale={[3, 4, 1]} />
+          <Lightformer form="rect" intensity={2} color="#fde68a" position={[3, 3, 4]} scale={[3, 2, 1]} />
+          <Lightformer form="ring" intensity={2.5} color="#ffffff" position={[0, 0, -6]} scale={8} />
+        </group>
+      </Environment>
 
       <Mountains />
       <TreeLine />
@@ -175,7 +188,10 @@ export default function CrystalScene() {
       {CRYSTALS.map((c, i) => (
         <Crystal key={i} {...c} />
       ))}
-      <Sparkles count={30} position={[2, 0, 0]} scale={[6, 4.5, 4]} size={2} speed={0.25} color="#c4b5fd" opacity={0.5} />
+      {/* Cool violet dust near the crystals + a few warm fireflies drifting
+          low over the water, echoing the reference's scattered glow points. */}
+      <Sparkles count={24} position={[2, 0.5, 0]} scale={[6, 4.5, 4]} size={1.6} speed={0.15} color="#c4b5fd" opacity={0.45} />
+      <Sparkles count={12} position={[2.5, -1.8, -2]} scale={[7, 1.5, 4]} size={2.2} speed={0.08} color="#fde68a" opacity={0.55} />
       <PointerRig />
     </Canvas>
   );
