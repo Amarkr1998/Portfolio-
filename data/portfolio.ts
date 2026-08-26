@@ -118,7 +118,23 @@ export type ExperienceEntry = {
   company: string;
   period: string;
   location: string;
-  responsibilities: string[];
+  headline: string;
+  summary: string;
+  // Amar's primary full-stack product work at Migun — kept separate from
+  // the CredAssist360 AI initiative below so the role doesn't read as if
+  // CredAssist360 were the entirety of the job.
+  platform: {
+    label: string;
+    positioning: string;
+    responsibilities: string[];
+    technology: string[];
+    architecture: string[];
+  };
+  // References a slug in `projects` rather than duplicating CredAssist360's
+  // technology/capabilities/architecture here — one source of truth, and
+  // the Experience section's initiative card reuses the same ProjectDetails
+  // modal the Projects section already opens for it.
+  initiativeSlug: string;
 };
 
 export const experience: ExperienceEntry[] = [
@@ -127,21 +143,50 @@ export const experience: ExperienceEntry[] = [
     company: "Migun India Pvt. Ltd.",
     period: "May 2024 – Present",
     location: "New Delhi, India",
-    responsibilities: [
-      "Designed and developed scalable end-to-end web applications using Java, Spring Boot, React.js, MySQL and REST APIs.",
-      "Built secure backend services using Spring Security, OAuth2/JWT, Keycloak and JPA/Hibernate.",
-      "Used Docker, CI/CD pipelines and JUnit 5/Mockito for testing and deployment.",
-      "Developed CredAssist360, an AI-powered healthcare provider credentialing platform.",
-      "Worked with Python, LangGraph, Azure AI Foundry and Claude to build AI-driven workflows.",
-      "Built multi-agent AI workflows for automated document processing and verification.",
-      "Integrated healthcare verification APIs (NPI, OIG, DEA, State Medical Board).",
-      "Implemented Human-in-the-Loop review workflows for AI-assisted decisions.",
-      "Designed REST APIs for internal services and platform integrations.",
-      "Optimized PostgreSQL databases for performance and reliability.",
-      "Used Azure Blob Storage for secure document management.",
-      "Automated deployments using Docker, GitHub Actions and Azure Container Apps.",
-      "Implemented exception handling, structured logging and performance optimizations.",
-    ],
+    headline: "Building healthcare technology and customer-engagement solutions.",
+    summary:
+      "Developing scalable full-stack applications for customer inquiries, consultant/therapy bookings, service workflows and healthcare operations, alongside AI-powered healthcare credentialing solutions.",
+    platform: {
+      label: "Healthcare & Customer Management Platform",
+      positioning:
+        "Building scalable full-stack healthcare and customer-management applications that support customer inquiry management, consultant/therapy booking workflows, customer interactions and business operations.",
+      responsibilities: [
+        "Designed and developed end-to-end web application features using Java, Spring Boot, React.js and REST APIs.",
+        "Developed customer inquiry management workflows.",
+        "Built consultant/therapist booking and scheduling workflows.",
+        "Developed backend APIs and business logic for healthcare and customer-management operations.",
+        "Built responsive React interfaces for operational and customer-facing workflows.",
+        "Implemented secure backend services using Spring Security, OAuth2/JWT, Keycloak and JPA/Hibernate.",
+        "Worked with MySQL for application data management.",
+        "Improved application reliability through exception handling, structured logging, testing and performance optimization.",
+        "Used Docker and CI/CD practices for application delivery.",
+        "Collaborated with business stakeholders to convert healthcare and marketing requirements into maintainable software features.",
+      ],
+      technology: [
+        "Java",
+        "Spring Boot",
+        "React.js",
+        "REST APIs",
+        "MySQL",
+        "Spring Security",
+        "OAuth2/JWT",
+        "Keycloak",
+        "JPA/Hibernate",
+        "Docker",
+        "CI/CD",
+        "JUnit 5",
+        "Mockito",
+      ],
+      architecture: [
+        "Customer",
+        "Customer Inquiry",
+        "Application",
+        "Consultant / Therapy Booking",
+        "Healthcare Service Workflow",
+        "Business Operations",
+      ],
+    },
+    initiativeSlug: "credassist360",
   },
 ];
 
@@ -512,6 +557,34 @@ export const contact = {
   headline: "Have a system worth building?",
   subheadline: "Let's build something scalable.",
 } as const;
+
+export type RoleMatch = { role: string; keywords: string[] };
+
+// For Recruiter View's "Match My Profile" section — each list is a reorganized
+// view of technologies already verified above (techStack / experience /
+// projects), grouped by the roles they're most relevant to. No new tech.
+export const roleKeywordMatches: RoleMatch[] = [
+  {
+    role: "Software Engineer",
+    keywords: ["Java 17/21", "Spring Boot", "REST APIs", "MySQL", "PostgreSQL", "Docker", "CI/CD", "Git", "JUnit 5", "Mockito"],
+  },
+  {
+    role: "Java Backend Engineer",
+    keywords: ["Java 17/21", "Spring Boot", "Spring Security", "JPA/Hibernate", "REST APIs", "MySQL", "PostgreSQL", "OAuth2/JWT", "Kafka/RabbitMQ"],
+  },
+  {
+    role: "Java Full Stack Engineer",
+    keywords: ["Java 17/21", "Spring Boot", "React.js", "REST APIs", "MySQL", "PostgreSQL", "OAuth2/JWT", "Docker", "CI/CD"],
+  },
+  {
+    role: "Microservices Engineer",
+    keywords: ["Microservices", "Spring Cloud", "API Gateway", "Service Discovery", "Event-Driven Architecture", "Kafka/RabbitMQ", "Docker", "Kubernetes", "Distributed Systems"],
+  },
+  {
+    role: "AI Engineer",
+    keywords: ["Python", "LangGraph", "RAG", "LLM Orchestration", "AI Agents", "Azure AI Foundry", "Azure OpenAI", "Claude", "PostgreSQL"],
+  },
+];
 
 export const suggestedQuestions = [
   "What technologies does Amar specialize in?",

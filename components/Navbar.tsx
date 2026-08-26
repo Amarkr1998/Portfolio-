@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Command, Menu, X, UserRound } from "lucide-react";
+import { Command, Menu, X, UserRound, LayoutGrid } from "lucide-react";
 import { navSections, socials } from "@/data/portfolio";
 import { useUIState } from "@/components/providers/UIStateProvider";
 import ThemeToggle from "@/components/ui/ThemeToggle";
@@ -17,7 +17,7 @@ function scrollTo(id: string) {
 }
 
 export default function Navbar() {
-  const { setCommandPaletteOpen, setRecruiterViewOpen } = useUIState();
+  const { recruiterViewOpen, setRecruiterViewOpen, setCommandPaletteOpen } = useUIState();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -39,38 +39,41 @@ export default function Navbar() {
     >
       <nav className="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-8 h-16">
         <button
-          onClick={() => scrollTo("hero")}
+          onClick={() => (recruiterViewOpen ? window.scrollTo({ top: 0 }) : scrollTo("hero"))}
           className="mono-label text-foreground/90 tracking-[0.2em]"
           data-cursor="interactive"
         >
           AK<span className="text-accent">.</span>
         </button>
 
-        <div className="hidden lg:flex items-center gap-1">
-          {primaryNavSections.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => scrollTo(s.id)}
-              className="px-3 py-2 text-xs text-muted hover:text-foreground transition-colors rounded-md hover:bg-[var(--fill-subtle)]"
-              data-cursor="interactive"
-              data-magnet="true"
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
+        {!recruiterViewOpen && (
+          <div className="hidden lg:flex items-center gap-1">
+            {primaryNavSections.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => scrollTo(s.id)}
+                className="px-3 py-2 text-xs text-muted hover:text-foreground transition-colors rounded-md hover:bg-[var(--fill-subtle)]"
+                data-cursor="interactive"
+                data-magnet="true"
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="flex items-center gap-3">
           <ThemeToggle />
           <button
-            onClick={() => setRecruiterViewOpen(true)}
+            onClick={() => setRecruiterViewOpen(!recruiterViewOpen)}
             className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-xs text-muted hover:text-foreground hover:border-border-strong transition-colors"
             data-cursor="interactive"
             data-magnet="true"
-            aria-label="Open recruiter summary"
+            aria-pressed={recruiterViewOpen}
+            aria-label={recruiterViewOpen ? "Switch to Portfolio View" : "Switch to Recruiter View"}
           >
-            <UserRound size={12} />
-            Recruiter View
+            {recruiterViewOpen ? <LayoutGrid size={12} /> : <UserRound size={12} />}
+            {recruiterViewOpen ? "Portfolio View" : "Recruiter View"}
           </button>
           <button
             onClick={() => setCommandPaletteOpen(true)}
@@ -104,26 +107,27 @@ export default function Navbar() {
 
       {mobileOpen && (
         <div className="lg:hidden bg-background border-t border-border px-5 py-4 flex flex-col gap-1">
-          {navSections.slice(1).map((s) => (
-            <button
-              key={s.id}
-              onClick={() => {
-                scrollTo(s.id);
-                setMobileOpen(false);
-              }}
-              className="text-left px-2 py-2.5 text-sm text-muted hover:text-foreground"
-            >
-              {s.label}
-            </button>
-          ))}
+          {!recruiterViewOpen &&
+            navSections.slice(1).map((s) => (
+              <button
+                key={s.id}
+                onClick={() => {
+                  scrollTo(s.id);
+                  setMobileOpen(false);
+                }}
+                className="text-left px-2 py-2.5 text-sm text-muted hover:text-foreground"
+              >
+                {s.label}
+              </button>
+            ))}
           <button
             onClick={() => {
-              setRecruiterViewOpen(true);
+              setRecruiterViewOpen(!recruiterViewOpen);
               setMobileOpen(false);
             }}
             className="text-left px-2 py-2.5 text-sm text-muted hover:text-foreground border-t border-border mt-1 pt-3"
           >
-            Recruiter View
+            {recruiterViewOpen ? "Portfolio View" : "Recruiter View"}
           </button>
         </div>
       )}

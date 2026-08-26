@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIsTouchDevice } from "@/hooks/useIsTouchDevice";
+import { useUIState } from "@/components/providers/UIStateProvider";
 
 const INTERACTIVE_SELECTOR = 'a, button, [role="button"], input, textarea, [data-cursor="interactive"]';
 // Buttons, nav links and project cards opt into pulling the ring toward
@@ -26,9 +27,10 @@ export default function CustomCursor() {
   const ringRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
   const isTouch = useIsTouchDevice();
+  const { recruiterViewOpen } = useUIState();
 
   useEffect(() => {
-    if (reducedMotion || isTouch) return;
+    if (reducedMotion || isTouch || recruiterViewOpen) return;
 
     const dot = dotRef.current;
     const ring = ringRef.current;
@@ -136,9 +138,9 @@ export default function CustomCursor() {
       cancelAnimationFrame(raf);
       document.documentElement.classList.remove("custom-cursor-active");
     };
-  }, [reducedMotion, isTouch]);
+  }, [reducedMotion, isTouch, recruiterViewOpen]);
 
-  if (reducedMotion || isTouch) return null;
+  if (reducedMotion || isTouch || recruiterViewOpen) return null;
 
   return (
     <>

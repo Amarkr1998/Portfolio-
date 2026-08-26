@@ -34,7 +34,8 @@ function scrollTo(id: string) {
 }
 
 export default function CommandPalette() {
-  const { commandPaletteOpen, setCommandPaletteOpen, setAiChatOpen, setRecruiterViewOpen } = useUIState();
+  const { commandPaletteOpen, setCommandPaletteOpen, setAiChatOpen, recruiterViewOpen, setRecruiterViewOpen } =
+    useUIState();
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,10 +56,12 @@ export default function CommandPalette() {
       { id: "linkedin", label: "Open LinkedIn", group: "Links", icon: LinkedinIcon, action: () => window.open(socials.linkedin, "_blank") },
       { id: "resume", label: "Download Resume", group: "Links", icon: FileDown, action: () => window.open(socials.resumeFile, "_blank") },
       { id: "ask-ai", label: "Ask Amar AI", group: "Actions", icon: MessageCircleQuestion, action: () => setAiChatOpen(true) },
-      { id: "recruiter", label: "Open Recruiter View", group: "Actions", icon: UserRound, action: () => setRecruiterViewOpen(true) },
+      recruiterViewOpen
+        ? { id: "recruiter", label: "Switch to Portfolio View", group: "Actions", icon: UserRound, action: () => setRecruiterViewOpen(false) }
+        : { id: "recruiter", label: "Switch to Recruiter View", group: "Actions", icon: UserRound, action: () => setRecruiterViewOpen(true) },
       { id: "contact", label: "Contact Amar", group: "Actions", icon: Mail, action: () => scrollTo("contact") },
     ],
-    [setAiChatOpen, setRecruiterViewOpen]
+    [setAiChatOpen, recruiterViewOpen, setRecruiterViewOpen]
   );
 
   const filtered = useMemo(() => {

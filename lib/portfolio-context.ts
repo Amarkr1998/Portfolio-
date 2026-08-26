@@ -31,7 +31,11 @@ export function buildPortfolioContext(): string {
   lines.push(`EXPERIENCE`);
   for (const job of experience) {
     lines.push(`${job.role} — ${job.company} (${job.period}, ${job.location})`);
-    for (const r of job.responsibilities) lines.push(`- ${r}`);
+    lines.push(job.headline);
+    lines.push(job.summary);
+    lines.push(`${job.platform.label}: ${job.platform.positioning}`);
+    for (const r of job.platform.responsibilities) lines.push(`- ${r}`);
+    lines.push(`(The CredAssist360 AI initiative under this role is detailed in the PROJECTS section below.)`);
   }
   lines.push("");
 

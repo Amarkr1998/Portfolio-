@@ -10,7 +10,7 @@ function scrollTo(id: string) {
 }
 
 export default function Footer() {
-  const { setCommandPaletteOpen } = useUIState();
+  const { setCommandPaletteOpen, recruiterViewOpen } = useUIState();
 
   return (
     <footer className="relative border-t border-border px-5 sm:px-8 py-10">
@@ -22,18 +22,23 @@ export default function Footer() {
           <p className="text-xs text-muted-2 max-w-xs">{profile.identity}</p>
         </div>
 
-        <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-5 gap-y-2">
-          {navSections.slice(1).map((s) => (
-            <button
-              key={s.id}
-              onClick={() => scrollTo(s.id)}
-              className="text-xs text-muted hover:text-foreground transition-colors"
-              data-cursor="interactive"
-            >
-              {s.label}
-            </button>
-          ))}
-        </nav>
+        {/* In-page section anchors only exist in the cinematic portfolio —
+            Recruiter View is a single flat page, so these would be dead
+            links there. */}
+        {!recruiterViewOpen && (
+          <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-5 gap-y-2">
+            {navSections.slice(1).map((s) => (
+              <button
+                key={s.id}
+                onClick={() => scrollTo(s.id)}
+                className="text-xs text-muted hover:text-foreground transition-colors"
+                data-cursor="interactive"
+              >
+                {s.label}
+              </button>
+            ))}
+          </nav>
+        )}
 
         <div className="flex items-center gap-4">
           <a

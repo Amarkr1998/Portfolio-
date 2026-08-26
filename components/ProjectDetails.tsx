@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import type { Project } from "@/data/portfolio";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { GithubIcon } from "@/components/ui/icons";
+import ArchitectureFlow from "@/components/ui/ArchitectureFlow";
 
 const DETAIL_FIELDS: { key: keyof Project["detail"]; label: string }[] = [
   { key: "ai", label: "AI" },
@@ -113,18 +114,7 @@ export default function ProjectDetails({
 
             <div className="mb-8">
               <p className="mono-label mb-3">ARCHITECTURE</p>
-              <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-[var(--fill-subtle)] p-4">
-                {project.architecture.map((step, i) => (
-                  <span key={step} className="flex items-center gap-2">
-                    <span className="text-[0.68rem] font-mono text-foreground/80 px-2 py-1 rounded bg-[var(--surface)] border border-border">
-                      {step}
-                    </span>
-                    {i < project.architecture.length - 1 && (
-                      <span className="text-muted-2 text-xs">→</span>
-                    )}
-                  </span>
-                ))}
-              </div>
+              <ArchitectureFlow steps={project.architecture} />
             </div>
 
             <div className="mb-8">
