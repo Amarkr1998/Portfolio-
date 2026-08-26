@@ -2,11 +2,9 @@ import { NextRequest } from "next/server";
 import { streamAzureChatCompletion, isAzureAIConfigured, type ChatMessage } from "@/lib/azure-ai";
 import { AI_SYSTEM_PROMPT, buildPortfolioContext } from "@/lib/portfolio-context";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { MAX_HISTORY, MAX_MESSAGE_LENGTH } from "@/lib/ai-constants";
 
 export const runtime = "nodejs";
-
-const MAX_MESSAGE_LENGTH = 500;
-const MAX_HISTORY = 8;
 
 type ClientMessage = { role: "user" | "assistant"; content: string };
 

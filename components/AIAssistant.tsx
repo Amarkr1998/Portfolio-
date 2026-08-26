@@ -6,8 +6,10 @@ import { Bot, Send, X, Copy, RotateCcw, Trash2, Check, Sparkles } from "lucide-r
 import { useUIState } from "@/components/providers/UIStateProvider";
 import { suggestedQuestions } from "@/data/portfolio";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { useIsTouchDevice } from "@/hooks/useIsTouchDevice";
 import Magnetic from "@/components/ui/Magnetic";
 import MarkdownLite from "@/components/ui/MarkdownLite";
+import { MAX_HISTORY } from "@/lib/ai-constants";
 
 type Role = "user" | "assistant";
 type Message = { id: string; role: Role; content: string; error?: boolean };
@@ -25,6 +27,7 @@ const WELCOME: Message = {
 
 export default function AIAssistant() {
   const { aiChatOpen, setAiChatOpen } = useUIState();
+  const isTouch = useIsTouchDevice();
   const [messages, setMessages] = useState<Message[]>([WELCOME]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,16 +56,17 @@ export default function AIAssistant() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
-  async function send(text: string) {
-    const trimmed = text.trim();
-    if (!trimmed || loading) return;
+  // The exact payload last sent to the server, kept outside React state so
+  // a retry can resend it verbatim — reconstructing it from `messages`
+  // instead (as the previous version did) reads a stale closure, since
+  // `send()` called synchronously after a `setMessages` filter still sees
+  // the pre-filter array. That mismatch was compounding on every retry:
+  // each attempt re-appended a duplicate user turn, so the history grew
+  // past the server's cap and every subsequent retry failed the same way.
+  const lastPayloadRef = useRef<{ role: Role; content: string }[]>([]);
 
-    const userMsg: Message = { id: uid(), role: "user", content: trimmed };
-    const history = [...messages.filter((m) => m.id !== "welcome"), userMsg];
-    const assistantId = uid();
-
-    setMessages((prev) => [...prev, userMsg, { id: assistantId, role: "assistant", content: "" }]);
-    setInput("");
+  async function runRequest(payload: { role: Role; content: string }[], assistantId: string) {
+    lastPayloadRef.current = payload;
     setLoading(true);
 
     const controller = new AbortController();
@@ -72,9 +76,7 @@ export default function AIAssistant() {
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: history.map(({ role, content }) => ({ role, content })),
-        }),
+        body: JSON.stringify({ messages: payload }),
         signal: controller.signal,
       });
 
@@ -105,16 +107,39 @@ export default function AIAssistant() {
     }
   }
 
+  async function send(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed || loading) return;
+
+    const userMsg: Message = { id: uid(), role: "user", content: trimmed };
+    // Cap at MAX_HISTORY (matching the server's limit) so a long-running
+    // conversation never gets rejected for exceeding it — older turns age
+    // out first.
+    const history = [...messages.filter((m) => m.id !== "welcome"), userMsg].slice(-MAX_HISTORY);
+    const assistantId = uid();
+
+    setMessages((prev) => [...prev, userMsg, { id: assistantId, role: "assistant", content: "" }]);
+    setInput("");
+
+    await runRequest(
+      history.map(({ role, content }) => ({ role, content })),
+      assistantId
+    );
+  }
+
   function retryLast() {
-    const lastUser = [...messages].reverse().find((m) => m.role === "user");
-    if (lastUser) {
-      setMessages((prev) => prev.filter((m) => !(m.role === "assistant" && m.error)));
-      send(lastUser.content);
-    }
+    if (loading || lastPayloadRef.current.length === 0) return;
+    const assistantId = uid();
+    setMessages((prev) => [
+      ...prev.filter((m) => !(m.role === "assistant" && m.error)),
+      { id: assistantId, role: "assistant", content: "" },
+    ]);
+    runRequest(lastPayloadRef.current, assistantId);
   }
 
   function clearChat() {
     setMessages([WELCOME]);
+    lastPayloadRef.current = [];
   }
 
   function copy(msg: Message) {
@@ -161,7 +186,15 @@ export default function AIAssistant() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.97 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed z-[95] bottom-0 right-0 sm:bottom-24 sm:right-6 w-full sm:w-[420px] h-[85vh] sm:h-[600px] max-h-[85vh] glass-strong sm:rounded-2xl rounded-t-2xl flex flex-col overflow-hidden"
+            className={
+              // Driven by real touch-capability, not the sm: CSS breakpoint —
+              // some phones report a wide enough CSS viewport to pass that
+              // breakpoint, which used to shrink the panel into a small
+              // floating card instead of a full-width bottom sheet.
+              isTouch
+                ? "fixed z-[95] inset-x-0 bottom-0 w-full h-[85vh] max-h-[85vh] glass-strong rounded-t-2xl flex flex-col overflow-hidden"
+                : "fixed z-[95] bottom-24 right-6 w-[420px] h-[600px] max-h-[85vh] glass-strong rounded-2xl flex flex-col overflow-hidden"
+            }
             onKeyDown={(e) => {
               if (e.key === "Escape") setAiChatOpen(false);
             }}
