@@ -53,6 +53,7 @@ export default function Navbar() {
               onClick={() => scrollTo(s.id)}
               className="px-3 py-2 text-xs text-muted hover:text-foreground transition-colors rounded-md hover:bg-[var(--fill-subtle)]"
               data-cursor="interactive"
+              data-magnet="true"
             >
               {s.label}
             </button>
@@ -65,6 +66,7 @@ export default function Navbar() {
             onClick={() => setRecruiterViewOpen(true)}
             className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-xs text-muted hover:text-foreground hover:border-border-strong transition-colors"
             data-cursor="interactive"
+            data-magnet="true"
             aria-label="Open recruiter summary"
           >
             <UserRound size={12} />
@@ -86,6 +88,7 @@ export default function Navbar() {
             className="hidden sm:inline-flex items-center px-4 py-1.5 rounded-md text-white text-xs font-medium hover:opacity-90 transition-opacity"
             style={{ background: "linear-gradient(120deg, var(--accent), var(--accent-2))" }}
             data-cursor="interactive"
+            data-magnet="true"
           >
             Resume
           </a>

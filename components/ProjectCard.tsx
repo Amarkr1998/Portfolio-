@@ -49,6 +49,7 @@ export default function ProjectCard({
       className="card-border-anim group relative cursor-pointer overflow-hidden rounded-2xl card p-6 sm:p-8"
       data-cursor="interactive"
       data-cursor-label="VIEW"
+      data-magnet="true"
       aria-label={`View ${project.title} case study`}
     >
       <div
