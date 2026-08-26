@@ -29,6 +29,17 @@ export default function HeroCrystalBackground() {
       }}
       aria-hidden="true"
     >
+      {/* Dusk sky wash behind the WebGL scene — a procedural gradient, not a
+          photo, kept in the site's violet/blue palette with a soft warm
+          glow low on the horizon (matching the scene's rim light). */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 55% at 78% 78%, rgba(251,146,60,0.16) 0%, transparent 55%), " +
+            "linear-gradient(180deg, #0a0918 0%, #12123a 40%, #1a1650 68%, #120f2e 100%)",
+        }}
+      />
       <CrystalScene />
     </div>
   );
