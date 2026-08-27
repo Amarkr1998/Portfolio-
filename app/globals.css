@@ -69,8 +69,10 @@ html {
      visible against this site's dark background, since a plain black
      cursor would nearly disappear on it. Still the system's native
      pointer (instant, no JS), just a recolored image instead of the OS
-     default. Falls back to the browser's own cursor if the image fails. */
-  cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyNCcgaGVpZ2h0PScyNCcgdmlld0JveD0nMCAwIDI0IDI0Jz48cGF0aCBkPSdNNCAyIEw0IDE5IEw4LjUgMTUuMyBMMTEuMiAyMS4yIEwxMy43IDIwLjEgTDExIDE0LjIgTDE3IDE0LjIgWicgZmlsbD0nYmxhY2snIHN0cm9rZT0nd2hpdGUnIHN0cm9rZS13aWR0aD0nMS4zJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJy8+PC9zdmc+") 4 2, auto;
+     default. Rendered at 16x16 (down from 24x24) for a more standard,
+     less oversized pointer. Falls back to the browser's own cursor if
+     the image fails. */
+  cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxNicgaGVpZ2h0PScxNicgdmlld0JveD0nMCAwIDI0IDI0Jz48cGF0aCBkPSdNNCAyIEw0IDE5IEw4LjUgMTUuMyBMMTEuMiAyMS4yIEwxMy43IDIwLjEgTDExIDE0LjIgTDE3IDE0LjIgWicgZmlsbD0nYmxhY2snIHN0cm9rZT0nd2hpdGUnIHN0cm9rZS13aWR0aD0nMS4zJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJy8+PC9zdmc+") 3 1, auto;
 }
 
 html[data-theme="light"] {
