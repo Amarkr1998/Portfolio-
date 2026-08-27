@@ -33,6 +33,18 @@ function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
+// window.open() on a PDF just opens/previews it in a new tab — this
+// programmatically clicks a real anchor with `download` set, which is what
+// actually forces the browser to save the file instead.
+function downloadResume() {
+  const link = document.createElement("a");
+  link.href = socials.resumeFile;
+  link.download = "Amar_Kumar_Resume.pdf";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
 export default function CommandPalette() {
   const { commandPaletteOpen, setCommandPaletteOpen, setAiChatOpen, recruiterViewOpen, setRecruiterViewOpen } =
     useUIState();
@@ -54,7 +66,7 @@ export default function CommandPalette() {
       { id: "skills", label: "View Skills", group: "Navigate", icon: Wrench, action: () => scrollTo("tech-stack") },
       { id: "github", label: "Open GitHub", group: "Links", icon: GithubIcon, action: () => window.open(socials.github, "_blank") },
       { id: "linkedin", label: "Open LinkedIn", group: "Links", icon: LinkedinIcon, action: () => window.open(socials.linkedin, "_blank") },
-      { id: "resume", label: "Download Resume", group: "Links", icon: FileDown, action: () => window.open(socials.resumeFile, "_blank") },
+      { id: "resume", label: "Download Resume", group: "Links", icon: FileDown, action: downloadResume },
       { id: "ask-ai", label: "Ask Amar AI", group: "Actions", icon: MessageCircleQuestion, action: () => setAiChatOpen(true) },
       recruiterViewOpen
         ? { id: "recruiter", label: "Switch to Portfolio View", group: "Actions", icon: UserRound, action: () => setRecruiterViewOpen(false) }

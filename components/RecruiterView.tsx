@@ -135,10 +135,10 @@ export default function RecruiterView() {
   }, []);
 
   const ctaLinks = [
-    { label: "Download Resume", href: socials.resumeFile, icon: FileDown, primary: true },
-    { label: "LinkedIn", href: socials.linkedin, icon: LinkedinIcon, primary: false },
-    { label: "GitHub", href: socials.github, icon: GithubIcon, primary: false },
-    { label: "Contact", href: "#recruiter-contact", icon: Mail, primary: false },
+    { label: "Download Resume", href: socials.resumeFile, icon: FileDown, primary: true, download: true },
+    { label: "LinkedIn", href: socials.linkedin, icon: LinkedinIcon, primary: false, download: false },
+    { label: "GitHub", href: socials.github, icon: GithubIcon, primary: false, download: false },
+    { label: "Contact", href: "#recruiter-contact", icon: Mail, primary: false, download: false },
   ];
 
   return (
@@ -173,8 +173,9 @@ export default function RecruiterView() {
               <a
                 key={link.label}
                 href={link.href}
-                target={link.href.startsWith("http") ? "_blank" : undefined}
-                rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                download={link.download ? "Amar_Kumar_Resume.pdf" : undefined}
+                target={!link.download && link.href.startsWith("http") ? "_blank" : undefined}
+                rel={!link.download && link.href.startsWith("http") ? "noopener noreferrer" : undefined}
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   link.primary
                     ? "bg-foreground text-background hover:opacity-90"

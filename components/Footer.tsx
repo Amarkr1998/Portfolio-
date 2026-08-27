@@ -63,8 +63,7 @@ export default function Footer() {
           </a>
           <a
             href={socials.resumeFile}
-            target="_blank"
-            rel="noopener noreferrer"
+            download="Amar_Kumar_Resume.pdf"
             className="text-xs text-muted hover:text-foreground transition-colors"
             data-cursor="interactive"
           >

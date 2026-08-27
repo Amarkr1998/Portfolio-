@@ -7,10 +7,10 @@ import Magnetic from "@/components/ui/Magnetic";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 
 const links = [
-  { label: "Email Me", href: socials.email, icon: Mail, primary: true },
-  { label: "LinkedIn", href: socials.linkedin, icon: LinkedinIcon, primary: false },
-  { label: "GitHub", href: socials.github, icon: GithubIcon, primary: false },
-  { label: "Download Resume", href: socials.resumeFile, icon: FileDown, primary: false },
+  { label: "Email Me", href: socials.email, icon: Mail, primary: true, download: false },
+  { label: "LinkedIn", href: socials.linkedin, icon: LinkedinIcon, primary: false, download: false },
+  { label: "GitHub", href: socials.github, icon: GithubIcon, primary: false, download: false },
+  { label: "Download Resume", href: socials.resumeFile, icon: FileDown, primary: false, download: true },
 ];
 
 export default function Contact() {
@@ -48,7 +48,8 @@ export default function Contact() {
             <Magnetic key={link.label}>
               <motion.a
                 href={link.href}
-                target={link.href.startsWith("mailto") ? undefined : "_blank"}
+                download={link.download ? "Amar_Kumar_Resume.pdf" : undefined}
+                target={link.download || link.href.startsWith("mailto") ? undefined : "_blank"}
                 rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}

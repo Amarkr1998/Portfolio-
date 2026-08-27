@@ -152,8 +152,7 @@ export default function Hero() {
             <Magnetic>
               <motion.a
                 href={socials.resumeFile}
-                target="_blank"
-                rel="noopener noreferrer"
+                download="Amar_Kumar_Resume.pdf"
                 whileTap={{ scale: 0.96 }}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border-strong text-sm text-foreground hover:bg-[var(--fill-subtle)] transition-colors"
                 data-cursor="interactive"

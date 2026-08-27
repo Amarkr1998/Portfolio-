@@ -88,8 +88,7 @@ export default function Navbar() {
           </button>
           <a
             href={socials.resumeFile}
-            target="_blank"
-            rel="noopener noreferrer"
+            download="Amar_Kumar_Resume.pdf"
             className="hidden sm:inline-flex items-center px-4 py-1.5 rounded-md text-white text-xs font-medium hover:opacity-90 transition-opacity"
             style={{ background: "linear-gradient(120deg, var(--accent), var(--accent-2))" }}
             data-cursor="interactive"
