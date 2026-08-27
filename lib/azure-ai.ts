@@ -27,8 +27,10 @@ function getAzureConfig(): AzureConfig {
 }
 
 // Bounds the entire request (connect + full stream) so a hung upstream
-// connection can't leave a client request open indefinitely.
-const REQUEST_TIMEOUT_MS = 45_000;
+// connection can't leave a client request open indefinitely. Kept well
+// under the route's maxDuration (60s) so this fires and returns a clean
+// timeout message before the platform kills the function outright.
+const REQUEST_TIMEOUT_MS = 25_000;
 
 export function isAzureAIConfigured(): boolean {
   return Boolean(

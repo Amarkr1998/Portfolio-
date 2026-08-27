@@ -18,7 +18,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const SITE_URL = "https://amarkumar.dev";
+// Tracks whatever Vercel currently considers the production URL — the
+// project's .vercel.app address by default, or a custom domain automatically
+// once one is actually attached — instead of a hardcoded domain that isn't
+// owned yet and would silently go stale the moment that changes.
+const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "https://portfolio-ten-omega-40sz2fb2ue.vercel.app";
 const TITLE = "Amar Kumar | Java Full Stack Engineer & AI Engineer";
 const DESCRIPTION =
   "Java Full Stack Developer with 2+ years of experience building scalable, secure applications using Java, Spring Boot, React, microservices, distributed systems and AI/LLM integrations.";

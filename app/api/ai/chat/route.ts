@@ -5,6 +5,12 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { MAX_HISTORY, MAX_MESSAGE_LENGTH, MAX_ASSISTANT_MESSAGE_LENGTH } from "@/lib/ai-constants";
 
 export const runtime = "nodejs";
+// Without this, Vercel applies its own default function duration limit,
+// which can be shorter than azure-ai.ts's internal REQUEST_TIMEOUT_MS —
+// the platform then kills the function before that internal timeout ever
+// gets a chance to fire and return a clean error, leaving the client
+// hanging indefinitely instead of seeing a timeout message.
+export const maxDuration = 60;
 
 type ClientMessage = { role: "user" | "assistant"; content: string };
 
