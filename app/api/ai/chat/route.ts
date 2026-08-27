@@ -12,6 +12,20 @@ export const runtime = "nodejs";
 // hanging indefinitely instead of seeing a timeout message.
 export const maxDuration = 60;
 
+// A hard ceiling independent of azure-ai.ts's own AbortSignal-based timeout.
+// In production, a stuck connection to Azure was observed to run past its
+// internal timeout entirely (fetch's AbortSignal never fired) until Vercel's
+// platform-level limit killed the function ~300s later with a raw
+// FUNCTION_INVOCATION_TIMEOUT and no response ever sent. Racing against a
+// plain setTimeout here doesn't depend on the stuck operation ever
+// resolving or honoring its own abort signal — it guarantees the route
+// always responds within this window regardless of what's hanging upstream.
+const HARD_TIMEOUT_MS = 25_000;
+
+function timeoutAfter(ms: number): Promise<never> {
+  return new Promise((_, reject) => setTimeout(() => reject(new Error("AZURE_REQUEST_TIMEOUT")), ms));
+}
+
 type ClientMessage = { role: "user" | "assistant"; content: string };
 
 function isValidHistory(value: unknown): value is ClientMessage[] {
@@ -94,7 +108,7 @@ export async function POST(req: NextRequest) {
   ];
 
   try {
-    const stream = await streamAzureChatCompletion(chatMessages);
+    const stream = await Promise.race([streamAzureChatCompletion(chatMessages), timeoutAfter(HARD_TIMEOUT_MS)]);
     return new Response(stream, {
       status: 200,
       headers: {

@@ -85,14 +85,25 @@ export async function streamAzureChatCompletion(
   const encoder = new TextEncoder();
   let buffer = "";
 
+  // Same defense-in-depth as the connect phase: a stall between chunks
+  // (Azure goes quiet mid-generation) shouldn't hang the stream forever
+  // waiting on a reader.read() that may never resolve or reject on its own.
+  const READ_TIMEOUT_MS = 20_000;
+  function readWithTimeout() {
+    return Promise.race<{ done: boolean; value?: Uint8Array }>([
+      reader.read(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("READ_TIMEOUT")), READ_TIMEOUT_MS)),
+    ]);
+  }
+
   return new ReadableStream<Uint8Array>({
     async pull(controller) {
       let done: boolean;
       let value: Uint8Array | undefined;
       try {
-        ({ done, value } = await reader.read());
+        ({ done, value } = await readWithTimeout());
       } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") {
+        if (err instanceof Error && (err.name === "AbortError" || err.message === "READ_TIMEOUT")) {
           controller.enqueue(encoder.encode("\n\n[Response timed out. Please try again.]"));
         }
         controller.close();
