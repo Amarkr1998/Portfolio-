@@ -16,11 +16,11 @@ export const profile = {
 } as const;
 
 export const hero = {
-  headline: "Java Full Stack Engineer",
+  headline: "Java Full Stack Developer & AI Engineer",
   heroTags: ["AI", "Microservices", "Cloud"],
   statement: "Building scalable, secure and AI-powered applications that create real impact.",
   status: "OPEN TO SOFTWARE ENGINEERING OPPORTUNITIES",
-  ctaPrimary: "View My Work",
+  ctaPrimary: "View Projects",
   ctaSecondary: "Download Resume",
 } as const;
 
@@ -586,15 +586,17 @@ export const roleKeywordMatches: RoleMatch[] = [
   },
 ];
 
+// The chat widget only ever shows the first 5 (see AIAssistant.tsx) — keep
+// those the most broadly useful for a recruiter skimming quickly.
 export const suggestedQuestions = [
-  "What technologies does Amar specialize in?",
-  "Tell me about Amar's projects.",
-  "What is Amar's backend experience?",
-  "Tell me about Amar's AI experience.",
+  "What backend experience does Amar have?",
+  "What Spring Boot experience does Amar have?",
+  "What security technologies does Amar use?",
+  "What projects has Amar built?",
+  "Does Amar have Azure experience?",
+  "What is Amar's experience with microservices?",
   "What kind of roles is Amar looking for?",
   "Explain CredAssist360.",
-  "What is Amar's experience with microservices?",
-  "What security technologies has Amar worked with?",
 ] as const;
 
 export const navSections = [

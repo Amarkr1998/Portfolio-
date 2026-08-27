@@ -6,12 +6,10 @@ import {
   profile,
   experience,
   projects,
-  techStack,
   certification,
   education,
   contact,
   socials,
-  roleKeywordMatches,
   type Project,
 } from "@/data/portfolio";
 import ArchitectureFlow from "@/components/ui/ArchitectureFlow";
@@ -28,6 +26,17 @@ const CORE_KEYWORDS = [
   "Docker",
   "PostgreSQL",
   "Kafka/RabbitMQ",
+];
+
+// A curated highlight reel, not the full tech-stack dump — the main portfolio's
+// Tech Stack section already lists every technology in full; this is meant to
+// be scannable in under a minute. Every item here is already verified
+// elsewhere in data/portfolio.ts (techStack / projects), just re-selected.
+const EXPERTISE_HIGHLIGHTS = [
+  { label: "Backend & Full-Stack", items: ["Java 17/21", "Spring Boot", "Spring Cloud", "Microservices", "REST APIs", "React.js"] },
+  { label: "Security", items: ["OAuth2", "JWT", "Keycloak", "RBAC"] },
+  { label: "Cloud & DevOps", items: ["Docker", "Kubernetes", "CI/CD", "AWS", "Azure"] },
+  { label: "AI / LLM Engineering", items: ["LangGraph", "RAG", "LLM Orchestration", "AI Agents", "Azure AI Foundry", "Claude"] },
 ];
 
 function Badge({ children, tone = "neutral" }: { children: React.ReactNode; tone?: "neutral" | "accent" }) {
@@ -62,15 +71,10 @@ function Section({
   );
 }
 
-function ProjectCard({
-  project,
-  onOpen,
-  capabilitiesLabel = "CAPABILITIES",
-}: {
-  project: Project;
-  onOpen: (p: Project) => void;
-  capabilitiesLabel?: string;
-}) {
+function ProjectCard({ project, onOpen }: { project: Project; onOpen: (p: Project) => void }) {
+  const shownTech = project.technology.slice(0, 5);
+  const remaining = project.technology.length - shownTech.length;
+
   return (
     <div className="card rounded-xl p-5 sm:p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
@@ -80,23 +84,12 @@ function ProjectCard({
       <p className="text-accent-2 text-sm mb-3">{project.subtitle}</p>
       <p className="text-sm text-muted leading-relaxed mb-4">{project.positioning}</p>
 
-      <div className="mb-3">
-        <p className="mono-label mb-1.5">TECHNOLOGY</p>
+      <div className="mb-4">
         <div className="flex flex-wrap gap-1.5">
-          {project.technology.map((t) => (
+          {shownTech.map((t) => (
             <Badge key={t}>{t}</Badge>
           ))}
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <p className="mono-label mb-1.5">{capabilitiesLabel}</p>
-        <div className="flex flex-wrap gap-1.5">
-          {project.capabilities.map((c) => (
-            <Badge key={c} tone="accent">
-              {c}
-            </Badge>
-          ))}
+          {remaining > 0 && <span className="text-xs text-muted-2 self-center">+{remaining} more</span>}
         </div>
       </div>
 
@@ -206,7 +199,7 @@ export default function RecruiterView() {
             <p className="text-sm font-semibold text-accent mb-1.5">{job.platform.label}</p>
             <p className="text-sm text-muted leading-relaxed mb-4">{job.platform.positioning}</p>
             <ul className="space-y-1.5 mb-4">
-              {job.platform.responsibilities.map((r, i) => (
+              {job.platform.responsibilities.slice(0, 6).map((r, i) => (
                 <li key={i} className="text-sm text-muted leading-relaxed flex gap-2.5">
                   <span className="text-accent mt-1.5 w-1 h-1 rounded-full bg-accent shrink-0" />
                   {r}
@@ -242,43 +235,19 @@ export default function RecruiterView() {
                   <Badge key={t}>{t}</Badge>
                 ))}
               </div>
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {credassist360.capabilities.map((c) => (
-                  <Badge key={c} tone="accent">
-                    {c}
-                  </Badge>
-                ))}
-              </div>
               <ArchitectureFlow steps={credassist360.architecture} />
             </div>
           )}
         </Section>
 
-        <Section label="CORE SKILLS">
+        <Section label="CORE EXPERTISE">
           <div className="space-y-4">
-            {techStack.map((cat) => (
-              <div key={cat.category} className="flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-4">
-                <p className="mono-label w-full sm:w-40 shrink-0">{cat.category}</p>
+            {EXPERTISE_HIGHLIGHTS.map((group) => (
+              <div key={group.label} className="flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-4">
+                <p className="mono-label w-full sm:w-44 shrink-0">{group.label}</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {cat.items.map((item) => (
+                  {group.items.map((item) => (
                     <Badge key={item}>{item}</Badge>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </Section>
-
-        <Section label="MATCH MY PROFILE" title="Role fit at a glance">
-          <div className="grid sm:grid-cols-2 gap-4">
-            {roleKeywordMatches.map((m) => (
-              <div key={m.role} className="card rounded-lg p-4">
-                <p className="text-sm font-medium text-foreground mb-2.5">{m.role}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {m.keywords.map((k) => (
-                    <Badge key={k} tone="accent">
-                      {k}
-                    </Badge>
                   ))}
                 </div>
               </div>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Command, Menu, X, UserRound, LayoutGrid } from "lucide-react";
+import { Command, Menu, X, UserRound, LayoutGrid, FileDown } from "lucide-react";
 import { navSections, socials } from "@/data/portfolio";
 import { useUIState } from "@/components/providers/UIStateProvider";
 import ThemeToggle from "@/components/ui/ThemeToggle";
@@ -116,7 +116,7 @@ export default function Navbar() {
                   scrollTo(s.id);
                   setMobileOpen(false);
                 }}
-                className="text-left px-2 py-2.5 text-sm text-muted hover:text-foreground"
+                className="text-left px-2 py-3 text-base text-muted hover:text-foreground"
               >
                 {s.label}
               </button>
@@ -126,10 +126,20 @@ export default function Navbar() {
               setRecruiterViewOpen(!recruiterViewOpen);
               setMobileOpen(false);
             }}
-            className="text-left px-2 py-2.5 text-sm text-muted hover:text-foreground border-t border-border mt-1 pt-3"
+            className="text-left px-2 py-3 text-base text-muted hover:text-foreground border-t border-border mt-1 pt-4"
           >
             {recruiterViewOpen ? "Portfolio View" : "Recruiter View"}
           </button>
+          <a
+            href={socials.resumeFile}
+            download="Amar_Kumar_Resume.pdf"
+            onClick={() => setMobileOpen(false)}
+            className="mt-3 flex items-center justify-center gap-2 px-4 py-3.5 rounded-lg text-white text-sm font-medium"
+            style={{ background: "linear-gradient(120deg, var(--accent), var(--accent-2))" }}
+          >
+            <FileDown size={16} />
+            Download Resume
+          </a>
         </div>
       )}
     </motion.header>

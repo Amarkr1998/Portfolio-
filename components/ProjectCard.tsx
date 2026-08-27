@@ -81,6 +81,9 @@ export default function ProjectCard({
 
         <p className="text-sm text-muted leading-relaxed mb-1 max-w-md">{project.subtitle}</p>
         {project.status && <p className="text-[0.68rem] text-accent-2 mb-1">{project.status}</p>}
+        <p className="text-xs text-muted-2 leading-relaxed mt-3 max-w-md line-clamp-2">
+          {project.detail.problem}
+        </p>
 
         <div className="flex flex-wrap gap-1.5 mb-6 mt-5">
           {project.technology.slice(0, 5).map((t) => (
