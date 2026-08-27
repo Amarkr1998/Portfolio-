@@ -31,8 +31,7 @@ export default function Footer() {
               <button
                 key={s.id}
                 onClick={() => scrollTo(s.id)}
-                className="text-xs text-muted hover:text-foreground transition-colors"
-                data-cursor="interactive"
+                className="text-xs text-muted hover:text-foreground transition-colors duration-200"
               >
                 {s.label}
               </button>
@@ -46,8 +45,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="text-muted-2 hover:text-foreground transition-colors"
-            data-cursor="interactive"
+            className="text-muted-2 transition-all duration-200 hover:text-foreground hover:scale-110 inline-block"
           >
             <GithubIcon size={16} />
           </a>
@@ -56,23 +54,20 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
-            className="text-muted-2 hover:text-foreground transition-colors"
-            data-cursor="interactive"
+            className="text-muted-2 transition-all duration-200 hover:text-foreground hover:scale-110 inline-block"
           >
             <LinkedinIcon size={16} />
           </a>
           <a
             href={socials.resumeFile}
             download="Amar_Kumar_Resume.pdf"
-            className="text-xs text-muted hover:text-foreground transition-colors"
-            data-cursor="interactive"
+            className="text-xs text-muted hover:text-foreground transition-colors duration-200"
           >
             Resume
           </a>
           <a
             href={socials.email}
-            className="text-xs text-muted hover:text-foreground transition-colors"
-            data-cursor="interactive"
+            className="text-xs text-muted hover:text-foreground transition-colors duration-200"
           >
             Contact
           </a>
@@ -85,8 +80,7 @@ export default function Footer() {
         </p>
         <button
           onClick={() => setCommandPaletteOpen(true)}
-          className="hidden sm:flex items-center gap-1.5 text-[0.68rem] text-muted-2 hover:text-foreground transition-colors"
-          data-cursor="interactive"
+          className="hidden sm:flex items-center gap-1.5 text-[0.68rem] text-muted-2 hover:text-foreground transition-colors duration-200"
         >
           <Command size={11} />
           <span className="mono-label">K to open command palette</span>

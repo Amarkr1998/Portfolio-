@@ -92,7 +92,6 @@ export default function TechConstellation() {
               onMouseLeave={() => setActive(null)}
               onFocus={() => setActive(node.id)}
               onBlur={() => setActive(null)}
-              data-cursor="interactive"
               className="absolute flex items-center justify-center rounded-full border transition-[width,height] duration-200"
               style={{
                 left: `${pos.x}%`,

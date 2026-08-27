@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import type { Project } from "@/data/portfolio";
@@ -14,31 +13,15 @@ export default function ProjectCard({
   index: number;
   onOpen: (p: Project) => void;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [glow, setGlow] = useState({ x: 50, y: 50, visible: false });
-
-  const handleMove = (e: React.MouseEvent) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    setGlow({
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100,
-      visible: true,
-    });
-  };
-
   return (
     <motion.div
-      ref={ref}
       role="button"
       tabIndex={0}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.55, delay: index * 0.08 }}
-      whileHover={{ y: -6 }}
-      onMouseMove={handleMove}
-      onMouseLeave={() => setGlow((g) => ({ ...g, visible: false }))}
+      whileHover={{ y: -4, transition: { duration: 0.25, ease: "easeOut" } }}
       onClick={() => onOpen(project)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -46,18 +29,9 @@ export default function ProjectCard({
           onOpen(project);
         }
       }}
-      className="card-border-anim group relative cursor-pointer overflow-hidden rounded-2xl card p-6 sm:p-8"
-      data-cursor="interactive"
-      data-magnet="true"
+      className="group relative cursor-pointer overflow-hidden rounded-2xl card p-6 sm:p-8 transition-colors duration-200 hover:border-accent/35"
       aria-label={`View ${project.title} case study`}
     >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{
-          background: `radial-gradient(320px circle at ${glow.x}% ${glow.y}%, rgba(139,92,246,0.15), transparent 70%)`,
-        }}
-      />
-
       <div className="relative">
         <div className="flex items-start justify-between mb-6">
           <div>

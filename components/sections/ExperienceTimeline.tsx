@@ -123,9 +123,7 @@ export default function ExperienceTimeline() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-60px" }}
                       transition={{ duration: 0.5 }}
-                      className="group w-full text-left rounded-xl border border-accent-2/25 bg-[var(--fill-subtle)] p-5 sm:p-6 hover:border-accent-2/50 transition-colors"
-                      data-cursor="interactive"
-                      data-magnet="true"
+                      className="group w-full text-left rounded-xl border border-accent-2/25 bg-[var(--fill-subtle)] p-5 sm:p-6 transition-all duration-200 hover:border-accent-2/50 hover:-translate-y-0.5"
                       aria-label={`View ${initiative.title} case study`}
                     >
                       <div className="flex items-center justify-between gap-3 mb-1.5">

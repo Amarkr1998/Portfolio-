@@ -169,12 +169,11 @@ export default function RecruiterView() {
                 download={link.download ? "Amar_Kumar_Resume.pdf" : undefined}
                 target={!link.download && link.href.startsWith("http") ? "_blank" : undefined}
                 rel={!link.download && link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-[1.03] ${
                   link.primary
                     ? "bg-foreground text-background hover:opacity-90"
                     : "border border-border-strong text-foreground hover:bg-[var(--fill-subtle)]"
                 }`}
-                data-cursor="interactive"
               >
                 <link.icon size={14} />
                 {link.label}
@@ -219,8 +218,7 @@ export default function RecruiterView() {
                 <p className="text-sm font-semibold text-accent-2">{credassist360.title} — AI Initiative</p>
                 <button
                   onClick={() => setSelected(credassist360)}
-                  className="inline-flex items-center gap-1 text-xs text-muted hover:text-accent-2 transition-colors shrink-0"
-                  data-cursor="interactive"
+                  className="inline-flex items-center gap-1 text-xs text-muted hover:text-accent-2 transition-colors duration-200 shrink-0"
                 >
                   Full case study <ArrowUpRight size={12} />
                 </button>
@@ -288,8 +286,7 @@ export default function RecruiterView() {
           <div className="flex flex-wrap gap-2.5">
             <a
               href={socials.email}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
-              data-cursor="interactive"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium transition-all duration-200 hover:opacity-90 hover:scale-[1.03]"
             >
               <Mail size={14} /> Email Me
             </a>
@@ -297,8 +294,7 @@ export default function RecruiterView() {
               href={socials.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border-strong text-sm text-foreground hover:bg-[var(--fill-subtle)] transition-colors"
-              data-cursor="interactive"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border-strong text-sm text-foreground transition-all duration-200 hover:bg-[var(--fill-subtle)] hover:scale-[1.03]"
             >
               <LinkedinIcon size={14} /> LinkedIn
             </a>
@@ -306,8 +302,7 @@ export default function RecruiterView() {
               href={socials.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border-strong text-sm text-foreground hover:bg-[var(--fill-subtle)] transition-colors"
-              data-cursor="interactive"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border-strong text-sm text-foreground transition-all duration-200 hover:bg-[var(--fill-subtle)] hover:scale-[1.03]"
             >
               <GithubIcon size={14} /> GitHub
             </a>

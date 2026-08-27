@@ -7,7 +7,6 @@ import { useUIState } from "@/components/providers/UIStateProvider";
 import { suggestedQuestions } from "@/data/portfolio";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useIsTouchDevice } from "@/hooks/useIsTouchDevice";
-import Magnetic from "@/components/ui/Magnetic";
 import MarkdownLite from "@/components/ui/MarkdownLite";
 import { MAX_HISTORY, MAX_MESSAGE_LENGTH, MAX_ASSISTANT_MESSAGE_LENGTH } from "@/lib/ai-constants";
 
@@ -159,28 +158,26 @@ export default function AIAssistant() {
 
   return (
     <>
-      <Magnetic className="fixed bottom-6 right-6 z-[90]">
-        <motion.button
-          onClick={() => setAiChatOpen(!aiChatOpen)}
-          whileTap={{ scale: 0.94 }}
-          className="flex items-center gap-3 pl-4 pr-5 py-3 rounded-full glass-strong glow-accent text-foreground"
-          data-cursor="interactive"
-          aria-haspopup="dialog"
-          aria-expanded={aiChatOpen}
-          aria-label="Open Ask Amar AI"
-        >
-          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-accent/15">
-            <Sparkles size={15} className="text-accent" />
-          </span>
-          <span className="text-left leading-tight">
-            <span className="block text-sm font-medium">Ask Amar</span>
-            <span className="block text-[0.68rem] text-muted-2">AI Assistant</span>
-          </span>
-          <span className="relative flex h-2 w-2 ml-1">
-            <span className="status-dot absolute inline-flex h-full w-full rounded-full bg-success" />
-          </span>
-        </motion.button>
-      </Magnetic>
+      <motion.button
+        onClick={() => setAiChatOpen(!aiChatOpen)}
+        whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+        whileTap={{ scale: 0.94 }}
+        className="fixed bottom-6 right-6 z-[90] flex items-center gap-3 pl-4 pr-5 py-3 rounded-full glass-strong glow-accent text-foreground"
+        aria-haspopup="dialog"
+        aria-expanded={aiChatOpen}
+        aria-label="Open Ask Amar AI"
+      >
+        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-accent/15">
+          <Sparkles size={15} className="text-accent" />
+        </span>
+        <span className="text-left leading-tight">
+          <span className="block text-sm font-medium">Ask Amar</span>
+          <span className="block text-[0.68rem] text-muted-2">AI Assistant</span>
+        </span>
+        <span className="relative flex h-2 w-2 ml-1">
+          <span className="status-dot absolute inline-flex h-full w-full rounded-full bg-success" />
+        </span>
+      </motion.button>
 
       <AnimatePresence>
         {aiChatOpen && (
@@ -219,17 +216,15 @@ export default function AIAssistant() {
               <div className="flex items-center gap-1">
                 <button
                   onClick={clearChat}
-                  className="p-2 rounded-md text-muted hover:text-foreground hover:bg-[var(--fill-subtle-strong)] transition-colors"
+                  className="p-2 rounded-md text-muted hover:text-foreground hover:bg-[var(--fill-subtle-strong)] transition-colors duration-200"
                   aria-label="Clear conversation"
-                  data-cursor="interactive"
                 >
                   <Trash2 size={15} />
                 </button>
                 <button
                   onClick={() => setAiChatOpen(false)}
-                  className="p-2 rounded-md text-muted hover:text-foreground hover:bg-[var(--fill-subtle-strong)] transition-colors"
+                  className="p-2 rounded-md text-muted hover:text-foreground hover:bg-[var(--fill-subtle-strong)] transition-colors duration-200"
                   aria-label="Close chat"
-                  data-cursor="interactive"
                 >
                   <X size={16} />
                 </button>
@@ -303,8 +298,7 @@ export default function AIAssistant() {
                     <button
                       key={q}
                       onClick={() => send(q)}
-                      className="text-left text-xs px-3 py-2 rounded-lg border border-border text-muted hover:text-foreground hover:border-border-strong transition-colors"
-                      data-cursor="interactive"
+                      className="text-left text-xs px-3 py-2 rounded-lg border border-border text-muted hover:text-foreground hover:border-border-strong transition-colors duration-200"
                     >
                       {q}
                     </button>
@@ -333,9 +327,8 @@ export default function AIAssistant() {
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="p-2.5 rounded-lg bg-accent text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                className="p-2.5 rounded-lg bg-accent text-white transition-all duration-200 hover:opacity-90 hover:scale-105 disabled:opacity-40 disabled:hover:scale-100 disabled:cursor-not-allowed"
                 aria-label="Send message"
-                data-cursor="interactive"
               >
                 <Send size={15} />
               </button>

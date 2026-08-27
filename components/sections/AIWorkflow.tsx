@@ -43,8 +43,7 @@ export default function AIWorkflow() {
                 <a
                   key={p.slug}
                   href="#projects"
-                  className="group flex items-center justify-between rounded-lg border border-border px-4 py-3 hover:border-accent-2/50 transition-colors"
-                  data-cursor="interactive"
+                  className="group flex items-center justify-between rounded-lg border border-border px-4 py-3 transition-all duration-200 hover:border-accent-2/50 hover:-translate-y-0.5"
                 >
                   <span>
                     <span className="text-sm text-foreground block">{p.title}</span>

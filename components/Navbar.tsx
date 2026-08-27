@@ -41,9 +41,8 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-8 h-16">
         <button
           onClick={() => (recruiterViewOpen ? window.scrollTo({ top: 0 }) : scrollTo("hero"))}
-          className="shrink-0"
+          className="shrink-0 transition-transform duration-200 hover:scale-105"
           aria-label="Amar Kumar — back to top"
-          data-cursor="interactive"
         >
           <Image src="/logo.png" alt="Amar Kumar" width={36} height={36} priority className="rounded-full" />
         </button>
@@ -54,9 +53,7 @@ export default function Navbar() {
               <button
                 key={s.id}
                 onClick={() => scrollTo(s.id)}
-                className="px-3 py-2 text-xs text-muted hover:text-foreground transition-colors rounded-md hover:bg-[var(--fill-subtle)]"
-                data-cursor="interactive"
-                data-magnet="true"
+                className="px-3 py-2 text-xs text-muted hover:text-foreground transition-colors duration-200 rounded-md hover:bg-[var(--fill-subtle)]"
               >
                 {s.label}
               </button>
@@ -68,9 +65,7 @@ export default function Navbar() {
           <ThemeToggle />
           <button
             onClick={() => setRecruiterViewOpen(!recruiterViewOpen)}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-xs text-muted hover:text-foreground hover:border-border-strong transition-colors"
-            data-cursor="interactive"
-            data-magnet="true"
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-xs text-muted hover:text-foreground hover:border-border-strong transition-colors duration-200"
             aria-pressed={recruiterViewOpen}
             aria-label={recruiterViewOpen ? "Switch to Portfolio View" : "Switch to Recruiter View"}
           >
@@ -79,8 +74,7 @@ export default function Navbar() {
           </button>
           <button
             onClick={() => setCommandPaletteOpen(true)}
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md border border-border text-xs text-muted hover:text-foreground hover:border-border-strong transition-colors"
-            data-cursor="interactive"
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md border border-border text-xs text-muted hover:text-foreground hover:border-border-strong transition-colors duration-200"
             aria-label="Open command palette"
           >
             <Command size={12} />
@@ -89,10 +83,8 @@ export default function Navbar() {
           <a
             href={socials.resumeFile}
             download="Amar_Kumar_Resume.pdf"
-            className="hidden sm:inline-flex items-center px-4 py-1.5 rounded-md text-white text-xs font-medium hover:opacity-90 transition-opacity"
+            className="hidden sm:inline-flex items-center px-4 py-1.5 rounded-md text-white text-xs font-medium transition-all duration-200 hover:opacity-90 hover:shadow-[0_0_20px_-4px_var(--accent)]"
             style={{ background: "linear-gradient(120deg, var(--accent), var(--accent-2))" }}
-            data-cursor="interactive"
-            data-magnet="true"
           >
             Resume
           </a>

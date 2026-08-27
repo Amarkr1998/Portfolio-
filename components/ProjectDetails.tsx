@@ -63,9 +63,8 @@ export default function ProjectDetails({
           >
             <button
               onClick={onClose}
-              className="absolute top-5 right-5 p-2 rounded-full hover:bg-[var(--fill-subtle-strong)] text-muted hover:text-foreground transition-colors"
+              className="absolute top-5 right-5 p-2 rounded-full hover:bg-[var(--fill-subtle-strong)] text-muted hover:text-foreground transition-all duration-200 hover:scale-110"
               aria-label="Close project details"
-              data-cursor="interactive"
             >
               <X size={18} />
             </button>
@@ -93,8 +92,7 @@ export default function ProjectDetails({
                 href={project.repoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors mb-8 mt-1"
-                data-cursor="interactive"
+                className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors duration-200 mb-8 mt-1"
               >
                 <GithubIcon size={13} /> View Code
               </a>

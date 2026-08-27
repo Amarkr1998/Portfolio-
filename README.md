@@ -24,7 +24,7 @@ app/                 routes, layout, metadata, API route for the AI assistant
 components/
   sections/           one component per page section
   providers/           Lenis, global UI state, ssr:false client-widget bundle
-  ui/                   CommandPalette, CustomCursor, Magnetic, FlowDiagram, MarkdownLite
+  ui/                   CommandPalette, FlowDiagram, MarkdownLite
   ProjectCard.tsx / ProjectDetails.tsx
   AIAssistant.tsx       chat widget UI
   RecruiterView.tsx     fast recruiter-facing summary (Ctrl/Cmd+K → "Recruiter View")
@@ -92,8 +92,8 @@ npm run start
 ## Notes
 
 - All animations respect `prefers-reduced-motion`.
-- The custom cursor (with contextual VIEW/ASK/OPEN labels) and command palette
-  (`⌘K` / `Ctrl+K`) are desktop-only.
+- The system's default mouse pointer is used throughout — no custom cursor.
+  The command palette (`⌘K` / `Ctrl+K`) is desktop-only.
 - The AI assistant answers strictly from `data/portfolio.ts` — if something isn't in
   the data, it responds with "I don't have that information in Amar's portfolio."
   It streams responses, renders basic markdown, and is rate-limited and

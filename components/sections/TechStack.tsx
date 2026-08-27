@@ -49,8 +49,7 @@ export default function TechStack() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                data-cursor="interactive"
-                className="relative px-3.5 py-1.5 rounded-full text-xs mono-label transition-colors"
+                className="relative px-3.5 py-1.5 rounded-full text-xs mono-label transition-colors duration-200"
                 style={{ color: activeCategory === cat ? "var(--background)" : "var(--muted)" }}
               >
                 {activeCategory === cat && (
@@ -90,7 +89,7 @@ export default function TechStack() {
                           onMouseLeave={() => setHovered((h) => (h === item ? null : h))}
                           onFocus={() => hasUsage && setHovered(item)}
                           onBlur={() => setHovered((h) => (h === item ? null : h))}
-                          className={`text-xs px-2.5 py-1 rounded-md bg-[var(--fill-subtle)] border text-foreground/80 transition-colors ${
+                          className={`text-xs px-2.5 py-1 rounded-md bg-[var(--fill-subtle)] border text-foreground/80 transition-colors duration-200 ${
                             hasUsage ? "border-border hover:border-accent/40 cursor-default" : "border-border"
                           }`}
                         >

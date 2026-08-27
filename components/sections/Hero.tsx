@@ -6,7 +6,6 @@ import { ArrowRight, Box, Cloud, FileDown, Mail, Mouse, Sparkles } from "lucide-
 import { getGsap } from "@/lib/gsap";
 import { hero, profile, socials } from "@/data/portfolio";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import Magnetic from "@/components/ui/Magnetic";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import HeroCrystalBackground from "@/components/three/HeroCrystalBackground";
 
@@ -134,33 +133,27 @@ export default function Hero() {
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <div className={`hero-cta ${reducedMotion ? "" : "opacity-0 translate-y-3"}`}>
-            <Magnetic>
-              <motion.button
-                onClick={() => scrollTo("projects")}
-                whileTap={{ scale: 0.96 }}
-                className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white text-sm font-medium glow-accent"
-                style={{ background: "linear-gradient(120deg, var(--accent), var(--accent-2))" }}
-                data-cursor="interactive"
-              >
-                {hero.ctaPrimary}
-                <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
-              </motion.button>
-            </Magnetic>
+            <motion.button
+              onClick={() => scrollTo("projects")}
+              whileTap={{ scale: 0.96 }}
+              className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white text-sm font-medium glow-accent transition-transform duration-200 hover:scale-[1.03]"
+              style={{ background: "linear-gradient(120deg, var(--accent), var(--accent-2))" }}
+            >
+              {hero.ctaPrimary}
+              <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />
+            </motion.button>
           </div>
 
           <div className={`hero-cta ${reducedMotion ? "" : "opacity-0 translate-y-3"}`}>
-            <Magnetic>
-              <motion.a
-                href={socials.resumeFile}
-                download="Amar_Kumar_Resume.pdf"
-                whileTap={{ scale: 0.96 }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border-strong text-sm text-foreground hover:bg-[var(--fill-subtle)] transition-colors"
-                data-cursor="interactive"
-              >
-                <FileDown size={15} />
-                {hero.ctaSecondary}
-              </motion.a>
-            </Magnetic>
+            <motion.a
+              href={socials.resumeFile}
+              download="Amar_Kumar_Resume.pdf"
+              whileTap={{ scale: 0.96 }}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border-strong text-sm text-foreground transition-all duration-200 hover:bg-[var(--fill-subtle)] hover:border-accent/40 hover:scale-[1.03]"
+            >
+              <FileDown size={15} />
+              {hero.ctaSecondary}
+            </motion.a>
           </div>
         </div>
 
@@ -172,8 +165,7 @@ export default function Hero() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Amar Kumar on GitHub"
-            className="text-muted-2 hover:text-foreground transition-colors"
-            data-cursor="interactive"
+            className="text-muted-2 transition-all duration-200 hover:text-foreground hover:scale-110 inline-block"
           >
             <GithubIcon size={18} />
           </a>
@@ -182,16 +174,14 @@ export default function Hero() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Amar Kumar on LinkedIn"
-            className="text-muted-2 hover:text-foreground transition-colors"
-            data-cursor="interactive"
+            className="text-muted-2 transition-all duration-200 hover:text-foreground hover:scale-110 inline-block"
           >
             <LinkedinIcon size={18} />
           </a>
           <a
             href={socials.email}
             aria-label="Email Amar Kumar"
-            className="text-muted-2 hover:text-foreground transition-colors"
-            data-cursor="interactive"
+            className="text-muted-2 transition-all duration-200 hover:text-foreground hover:scale-110 inline-block"
           >
             <Mail size={18} />
           </a>
