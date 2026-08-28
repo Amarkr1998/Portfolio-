@@ -179,7 +179,9 @@ export default function Hero() {
             <LinkedinIcon size={18} />
           </a>
           <a
-            href={socials.email}
+            href={socials.emailCompose}
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="Email Amar Kumar"
             className="text-muted-2 transition-all duration-200 hover:text-foreground hover:scale-110 inline-block"
           >

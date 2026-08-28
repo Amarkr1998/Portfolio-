@@ -66,7 +66,9 @@ export default function Footer() {
             Resume
           </a>
           <a
-            href={socials.email}
+            href={socials.emailCompose}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-xs text-muted hover:text-foreground transition-colors duration-200"
           >
             Contact

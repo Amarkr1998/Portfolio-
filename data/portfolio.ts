@@ -30,6 +30,11 @@ export const socials = {
   github: "https://github.com/Amarkr1998",
   linkedin: "https://www.linkedin.com/in/amar-kumar-a676b318b/",
   email: "mailto:amarkr2018@gmail.com",
+  // mailto: depends on whatever mail client is registered as the OS/browser
+  // default — frequently unconfigured on desktop, so clicking does nothing
+  // there. This opens Gmail's own compose UI (web, or the app on mobile via
+  // Android App Links) directly and reliably on every platform instead.
+  emailCompose: "https://mail.google.com/mail/?view=cm&fs=1&to=amarkr2018@gmail.com",
   resumeFile: "/resume/Amar_Kumar_Resume.pdf",
 } as const;
 

@@ -285,7 +285,9 @@ export default function RecruiterView() {
           <p className="text-sm text-muted mb-6">{contact.subheadline}</p>
           <div className="flex flex-wrap gap-2.5">
             <a
-              href={socials.email}
+              href={socials.emailCompose}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium transition-all duration-200 hover:opacity-90 hover:scale-[1.03]"
             >
               <Mail size={14} /> Email Me
