@@ -3,6 +3,7 @@
 import { Command } from "lucide-react";
 import { navSections, profile, socials } from "@/data/portfolio";
 import { useUIState } from "@/components/providers/UIStateProvider";
+import { useEmailHref } from "@/hooks/useEmailHref";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 
 function scrollTo(id: string) {
@@ -11,6 +12,7 @@ function scrollTo(id: string) {
 
 export default function Footer() {
   const { setCommandPaletteOpen, recruiterViewOpen } = useUIState();
+  const emailHref = useEmailHref();
 
   return (
     <footer className="relative border-t border-border px-5 sm:px-8 py-10">
@@ -66,9 +68,7 @@ export default function Footer() {
             Resume
           </a>
           <a
-            href={socials.emailCompose}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...emailHref}
             className="text-xs text-muted hover:text-foreground transition-colors duration-200"
           >
             Contact

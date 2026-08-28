@@ -6,6 +6,7 @@ import { ArrowRight, Box, Cloud, FileDown, Mail, Mouse, Sparkles } from "lucide-
 import { getGsap } from "@/lib/gsap";
 import { hero, profile, socials } from "@/data/portfolio";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useEmailHref } from "@/hooks/useEmailHref";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import HeroCrystalBackground from "@/components/three/HeroCrystalBackground";
 
@@ -23,6 +24,7 @@ export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLHeadingElement>(null);
   const reducedMotion = useReducedMotion();
+  const emailHref = useEmailHref();
 
   useEffect(() => {
     if (!nameRef.current) return;
@@ -179,9 +181,7 @@ export default function Hero() {
             <LinkedinIcon size={18} />
           </a>
           <a
-            href={socials.emailCompose}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...emailHref}
             aria-label="Email Amar Kumar"
             className="text-muted-2 transition-all duration-200 hover:text-foreground hover:scale-110 inline-block"
           >

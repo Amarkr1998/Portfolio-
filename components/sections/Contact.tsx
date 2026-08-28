@@ -3,16 +3,18 @@
 import { motion } from "framer-motion";
 import { Mail, FileDown } from "lucide-react";
 import { contact, socials } from "@/data/portfolio";
+import { useEmailHref } from "@/hooks/useEmailHref";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 
-const links = [
-  { label: "Email Me", href: socials.emailCompose, icon: Mail, primary: true, download: false },
-  { label: "LinkedIn", href: socials.linkedin, icon: LinkedinIcon, primary: false, download: false },
-  { label: "GitHub", href: socials.github, icon: GithubIcon, primary: false, download: false },
-  { label: "Download Resume", href: socials.resumeFile, icon: FileDown, primary: false, download: true },
-];
-
 export default function Contact() {
+  const emailHref = useEmailHref();
+  const links = [
+    { label: "Email Me", ...emailHref, icon: Mail, primary: true, download: false },
+    { label: "LinkedIn", href: socials.linkedin, target: "_blank" as const, rel: "noopener noreferrer" as const, icon: LinkedinIcon, primary: false, download: false },
+    { label: "GitHub", href: socials.github, target: "_blank" as const, rel: "noopener noreferrer" as const, icon: GithubIcon, primary: false, download: false },
+    { label: "Download Resume", href: socials.resumeFile, target: undefined, rel: undefined, icon: FileDown, primary: false, download: true },
+  ];
+
   return (
     <section id="contact" className="relative py-32 px-5 sm:px-8">
       <div
@@ -48,8 +50,8 @@ export default function Contact() {
               key={link.label}
               href={link.href}
               download={link.download ? "Amar_Kumar_Resume.pdf" : undefined}
-              target={link.download || link.href.startsWith("mailto") ? undefined : "_blank"}
-              rel="noopener noreferrer"
+              target={link.target}
+              rel={link.rel}
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}

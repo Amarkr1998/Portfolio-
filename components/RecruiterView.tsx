@@ -14,6 +14,7 @@ import {
 } from "@/data/portfolio";
 import ArchitectureFlow from "@/components/ui/ArchitectureFlow";
 import ProjectDetails from "@/components/ProjectDetails";
+import { useEmailHref } from "@/hooks/useEmailHref";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 
 const CORE_KEYWORDS = [
@@ -118,6 +119,7 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: (p: Projec
 export default function RecruiterView() {
   const [selected, setSelected] = useState<Project | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const emailHref = useEmailHref();
   const job = experience[0];
   const credassist360 = projects.find((p) => p.slug === job.initiativeSlug) ?? null;
   const fittrack = projects.find((p) => p.slug === "fittrack") ?? null;
@@ -285,9 +287,7 @@ export default function RecruiterView() {
           <p className="text-sm text-muted mb-6">{contact.subheadline}</p>
           <div className="flex flex-wrap gap-2.5">
             <a
-              href={socials.emailCompose}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...emailHref}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium transition-all duration-200 hover:opacity-90 hover:scale-[1.03]"
             >
               <Mail size={14} /> Email Me
