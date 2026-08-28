@@ -236,6 +236,7 @@ export default function AIAssistant() {
               role="log"
               aria-live="polite"
               aria-label="Conversation"
+              data-lenis-prevent
               className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-4"
             >
               {messages.map((m) => (

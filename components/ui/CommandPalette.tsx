@@ -176,7 +176,7 @@ export default function CommandPalette() {
               />
               <kbd className="mono-label border border-border rounded px-1.5 py-0.5 text-[10px]">ESC</kbd>
             </div>
-            <div id="command-palette-list" role="listbox" aria-label="Commands" className="max-h-80 overflow-y-auto py-2">
+            <div id="command-palette-list" role="listbox" aria-label="Commands" data-lenis-prevent className="max-h-80 overflow-y-auto py-2">
               {filtered.length === 0 && (
                 <p className="px-4 py-6 text-sm text-muted text-center">No matching commands.</p>
               )}
