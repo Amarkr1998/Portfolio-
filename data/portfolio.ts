@@ -33,6 +33,7 @@ export const socials = {
   // there. This opens Gmail's own compose UI (web, or the app on mobile via
   // Android App Links) directly and reliably on every platform instead.
   emailCompose: "https://mail.google.com/mail/?view=cm&fs=1&to=amarkr2018@gmail.com",
+  emailAddress: "amarkr2018@gmail.com",
   phoneDisplay: "+91 7079386260",
   phoneHref: "tel:+917079386260",
   resumeFile: "/resume/Amar_Kumar_Resume.pdf",

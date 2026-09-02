@@ -92,6 +92,7 @@ export function buildPortfolioContext(): string {
   lines.push(`CONTACT / SOCIALS`);
   lines.push(`GitHub: ${socials.github}`);
   lines.push(`LinkedIn: ${socials.linkedin}`);
+  lines.push(`Email: ${socials.emailAddress}`);
   lines.push(`Phone: ${socials.phoneDisplay}`);
 
   return lines.join("\n");
