@@ -8,9 +8,9 @@ import { navSections, socials } from "@/data/portfolio";
 import { useUIState } from "@/components/providers/UIStateProvider";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
-// Primary desktop nav stays short and scannable — Certification/Education
-// are still on the page and reachable from the fuller footer/mobile lists.
-const PRIMARY_NAV_IDS = new Set(["about", "experience", "projects", "architecture", "ai-engineering", "tech-stack", "contact"]);
+// Primary desktop nav stays short and scannable — Education is still on the
+// page and reachable from the fuller footer/mobile lists.
+const PRIMARY_NAV_IDS = new Set(["about", "experience", "projects", "architecture", "ai-engineering", "tech-stack", "certification", "contact"]);
 const primaryNavSections = navSections.filter((s) => PRIMARY_NAV_IDS.has(s.id));
 
 function scrollTo(id: string) {

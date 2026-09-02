@@ -24,8 +24,6 @@ export const hero = {
   ctaSecondary: "Download Resume",
 } as const;
 
-// Public contact channels only — phone number is intentionally omitted from
-// client-side data per the resume's privacy handling requirement.
 export const socials = {
   github: "https://github.com/Amarkr1998",
   linkedin: "https://www.linkedin.com/in/amar-kumar-a676b318b/",
@@ -35,6 +33,8 @@ export const socials = {
   // there. This opens Gmail's own compose UI (web, or the app on mobile via
   // Android App Links) directly and reliably on every platform instead.
   emailCompose: "https://mail.google.com/mail/?view=cm&fs=1&to=amarkr2018@gmail.com",
+  phoneDisplay: "+91 7079386260",
+  phoneHref: "tel:+917079386260",
   resumeFile: "/resume/Amar_Kumar_Resume.pdf",
 } as const;
 
@@ -546,10 +546,51 @@ export const engineeringImpact: ImpactPillar[] = [
   },
 ];
 
-export const certification = {
-  name: "Microsoft Certified: Azure AI Apps and Agents Developer Associate",
-  issuer: "Microsoft",
-} as const;
+export type CertificationEntry = {
+  name: string;
+  issuer: string;
+  issued: string;
+  credentialId: string;
+  // Omitted for certifications whose badge image hasn't been supplied yet —
+  // the carousel falls back to an icon tile rather than a placeholder photo.
+  image?: string;
+  url?: string;
+};
+
+export const certifications: CertificationEntry[] = [
+  {
+    name: "Microsoft Certified: Azure AI Apps and Agents Developer Associate",
+    issuer: "Microsoft",
+    issued: "Aug 2026",
+    credentialId: "1900ADC283B321B5",
+    image: "/certifications/microsoft-azure-ai.jpeg",
+    url: "https://learn.microsoft.com/en-us/users/amarkumar-7087/credentials/1900adc283b321b5",
+  },
+  {
+    name: "Data Structures and Algorithms: Deep Dive Using Java",
+    issuer: "Udemy",
+    issued: "Jan 2023",
+    credentialId: "UC-4efd7c4e-4516-467e-acfa-d7fdbb6c3241",
+    image: "/certifications/dsa-java.jpg",
+    url: "https://ude.my/UC-4efd7c4e-4516-467e-acfa-d7fdbb6c3241",
+  },
+  {
+    name: "The Complete 2023 Web Development Bootcamp",
+    issuer: "Udemy",
+    issued: "Apr 2023",
+    credentialId: "UC-38e6a4ff-4f52-4b3f-87be-b669d7d2a4d3",
+    image: "/certifications/web-dev-bootcamp.jpg",
+    url: "https://ude.my/UC-38e6a4ff-4f52-4b3f-87be-b669d7d2a4d3",
+  },
+  {
+    name: "AI Automation: Build LLM Apps & AI-Agents with n8n & APIs",
+    issuer: "Udemy",
+    issued: "Nov 2025",
+    credentialId: "UC-b5d4f9ec-a88d-48e9-b441-41dde32961a5",
+    image: "/certifications/ai-automation-n8n.jpg",
+    url: "https://ude.my/UC-b5d4f9ec-a88d-48e9-b441-41dde32961a5",
+  },
+];
 
 export const education = {
   institution: "RCC Institute of Information Technology",

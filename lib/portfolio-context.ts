@@ -4,7 +4,7 @@ import {
   experience,
   projects,
   techStack,
-  certification,
+  certifications,
   education,
   aiTechnologies,
   engineeringImpact,
@@ -79,8 +79,10 @@ export function buildPortfolioContext(): string {
   }
   lines.push("");
 
-  lines.push(`CERTIFICATION`);
-  lines.push(`${certification.name} — ${certification.issuer}`);
+  lines.push(`CERTIFICATIONS`);
+  for (const cert of certifications) {
+    lines.push(`${cert.name} — ${cert.issuer} (issued ${cert.issued})`);
+  }
   lines.push("");
 
   lines.push(`EDUCATION`);
@@ -90,6 +92,7 @@ export function buildPortfolioContext(): string {
   lines.push(`CONTACT / SOCIALS`);
   lines.push(`GitHub: ${socials.github}`);
   lines.push(`LinkedIn: ${socials.linkedin}`);
+  lines.push(`Phone: ${socials.phoneDisplay}`);
 
   return lines.join("\n");
 }

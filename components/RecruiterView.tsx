@@ -6,7 +6,7 @@ import {
   profile,
   experience,
   projects,
-  certification,
+  certifications,
   education,
   contact,
   socials,
@@ -276,9 +276,17 @@ export default function RecruiterView() {
           </div>
         </Section>
 
-        <Section label="CERTIFICATION">
-          <p className="text-base font-medium text-foreground">{certification.name}</p>
-          <p className="text-sm text-muted">{certification.issuer}</p>
+        <Section label="CERTIFICATIONS">
+          <div className="space-y-3">
+            {certifications.map((cert) => (
+              <div key={cert.credentialId}>
+                <p className="text-sm font-medium text-foreground">{cert.name}</p>
+                <p className="text-xs text-muted">
+                  {cert.issuer} · {cert.issued}
+                </p>
+              </div>
+            ))}
+          </div>
         </Section>
 
         <section id="recruiter-contact" className="pt-10">

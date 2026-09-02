@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, FileDown } from "lucide-react";
+import { Mail, FileDown, Phone } from "lucide-react";
 import { contact, socials } from "@/data/portfolio";
 import { useEmailHref } from "@/hooks/useEmailHref";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
@@ -10,6 +10,7 @@ export default function Contact() {
   const emailHref = useEmailHref();
   const links = [
     { label: "Email Me", ...emailHref, icon: Mail, primary: true, download: false },
+    { label: socials.phoneDisplay, href: socials.phoneHref, target: undefined, rel: undefined, icon: Phone, primary: false, download: false },
     { label: "LinkedIn", href: socials.linkedin, target: "_blank" as const, rel: "noopener noreferrer" as const, icon: LinkedinIcon, primary: false, download: false },
     { label: "GitHub", href: socials.github, target: "_blank" as const, rel: "noopener noreferrer" as const, icon: GithubIcon, primary: false, download: false },
     { label: "Download Resume", href: socials.resumeFile, target: undefined, rel: undefined, icon: FileDown, primary: false, download: true },
