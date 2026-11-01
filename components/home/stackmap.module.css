@@ -1,0 +1,410 @@
+/* Stack map — an instrument face: aurora-lit frame, dial ring, glowing
+   category arcs, gradient lines (hub hue → technology hue). */
+
+.frame {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: clamp(0.5rem, 2vw, 1.5rem);
+  padding-top: 2.25rem;
+  overflow: hidden;
+  /* One calm, centred light: blue at the core easing into violet below. */
+  background:
+    radial-gradient(46% 42% at 50% 46%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 72%),
+    radial-gradient(50% 30% at 50% 88%, color-mix(in srgb, var(--accent-2) 8%, transparent), transparent 75%),
+    color-mix(in srgb, var(--bg) 82%, var(--bg-alt));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04), var(--shadow-md);
+}
+
+.corner {
+  position: absolute;
+  z-index: 1;
+  font-family: var(--font-code);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+
+/* ---- Instrument face ---- */
+
+.ring {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+/* Colour-wheel rim, blended segment by segment. */
+.rim {
+  fill: none;
+  stroke-width: 2.2;
+  opacity: 0.85;
+}
+
+.guide {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1;
+  stroke-dasharray: 1 7;
+}
+.tick {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.tickMajor {
+  stroke: var(--line-strong);
+  stroke-width: 1.2;
+}
+
+.arc,
+.arcGlow {
+  fill: none;
+  stroke-linecap: round;
+}
+.arc {
+  stroke-width: 3;
+  opacity: 0.95;
+}
+.arcGlow {
+  stroke-width: 9;
+  opacity: 0.22;
+  filter: blur(4px);
+}
+
+.arcLabel {
+  font-family: var(--font-code);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  fill: var(--fg-2);
+  transition: opacity var(--dur-card) var(--ease-out);
+}
+.hasActive .arcLabel {
+  opacity: 0.35;
+}
+
+.spoke {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+  transition: stroke var(--dur-card) var(--ease-out);
+}
+.spoke.on {
+  stroke: var(--fg-2);
+}
+
+.orbit {
+  fill: none;
+  stroke-width: 1.2;
+  stroke-dasharray: 1 9;
+  stroke-linecap: round;
+  opacity: 0.8;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.coreRing {
+  fill: var(--bg);
+  stroke-width: 1.6;
+}
+
+/* ---- Professional edges ---- */
+
+.edgeBase {
+  fill: none;
+  stroke: var(--edge);
+  stroke-opacity: 0.2;
+  stroke-width: 1.3;
+  transition:
+    stroke-opacity var(--dur-card) var(--ease-out),
+    stroke-width var(--dur-card) var(--ease-out);
+}
+.hasActive .edge:not(.on) .edgeBase {
+  stroke-opacity: 0.06;
+}
+.edge.on .edgeBase {
+  stroke-opacity: 1;
+  stroke-width: 2;
+}
+
+/* Flow: a stream of glowing dots along active lines. */
+.edgeFlow {
+  fill: none;
+  stroke: color-mix(in srgb, var(--edge) 70%, #fff);
+  stroke-width: 3.6;
+  stroke-linecap: round;
+  stroke-dasharray: 0 15;
+  opacity: 0;
+  transition: opacity var(--dur-card) var(--ease-out);
+}
+.edge.on .edgeFlow {
+  opacity: 1;
+  filter: url(#sm-glow);
+}
+
+/* ---- Independent (GitHub) edges: dashed, hidden until active ---- */
+
+.indieBase {
+  fill: none;
+  stroke: var(--edge);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+  stroke-opacity: 0;
+  transition: stroke-opacity var(--dur-card) var(--ease-out);
+}
+.indieEdge.on .indieBase {
+  stroke-opacity: 0.9;
+}
+.indieEdge.on .edgeFlow {
+  opacity: 0.9;
+  stroke-width: 3;
+  filter: url(#sm-glow);
+}
+
+/* ---- Technology nodes ---- */
+
+.tech {
+  cursor: pointer;
+  outline: none;
+}
+
+.techDot {
+  fill: color-mix(in srgb, var(--tone) 22%, var(--bg));
+  stroke: var(--tone);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    transform 220ms var(--ease-out),
+    fill 220ms var(--ease-out),
+    opacity 220ms var(--ease-out);
+}
+
+.techHalo {
+  fill: var(--tone);
+  fill-opacity: 0.16;
+  stroke: var(--tone);
+  stroke-opacity: 0.6;
+  stroke-width: 1;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.5);
+  transition:
+    opacity 220ms var(--ease-out),
+    transform 300ms var(--ease-out);
+}
+
+.techLabel {
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  fill: var(--fg-2);
+  transition:
+    fill 200ms var(--ease-out),
+    opacity 200ms var(--ease-out);
+}
+
+.tech:hover .techDot {
+  transform: scale(1.2);
+}
+.tech.on .techDot {
+  fill: var(--tone);
+  transform: scale(1.3);
+  filter: url(#sm-glow);
+}
+.tech.on .techLabel {
+  fill: var(--fg);
+  font-weight: 600;
+}
+.tech.active .techHalo,
+.tech:focus-visible .techHalo {
+  opacity: 1;
+  transform: scale(1);
+}
+.tech:focus-visible .techHalo {
+  stroke: var(--accent);
+  stroke-opacity: 1;
+  stroke-width: 2;
+}
+.hasActive .tech:not(.on) .techLabel {
+  opacity: 0.4;
+}
+.hasActive .tech:not(.on) .techDot {
+  opacity: 0.4;
+}
+
+/* On the resume, with no project evidence: hollow dashed dot. */
+.resumeOnly .techDot {
+  fill: transparent;
+  stroke: var(--fg-2);
+  stroke-dasharray: 2.2 2.2;
+}
+.tech.resumeOnly.on .techDot {
+  fill: transparent;
+  stroke: var(--tone);
+  filter: none;
+}
+
+/* ---- Hubs (each with its own hue via --tone) ---- */
+
+.hub {
+  cursor: pointer;
+  outline: none;
+  transition: opacity 220ms var(--ease-out);
+}
+.hubDisc {
+  fill: color-mix(in srgb, var(--tone) 14%, var(--surface));
+  stroke: color-mix(in srgb, var(--tone) 60%, transparent);
+  stroke-width: 1.4;
+  transition:
+    fill 220ms var(--ease-out),
+    stroke 220ms var(--ease-out);
+}
+.hubIndie .hubDisc {
+  stroke-dasharray: 3 3;
+}
+.hubHalo {
+  fill: color-mix(in srgb, var(--tone) 10%, transparent);
+  stroke: var(--tone);
+  stroke-width: 1;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 220ms var(--ease-out);
+}
+.hubCount {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: var(--fg);
+}
+.hubLabel {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: var(--fg-2);
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  transition: fill 200ms var(--ease-out);
+}
+.hub:hover .hubDisc,
+.hub.on .hubDisc {
+  fill: color-mix(in srgb, var(--tone) 30%, var(--surface));
+  stroke: var(--tone);
+}
+.hub.on .hubDisc {
+  filter: url(#sm-glow);
+}
+.hub.on .hubLabel {
+  fill: var(--fg);
+}
+.hub.on .hubHalo,
+.hub:focus-visible .hubHalo {
+  opacity: 0.7;
+}
+.hub:focus-visible .hubHalo {
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 1;
+}
+.hasActive .hub:not(.on) {
+  opacity: 0.45;
+}
+
+/* ---- Panel ---- */
+
+.panel {
+  transition: border-color var(--dur-card) var(--ease-out);
+  border-color: color-mix(in srgb, var(--tone) 30%, var(--line));
+}
+.panelBar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--tone), color-mix(in srgb, var(--tone) 20%, transparent));
+  transition: background 300ms var(--ease-out);
+}
+.panelGlow {
+  position: absolute;
+  right: -5rem;
+  top: -5rem;
+  width: 15rem;
+  height: 15rem;
+  border-radius: 999px;
+  pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--tone) 22%, transparent), transparent);
+  transition: background 300ms var(--ease-out);
+}
+.panelIn {
+  position: relative;
+}
+
+/* ---- Motion (skipped entirely under reduced motion) ---- */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* One-time draw-in when the map first enters the viewport. */
+  .edgeBase {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  .inView .edgeBase {
+    stroke-dashoffset: 0;
+    transition:
+      stroke-dashoffset 1000ms var(--ease-out) calc(var(--i) * 12ms),
+      stroke-opacity var(--dur-card) var(--ease-out),
+      stroke-width var(--dur-card) var(--ease-out);
+  }
+
+  .edge.on .edgeFlow,
+  .indieEdge.on .edgeFlow {
+    animation: flow 1.2s linear infinite;
+  }
+  .hub.active .hubHalo {
+    animation: breathe 2.4s var(--ease-in-out) infinite;
+  }
+  .tech.active .techHalo {
+    animation: breathe 2.4s var(--ease-in-out) infinite;
+  }
+  /* Very slow orbit around the core; pauses when the map is offscreen
+     (the .inView class only draws once, so this rides on animation-play-state). */
+  .orbit {
+    animation: spin 90s linear infinite;
+  }
+  .panelIn {
+    animation: panel-in 280ms var(--ease-out) both;
+  }
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -30;
+  }
+}
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

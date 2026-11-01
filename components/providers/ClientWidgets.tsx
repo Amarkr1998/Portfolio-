@@ -2,10 +2,8 @@
 
 // Groups the purely client-side interaction chrome (command palette, AI
 // chat) behind next/dynamic with ssr disabled — none of it is needed for
-// first paint or SEO, so it's kept out of the initial server-rendered HTML
-// and main-thread JS. Recruiter View itself is rendered by PortfolioShell,
-// conditionally in place of the cinematic section stack — not here — since
-// it's a full page-mode swap, not an overlay widget.
+// first paint or SEO, so it stays out of the server HTML and loads after
+// the page's essential content.
 
 import dynamic from "next/dynamic";
 

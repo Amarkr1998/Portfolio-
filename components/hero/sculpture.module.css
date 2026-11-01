@@ -1,0 +1,432 @@
+/* Architectural sculpture of application layers, built from CSS 3D planes.
+   Each layer is a lit glass slab in its colour-standard hue (lib/tones.ts).
+   Sizes use container-query units so the whole assembly scales with its
+   frame, and the frame's aspect-ratio reserves space (no layout shift). */
+
+.figure {
+  position: relative;
+  margin: 0;
+  width: 100%;
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  container-type: inline-size;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(46% 40% at 52% 46%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%),
+    radial-gradient(34% 30% at 22% 26%, color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 70%),
+    radial-gradient(40% 28% at 60% 92%, color-mix(in srgb, var(--teal) 10%, transparent), transparent 70%),
+    color-mix(in srgb, var(--bg) 70%, var(--bg-alt));
+  isolation: isolate;
+  box-shadow: var(--shadow-lg);
+}
+/* Spectrum-tinted rim. */
+.frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent-2) 60%, transparent),
+    transparent 30%,
+    transparent 62%,
+    color-mix(in srgb, var(--accent) 60%, transparent)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Registration annotations in the frame corners. */
+.coord {
+  position: absolute;
+  z-index: 2;
+  font-family: var(--font-code);
+  font-size: max(10px, 2.1cqi);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.tl { top: 3.5cqi; left: 4cqi; }
+.tr { top: 3.5cqi; right: 4cqi; }
+.bl { bottom: 3.5cqi; left: 4cqi; }
+.br { bottom: 3.5cqi; right: 4cqi; }
+
+.stage {
+  position: absolute;
+  inset: 0;
+  perspective: 180cqi;
+  perspective-origin: 50% 25%;
+  --size: 45cqi;
+  --gap: 9.5cqi;
+  --thick: 2cqi;
+}
+
+.assembly {
+  position: absolute;
+  left: 53%;
+  top: 54%;
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  transform-style: preserve-3d;
+  transform:
+    rotateX(calc(58deg - var(--py, 0) * 5deg))
+    rotateZ(calc(-40deg + var(--px, 0) * 7deg))
+    translateZ(calc(var(--gap) * -1.5));
+  will-change: transform;
+}
+
+/* Floor: dotted plane + a spectrum light pooling under the stack. */
+.floor {
+  position: absolute;
+  inset: -50%;
+  transform: translateZ(calc(var(--gap) * -0.9));
+  background-image: radial-gradient(circle, var(--line-strong) 1px, transparent 1.3px);
+  background-size: 4.5cqi 4.5cqi;
+  mask-image: radial-gradient(closest-side, #000 25%, transparent 100%);
+  -webkit-mask-image: radial-gradient(closest-side, #000 25%, transparent 100%);
+  opacity: 0.7;
+}
+.shadow {
+  position: absolute;
+  inset: -4%;
+  transform: translateZ(calc(var(--gap) * -0.88));
+  border-radius: 30%;
+  background: conic-gradient(
+    from 200deg,
+    var(--accent),
+    var(--teal),
+    var(--accent-2),
+    var(--accent)
+  );
+  filter: blur(7cqi);
+  opacity: 0.28;
+}
+:global([data-theme="light"]) .shadow {
+  opacity: 0.18;
+}
+
+/* ---- Slabs: lit glass in the layer's hue ---- */
+
+.slab {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--i) * var(--gap) + var(--lift, 0cqi) + var(--bob)));
+  transition: transform 420ms var(--ease-out);
+  --tint: var(--accent);
+}
+
+.top {
+  position: absolute;
+  inset: 0;
+  border-radius: 1.8cqi;
+  border: 1.5px solid color-mix(in srgb, var(--tint) 75%, transparent);
+  background:
+    radial-gradient(70% 60% at 18% 12%, color-mix(in srgb, #fff 10%, transparent), transparent 60%),
+    linear-gradient(135deg, color-mix(in srgb, var(--tint) 38%, transparent) 0%, color-mix(in srgb, var(--tint) 12%, transparent) 55%, color-mix(in srgb, var(--tint) 4%, transparent) 100%),
+    color-mix(in srgb, var(--bg) 72%, transparent);
+  box-shadow:
+    inset 1px 1px 0 color-mix(in srgb, #fff 22%, transparent),
+    inset 0 0 4cqi color-mix(in srgb, var(--tint) 22%, transparent),
+    0 0 5cqi color-mix(in srgb, var(--tint) 20%, transparent);
+  transition:
+    border-color 420ms var(--ease-out),
+    box-shadow 420ms var(--ease-out);
+}
+:global([data-theme="light"]) .top {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--tint) 22%, #fff) 0%, color-mix(in srgb, var(--tint) 6%, #fff) 70%),
+    #fff;
+  box-shadow:
+    inset 1px 1px 0 #fff,
+    0 0 4cqi color-mix(in srgb, var(--tint) 18%, transparent);
+}
+
+/* Thickness: two coloured side faces facing the viewer. */
+.edgeY,
+.edgeX {
+  position: absolute;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--tint) 85%, #fff) 0%,
+    color-mix(in srgb, var(--tint) 55%, var(--bg)) 100%
+  );
+}
+.edgeY {
+  left: 1.4cqi;
+  right: 1.4cqi;
+  bottom: 0;
+  height: var(--thick);
+  transform-origin: bottom;
+  transform: rotateX(90deg);
+}
+.edgeX {
+  top: 1.4cqi;
+  bottom: 1.4cqi;
+  left: 0;
+  width: var(--thick);
+  transform-origin: left;
+  transform: rotateY(90deg);
+  filter: brightness(0.75);
+}
+
+.tag {
+  position: absolute;
+  left: 5%;
+  bottom: 5.5%;
+  font-family: var(--font-code);
+  font-size: 2.4cqi;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: color-mix(in srgb, var(--tint) 75%, var(--fg));
+  text-shadow: 0 0 2cqi color-mix(in srgb, var(--tint) 60%, transparent);
+  white-space: nowrap;
+}
+
+.highlighted {
+  --lift: 3cqi;
+}
+.highlighted .top {
+  border-color: var(--tint);
+  box-shadow:
+    inset 1px 1px 0 color-mix(in srgb, #fff 30%, transparent),
+    inset 0 0 5cqi color-mix(in srgb, var(--tint) 35%, transparent),
+    0 0 8cqi color-mix(in srgb, var(--tint) 45%, transparent);
+}
+
+/* ---- Layer motifs (purely abstract) ---- */
+
+.motif {
+  position: absolute;
+  inset: 12% 10% 22% 10%;
+}
+.bar,
+.blk,
+.row,
+.port,
+.ring {
+  position: absolute;
+  border-radius: 0.8cqi;
+}
+.bar {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--tint) 75%, transparent), color-mix(in srgb, var(--tint) 30%, transparent));
+}
+.blk {
+  border: 1px solid color-mix(in srgb, var(--tint) 70%, transparent);
+  background: color-mix(in srgb, var(--tint) 18%, transparent);
+  box-shadow: inset 0 0 1.5cqi color-mix(in srgb, var(--tint) 20%, transparent);
+}
+.row {
+  height: 1px;
+  left: 0;
+  right: 0;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--tint) 75%, transparent), transparent);
+  border-radius: 0;
+}
+.port {
+  width: 3.2cqi;
+  height: 3.2cqi;
+  border-radius: 50%;
+  border: 1px solid var(--tint);
+  background: color-mix(in srgb, var(--tint) 45%, transparent);
+  box-shadow: 0 0 1.6cqi var(--tint);
+}
+.ring {
+  border-radius: 50%;
+  border: 1.5px solid var(--tint);
+  box-shadow: 0 0 2cqi color-mix(in srgb, var(--tint) 50%, transparent);
+}
+
+/* ---- AI integration module (side-mounted) ---- */
+
+.aiModule {
+  position: absolute;
+  width: 38%;
+  height: 38%;
+  left: 6%;
+  top: -70%;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(1.6 * var(--gap) + var(--lift, 0cqi) + var(--bob)));
+  transition: transform 420ms var(--ease-out);
+  --tint: var(--accent-2);
+}
+.aiModule .tag {
+  bottom: 8%;
+  font-size: 2.1cqi;
+}
+
+/* Bridge between the AI module and the services layer. */
+.bridge {
+  position: absolute;
+  left: 25%;
+  top: -32%;
+  width: 0;
+  height: 32%;
+  border-left: 1.5px dashed color-mix(in srgb, var(--accent-2) 85%, transparent);
+  transform: translateZ(calc(1.3 * var(--gap)));
+  filter: drop-shadow(0 0 0.8cqi var(--accent-2));
+}
+
+/* ---- Conduits: glowing vertical connections through the stack ---- */
+
+.conduit {
+  position: absolute;
+  width: 2px;
+  height: calc(var(--gap) * 3);
+  transform-origin: bottom;
+  transform: rotateX(-90deg);
+  background: linear-gradient(to top, color-mix(in srgb, var(--c) 85%, transparent), color-mix(in srgb, var(--c) 20%, transparent));
+  box-shadow: 0 0 1.2cqi color-mix(in srgb, var(--c) 70%, transparent);
+  overflow: hidden;
+  --c: var(--teal);
+}
+.conduit::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  width: 4px;
+  height: 26%;
+  bottom: 0;
+  border-radius: 2px;
+  background: linear-gradient(to top, transparent, #fff, transparent);
+  opacity: 0;
+}
+
+/* Registered so the gentle float can animate a length inside transform. */
+@property --bob {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+.slab,
+.aiModule {
+  --bob: 0px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animated .slab,
+  .animated .aiModule {
+    animation:
+      rise 1100ms var(--ease-out) both,
+      bob 7s var(--ease-in-out) 1.3s infinite alternate;
+    animation-delay: calc(var(--i) * 90ms + 150ms), calc(1.3s + var(--i) * 0.7s);
+  }
+  .animated .conduit::after {
+    animation: pulse 4.2s var(--ease-in-out) infinite;
+    animation-delay: calc(1.6s + var(--d, 0s));
+  }
+  .paused .slab,
+  .paused .aiModule,
+  .paused .conduit::after {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes rise {
+  from {
+    transform: translateZ(0);
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bob {
+  from {
+    --bob: 0px;
+  }
+  to {
+    --bob: 1.1cqi;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(-400%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(-400%);
+    opacity: 0;
+  }
+}
+
+/* ---- WebGL live: the frame becomes a dark viewport in both themes ---- */
+
+.stage {
+  transition: opacity 700ms var(--ease-out);
+}
+.webgl .stage {
+  opacity: 0;
+}
+.webgl {
+  background: #070b16;
+  border-color: rgb(169 184 206 / 0.16);
+}
+.webgl .coord {
+  color: #a9b8ce;
+  transition: color 200ms var(--ease-out);
+}
+
+/* ---- Caption (essential text lives here, outside the visual) ---- */
+
+.caption {
+  margin-top: 0.85rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--fg-2);
+}
+
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+  margin-top: 0.9rem;
+  padding: 0;
+  list-style: none;
+}
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8125rem;
+  color: var(--fg-2);
+  cursor: default;
+  transition: color var(--dur-control) var(--ease-out);
+}
+.legendItem:hover,
+.legendActive {
+  color: var(--fg);
+}
+.legendActive .swatch {
+  transform: scale(1.35);
+}
+.swatch {
+  transition: transform var(--dur-control) var(--ease-out);
+}
+.swatch {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 3px;
+  background: var(--tint);
+  box-shadow: 0 0 0.5rem color-mix(in srgb, var(--tint) 60%, transparent);
+}

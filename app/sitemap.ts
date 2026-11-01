@@ -1,18 +1,15 @@
 import type { MetadataRoute } from "next";
-
-// See app/layout.tsx for why this tracks Vercel's own production URL
-// instead of a hardcoded domain.
-const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : "https://portfolio-ten-omega-40sz2fb2ue.vercel.app";
+import { caseStudies } from "@/data/portfolio";
+import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    {
-      url: SITE_URL,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 1,
-    },
+    { url: SITE_URL, changeFrequency: "monthly", priority: 1 },
+    ...caseStudies.map((c) => ({
+      url: `${SITE_URL}/work/${c.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    { url: `${SITE_URL}/recruiter`, changeFrequency: "monthly", priority: 0.6 },
   ];
 }

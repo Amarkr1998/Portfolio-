@@ -2,7 +2,7 @@
 // per-instance only (not shared across serverless replicas), but still
 // blocks the common case of a single client hammering the endpoint.
 const WINDOW_MS = 5 * 60 * 1000;
-const MAX_REQUESTS = 15;
+const MAX_REQUESTS = 30;
 
 const hits = new Map<string, { count: number; resetAt: number }>();
 

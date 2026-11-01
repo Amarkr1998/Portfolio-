@@ -1,660 +1,709 @@
 // Single source of truth for all portfolio content.
-// Every fact here is verified against Amar Kumar's resume — nothing invented.
+// Every fact here is taken from Amar Kumar's resume (SWE_Amar_26102026.pdf).
+// Nothing is invented: no metrics, user counts, testimonials, repositories,
+// live links or availability claims. Client work is kept separate from
+// anything Amar did independently.
 
 export const profile = {
   name: "Amar Kumar",
+  firstName: "Amar",
+  title: "Java Full Stack Developer",
+  focus: "Enterprise Applications & AI Integrations",
   location: "New Delhi, India",
-  identity: "Java Full Stack Developer",
   experienceYears: "2+",
-  currentRole: "Software Engineer",
-  currentCompany: "Migun India Pvt. Ltd.",
-  employmentPeriod: "May 2024 – Present",
-  positioning:
-    "Java Full Stack Developer specializing in scalable applications, secure REST APIs, microservices, distributed systems and AI/LLM integrations.",
   summary:
-    "Java Full Stack Developer with 2+ years of experience designing and building scalable, secure, end-to-end applications. Works across the stack with Java, Spring Boot and React, and builds distributed systems using microservices, event-driven messaging and optimized relational databases. Extends traditional backend engineering into applied AI — building multi-agent LLM workflows, integrating LLM orchestration frameworks, and shipping production features on Docker and cloud infrastructure (AWS/Azure) with CI/CD automation.",
+    "Java Full Stack Developer with 2+ years of experience building enterprise applications using Java, Spring Boot, React.js, SQL and REST APIs. Professional work includes healthcare dashboards, backend services, complex reporting queries, authentication and AI-assisted application workflows.",
+  current: {
+    role: "Java Developer",
+    company: "Calance Software Pvt. Ltd.",
+    companyShort: "Calance",
+    client: "UTIITSL",
+    projects: "ESIC & ESIS",
+    since: "Sep 2026",
+  },
 } as const;
 
 export const hero = {
-  headline: "Java Full Stack Developer & AI Engineer",
-  heroTags: ["AI", "Microservices", "Cloud"],
-  statement: "Building scalable, secure and AI-powered applications that create real impact.",
-  status: "OPEN TO SOFTWARE ENGINEERING OPPORTUNITIES",
-  ctaPrimary: "View Projects",
-  ctaSecondary: "Download Resume",
+  eyebrow: "Java • Full Stack • AI Integrations",
+  headline: "Engineering enterprise applications with clarity and purpose.",
+  supporting:
+    "I build Java and Spring Boot services, React interfaces and SQL-heavy reporting for healthcare workflows — and integrate AI where it helps people review, verify and decide.",
+  context: ["Currently at Calance", "Client: UTIITSL", "New Delhi"],
 } as const;
 
 export const socials = {
   github: "https://github.com/Amarkr1998",
   linkedin: "https://www.linkedin.com/in/amar-kumar-a676b318b/",
-  email: "mailto:amarkr2018@gmail.com",
-  // mailto: depends on whatever mail client is registered as the OS/browser
-  // default — frequently unconfigured on desktop, so clicking does nothing
-  // there. This opens Gmail's own compose UI (web, or the app on mobile via
-  // Android App Links) directly and reliably on every platform instead.
-  emailCompose: "https://mail.google.com/mail/?view=cm&fs=1&to=amarkr2018@gmail.com",
   emailAddress: "amarkr2018@gmail.com",
-  phoneDisplay: "+91 7079386260",
+  email: "mailto:amarkr2018@gmail.com",
+  // mailto: depends on a registered mail client, which is frequently
+  // unconfigured on desktop — clicking it then does nothing. Gmail's compose
+  // URL works everywhere on desktop; hooks/useEmailHref picks per platform.
+  emailCompose: "https://mail.google.com/mail/?view=cm&fs=1&to=amarkr2018@gmail.com",
+  phoneDisplay: "+91 70793 86260",
   phoneHref: "tel:+917079386260",
   resumeFile: "/resume/Amar_Kumar_Resume.pdf",
 } as const;
 
-export type ConstellationNode = {
-  id: string;
-  label: string;
-  category: "language" | "backend" | "frontend" | "ai" | "cloud" | "data" | "messaging" | "security" | "architecture";
-  description: string;
-};
-
-// Only technologies verified in the resume. Edges are derived, not fabricated.
-export const constellationNodes: ConstellationNode[] = [
-  { id: "java", label: "Java", category: "language", description: "Core language for backend services (Java 17/21)." },
-  { id: "spring-boot", label: "Spring Boot", category: "backend", description: "Primary framework for building REST services and microservices." },
-  { id: "react", label: "React", category: "frontend", description: "Frontend library used across CredAssist360, FitTrack and IntelliMail." },
-  { id: "spring-ai", label: "Spring AI", category: "ai", description: "Used in IntelliMail to orchestrate LLM calls from Spring Boot." },
-  { id: "langgraph", label: "LangGraph", category: "ai", description: "Multi-agent workflow orchestration used in CredAssist360." },
-  { id: "azure", label: "Azure", category: "cloud", description: "Azure AI Foundry, Azure OpenAI, Blob Storage and Container Apps." },
-  { id: "postgresql", label: "PostgreSQL", category: "data", description: "Primary relational store, optimized for CredAssist360 and IntelliMail." },
-  { id: "rabbitmq", label: "RabbitMQ", category: "messaging", description: "Asynchronous event messaging between FitTrack microservices." },
-  { id: "docker", label: "Docker", category: "cloud", description: "Containerization for CI/CD and automated deployments." },
-  { id: "microservices", label: "Microservices", category: "architecture", description: "Distributed service architecture used in FitTrack." },
-  { id: "keycloak", label: "Keycloak", category: "security", description: "Identity and access management with OAuth2/JWT and RBAC." },
-];
-
-export const constellationEdges: [string, string][] = [
-  ["java", "spring-boot"],
-  ["spring-boot", "react"],
-  ["spring-boot", "microservices"],
-  ["spring-boot", "keycloak"],
-  ["spring-boot", "postgresql"],
-  ["microservices", "rabbitmq"],
-  ["microservices", "docker"],
-  ["microservices", "azure"],
-  ["spring-ai", "spring-boot"],
-  ["spring-ai", "azure"],
-  ["langgraph", "azure"],
-  ["langgraph", "postgresql"],
-  ["docker", "azure"],
-  ["keycloak", "react"],
-];
-
-export const engineeringStats = [
-  { value: "2+", label: "Years Experience" },
-  { value: "17 / 21", label: "Java" },
-  { value: "Microservices", label: "Architecture" },
-  { value: "LLM + Agents", label: "AI" },
-  { value: "AWS + Azure", label: "Cloud" },
-] as const;
-
-export const aboutHighlights = [
-  "Scalable applications",
-  "Secure REST APIs",
-  "Java & Spring Boot",
-  "React",
-  "Microservices",
-  "Distributed systems",
-  "Kafka / RabbitMQ",
-  "Database optimization",
-  "Docker",
-  "CI/CD",
-  "Cloud (AWS / Azure)",
-  "AI / LLM integrations",
-] as const;
-
-export type TechCategory = {
-  category: string;
-  items: string[];
-};
-
-export const techStack: TechCategory[] = [
-  { category: "Languages", items: ["Java 17/21", "Python", "SQL"] },
-  { category: "Backend", items: ["Spring Boot", "Spring Cloud", "Spring AI", "Spring MVC", "Spring Security", "JPA/Hibernate", "REST APIs"] },
-  { category: "Database & Caching", items: ["MySQL", "PostgreSQL", "PostGIS", "pgvector", "Redis"] },
-  { category: "Generative AI", items: ["LangGraph", "RAG", "LLM Orchestration", "AI Agents"] },
-  { category: "Frontend", items: ["React.js", "Next.js", "React Native", "JavaScript", "HTML5", "CSS3"] },
-  { category: "Security & Messaging", items: ["OAuth2", "JWT", "Keycloak", "RBAC", "Kafka", "RabbitMQ"] },
-  { category: "DevOps & Cloud", items: ["Docker", "Kubernetes", "Helm", "Terraform", "CI/CD", "AWS", "Azure"] },
-  { category: "Testing & Monitoring", items: ["JUnit 5", "Mockito", "Integration Testing", "OpenTelemetry", "Prometheus", "Grafana", "Azure Monitor", "AWS CloudWatch"] },
-  { category: "Architecture", items: ["Microservices", "API Gateway", "Service Discovery", "Event-Driven Architecture", "Distributed Systems"] },
-  { category: "Tools", items: ["Git", "GitHub", "Maven", "Postman", "IntelliJ IDEA", "VS Code"] },
-];
+// ---------------------------------------------------------------------------
+// Experience
+// ---------------------------------------------------------------------------
 
 export type ExperienceEntry = {
-  role: string;
+  id: string;
   company: string;
+  role: string;
+  context?: string;
   period: string;
+  start: string; // short label for the timeline rail
   location: string;
-  headline: string;
   summary: string;
-  // Amar's primary full-stack product work at Migun — kept separate from
-  // the CredAssist360 AI initiative below so the role doesn't read as if
-  // CredAssist360 were the entirety of the job.
-  platform: {
-    label: string;
-    positioning: string;
-    responsibilities: string[];
-    technology: string[];
-    architecture: string[];
-  };
-  // References a slug in `projects` rather than duplicating CredAssist360's
-  // technology/capabilities/architecture here — one source of truth, and
-  // the Experience section's initiative card reuses the same ProjectDetails
-  // modal the Projects section already opens for it.
-  initiativeSlug: string;
+  groups: { label?: string; caseStudy?: string; points: string[] }[];
+  stack: string[];
 };
 
 export const experience: ExperienceEntry[] = [
   {
-    role: "Software Engineer",
-    company: "Migun India Pvt. Ltd.",
-    period: "May 2024 – Present",
-    location: "New Delhi, India",
-    headline: "Building healthcare technology and customer-engagement solutions.",
-    summary:
-      "Developing scalable full-stack applications for customer inquiries, consultant/therapy bookings, service workflows and healthcare operations, alongside AI-powered healthcare credentialing solutions.",
-    platform: {
-      label: "Healthcare & Customer Management Platform",
-      positioning:
-        "Building scalable full-stack healthcare and customer-management applications that support customer inquiry management, consultant/therapy booking workflows, customer interactions and business operations.",
-      responsibilities: [
-        "Designed and developed end-to-end web application features using Java, Spring Boot, React.js and REST APIs.",
-        "Developed customer inquiry management workflows.",
-        "Built consultant/therapist booking and scheduling workflows.",
-        "Developed backend APIs and business logic for healthcare and customer-management operations.",
-        "Built responsive React interfaces for operational and customer-facing workflows.",
-        "Implemented secure backend services using Spring Security, OAuth2/JWT, Keycloak and JPA/Hibernate.",
-        "Worked with MySQL for application data management.",
-        "Improved application reliability through exception handling, structured logging, testing and performance optimization.",
-        "Used Docker and CI/CD practices for application delivery.",
-        "Collaborated with business stakeholders to convert healthcare and marketing requirements into maintainable software features.",
-      ],
-      technology: [
-        "Java",
-        "Spring Boot",
-        "React.js",
-        "REST APIs",
-        "MySQL",
-        "Spring Security",
-        "OAuth2/JWT",
-        "Keycloak",
-        "JPA/Hibernate",
-        "Docker",
-        "CI/CD",
-        "JUnit 5",
-        "Mockito",
-      ],
-      architecture: [
-        "Customer",
-        "Customer Inquiry",
-        "Application",
-        "Consultant / Therapy Booking",
-        "Healthcare Service Workflow",
-        "Business Operations",
-      ],
-    },
-    initiativeSlug: "credassist360",
+    id: "calance",
+    company: "Calance Software Pvt. Ltd.",
+    role: "Java Developer",
+    context: "Client: UTIITSL · Projects: ESIC & ESIS",
+    period: "Sep 2026 – Present",
+    start: "2026",
+    location: "Delhi, India",
+    summary: "Healthcare dashboard services and reporting APIs for the ESIC and ESIS projects.",
+    groups: [
+      {
+        caseStudy: "esic-esis",
+        points: [
+          "Develop healthcare dashboard services using Java, Spring Boot and MySQL, covering beneficiaries, referrals, claims, payments and hospital analytics.",
+          "Design and integrate REST APIs that deliver healthcare KPIs, financial summaries and hospital-level reports to React.js dashboards.",
+          "Develop and optimise complex SQL for admissions, claim submissions, settlements, approved amounts and deductions, supporting operational and financial reporting.",
+          "Implement dynamic KPI dashboards with multi-level filtering across date ranges, financial years, Regional Centres, states, hospitals and Top-N rankings.",
+          "Investigate data discrepancies and API integration issues, refining query logic and backend responses to improve reporting accuracy.",
+        ],
+      },
+    ],
+    stack: ["Java", "Spring Boot", "MySQL", "SQL", "REST APIs", "React.js"],
   },
-];
-
-export type Project = {
-  slug: string;
-  title: string;
-  subtitle: string;
-  date?: string;
-  // "professional" = built as part of Amar's role at Migun India Pvt. Ltd.
-  // "personal" = self-directed project for learning and skill development.
-  type: "professional" | "personal";
-  context: string;
-  // Only set for projects still under active development — omitted (i.e.
-  // treated as shipped/complete) otherwise.
-  status?: string;
-  repoUrl?: string;
-  positioning: string;
-  technology: string[];
-  capabilities: string[];
-  architecture: string[];
-  detail: {
-    problem: string;
-    solution: string;
-    ai?: string;
-    security?: string;
-    database?: string;
-    messaging?: string;
-    deployment?: string;
-    engineeringDecisions?: string[];
-  };
-};
-
-export const projects: Project[] = [
   {
-    slug: "credassist360",
-    title: "CredAssist360",
-    subtitle: "AI-Powered Healthcare Provider Credentialing Platform",
-    type: "professional",
-    context: "Built at Migun India Pvt. Ltd.",
-    positioning: "An AI-powered healthcare provider credentialing platform.",
-    technology: [
-      "Python",
-      "LangGraph",
-      "Azure AI Foundry",
-      "Claude",
+    id: "migun",
+    company: "Migun India Pvt. Ltd.",
+    role: "Software Engineer",
+    period: "May 2024 – Aug 2026",
+    start: "2024",
+    location: "New Delhi, India",
+    summary: "Healthcare and customer-management applications, then the CredAssist360 credentialing platform.",
+    groups: [
+      {
+        label: "Healthcare & customer-management applications",
+        points: [
+          "Developed applications using Java, Spring Boot, React.js and MySQL supporting customer inquiries, consultant appointments, therapy bookings and service workflows.",
+          "Built REST APIs with Spring Data JPA and Hibernate, with authentication and role-based access control through Spring Security, OAuth2/JWT and Keycloak.",
+          "Wrote unit tests with JUnit 5 and Mockito to validate backend business logic, and containerised applications with Docker.",
+        ],
+      },
+      {
+        label: "CredAssist360",
+        caseStudy: "credassist360",
+        points: [
+          "Developed an AI-powered healthcare provider credentialing platform using Java, Spring Boot, Spring AI and Azure OpenAI, supporting provider onboarding, document processing and Primary Source Verification (PSV).",
+          "Implemented AI-assisted verification workflows integrating external credentialing services, with Human-in-the-Loop review for document validation and compliance decisions.",
+          "Built persistence workflows with PostgreSQL and Spring Data JPA, integrated Azure Blob Storage for document management, and automated deployments with GitHub Actions and Azure Container Apps.",
+        ],
+      },
+    ],
+    stack: [
+      "Java",
+      "Spring Boot",
+      "React.js",
+      "MySQL",
+      "Spring Data JPA",
+      "Hibernate",
+      "Spring Security",
+      "OAuth2/JWT",
+      "Keycloak",
+      "JUnit 5",
+      "Mockito",
+      "Docker",
+      "Spring AI",
+      "Azure OpenAI",
       "PostgreSQL",
       "Azure Blob Storage",
-      "Docker",
       "GitHub Actions",
       "Azure Container Apps",
     ],
-    capabilities: [
-      "Provider onboarding",
-      "Document processing",
-      "Primary Source Verification (PSV)",
-      "Multi-agent AI workflows",
-      "Healthcare verification APIs",
-      "Human-in-the-Loop review",
-      "Document validation",
-      "REST APIs",
-      "PostgreSQL optimization",
-      "Secure document management",
-      "Automated deployments",
-    ],
-    architecture: [
-      "DOCUMENT",
-      "AI PROCESSING",
-      "LANGGRAPH",
-      "MULTI-AGENT WORKFLOW",
-      "NPI / OIG / DEA / STATE MEDICAL BOARD APIs",
-      "VALIDATION",
-      "HUMAN-IN-THE-LOOP",
-      "VERIFIED RESULT",
-    ],
-    detail: {
-      problem:
-        "Healthcare provider credentialing requires verifying practitioner documents and identities against multiple regulatory sources — a slow, manual, error-prone process.",
-      solution:
-        "CredAssist360 automates provider onboarding and document processing with a multi-agent LangGraph workflow that verifies submissions against NPI, OIG, DEA and State Medical Board APIs, routing uncertain cases into a Human-in-the-Loop review step.",
-      ai: "Multi-agent workflows orchestrated with LangGraph, running on Azure AI Foundry with Claude as the underlying model.",
-      database: "PostgreSQL, optimized for the credentialing workload.",
-      deployment: "Docker containers deployed to Azure Container Apps, automated via GitHub Actions.",
-      engineeringDecisions: [
-        "Separated automated verification from human judgment via an explicit Human-in-the-Loop review stage rather than fully autonomous decisions.",
-        "Used Azure Blob Storage for secure, auditable document management.",
-      ],
-    },
-  },
-  {
-    slug: "fittrack",
-    title: "FitTrack",
-    subtitle: "AI-Enabled Fitness Management Platform",
-    date: "December 2025",
-    type: "personal",
-    context: "Personal project — built for learning and skill development.",
-    positioning: "An AI-enabled fitness management platform built on a Spring Cloud microservices architecture.",
-    technology: [
-      "Java 17",
-      "Spring Boot",
-      "Spring Cloud",
-      "Microservices",
-      "React",
-      "TypeScript",
-      "Azure OpenAI",
-      "Keycloak",
-      "JWT",
-      "RabbitMQ",
-      "PostgreSQL",
-      "MySQL",
-      "Docker",
-      "Eureka",
-      "API Gateway",
-      "REST APIs",
-      "Maven",
-    ],
-    capabilities: [
-      "Asynchronous workout notifications",
-      "Personalized AI coaching",
-      "Workout-plan generation",
-    ],
-    architecture: [
-      "REACT",
-      "API GATEWAY",
-      "SPRING MICROSERVICES",
-      "RABBITMQ",
-      "AI WORKFLOW",
-      "AZURE OPENAI",
-      "PERSONALIZED EXPERIENCE",
-    ],
-    detail: {
-      problem:
-        "Fitness tracking needs to combine reliable service architecture with responsive, personalized coaching — without coupling the user-facing app to slow AI generation calls.",
-      solution:
-        "FitTrack is built on Spring Boot/Spring Cloud microservices behind an API Gateway with Eureka service discovery and centralized configuration. RabbitMQ decouples workout events from AI processing, enabling asynchronous notifications and personalized AI coaching powered by Azure OpenAI.",
-      ai: "Azure OpenAI generates personalized coaching content and workout plans, invoked asynchronously via RabbitMQ events.",
-      security: "Keycloak/JWT authentication with RBAC across services.",
-      database: "PostgreSQL and MySQL.",
-      messaging: "RabbitMQ for asynchronous workout notifications and AI workflow triggers.",
-      deployment: "Dockerized Spring microservices with Maven builds.",
-      engineeringDecisions: [
-        "Used Eureka for service discovery and an API Gateway as the single entry point for the React frontend.",
-        "Decoupled AI-plan generation from the request path using RabbitMQ so coaching generation doesn't block user-facing responses.",
-      ],
-    },
-  },
-  {
-    slug: "intellimail",
-    title: "IntelliMail",
-    subtitle: "AI-Driven Email Automation Platform",
-    date: "January 2026",
-    type: "personal",
-    context: "Personal project — built for learning and skill development.",
-    positioning: "An AI-driven email automation platform for generation, rewriting, summarization and translation.",
-    technology: [
-      "Java 21",
-      "Spring Boot",
-      "Spring AI",
-      "React.js",
-      "Azure OpenAI",
-      "Chrome Extension",
-      "PostgreSQL",
-      "Docker",
-      "JUnit 5",
-      "Mockito",
-    ],
-    capabilities: [
-      "Intelligent email generation",
-      "Rewriting",
-      "Summarization",
-      "Translation",
-      "Contextual responses",
-    ],
-    architecture: [
-      "REACT",
-      "REST API",
-      "SPRING BOOT",
-      "SPRING AI",
-      "AZURE OPENAI",
-      "GENERATE / REWRITE / SUMMARIZE / TRANSLATE",
-    ],
-    detail: {
-      problem:
-        "Composing effective email responses is repetitive and time-consuming, and context (tone, intent, thread history) is easy to lose across a busy inbox.",
-      solution:
-        "IntelliMail integrates a Chrome Extension and React UI with a Spring Boot backend that uses Spring AI to call Azure OpenAI for contextual generation, rewriting, summarization and translation of email content, delivered through a REST API.",
-      ai: "Spring AI orchestrates calls to Azure OpenAI for generation, rewriting, summarization, translation and contextual responses.",
-      security: "JWT authentication.",
-      database: "PostgreSQL.",
-      deployment: "Dockerized services with automated testing (JUnit 5, Mockito) and GitHub Actions CI/CD.",
-      engineeringDecisions: [
-        "Kept AI orchestration in the backend via Spring AI rather than calling the model directly from the client, keeping API keys and prompt logic server-side.",
-      ],
-    },
-  },
-  {
-    slug: "foodloop",
-    title: "FoodLoop",
-    subtitle: "AI-Powered Hyperlocal Surplus-Food Redistribution Platform",
-    type: "personal",
-    context: "Personal project — built for learning and skill development.",
-    status: "In active development — Phase 1: Platform Foundation.",
-    repoUrl: "https://github.com/Amarkr1998/FoodLoop",
-    positioning:
-      "An enterprise-grade, AI-powered, hyperlocal surplus-food redistribution platform coordinating donor–receiver matching, expiry rescue and NGO pickup.",
-    technology: [
-      "Java 21",
-      "Spring Boot",
-      "Maven",
-      "Next.js",
-      "React Native",
-      "Expo",
-      "PostgreSQL",
-      "PostGIS",
-      "pgvector",
-      "Redis",
-      "Kafka",
-      "RabbitMQ",
-      "Keycloak",
-      "Docker",
-      "Kubernetes",
-      "Helm",
-      "Terraform",
-      "Azure OpenAI",
-      "OpenTelemetry",
-      "Prometheus",
-      "Grafana",
-    ],
-    capabilities: [
-      "Surplus-food discovery",
-      "AI-driven donor–receiver matching",
-      "Expiry-window rescue coordination",
-      "NGO pickup coordination",
-      "Geospatial matching (PostGIS)",
-      "Multi-tenant architecture",
-      "Deterministic fallback mode (works without live AI calls)",
-    ],
-    architecture: [
-      "WEB / MOBILE APPS",
-      "API GATEWAY",
-      "SPRING BOOT MICROSERVICES (BOUNDED CONTEXTS)",
-      "AI AGENTS (DONOR-RECEIVER MATCHING)",
-      "EVENT BUS (KAFKA / RABBITMQ)",
-      "POSTGIS + PGVECTOR",
-      "NGO PICKUP COORDINATION",
-    ],
-    detail: {
-      problem:
-        "Surplus food goes to waste because donors, receivers and NGOs lack a coordinated, real-time way to match, verify expiry windows, and arrange pickup within a local area.",
-      solution:
-        "FoodLoop coordinates surplus-food discovery, AI-driven donor–receiver matching, expiry-window rescue and NGO pickup logistics through an event-driven, geospatial, multi-tenant microservices architecture, organized into bounded-context Spring Boot modules with shared OpenAPI contracts and event schemas.",
-      ai: "AI agent modules handle donor–receiver matching via Azure OpenAI/Azure AI Foundry, with a deterministic-only fallback mode so core flows (listing, claiming, pickup) work without live AI calls.",
-      security: "Keycloak-based identity across a secure, multi-tenant architecture.",
-      database: "PostgreSQL with PostGIS for geospatial queries and pgvector for similarity search, plus Redis.",
-      messaging: "Kafka and RabbitMQ coordinate events across bounded-context microservices.",
-      deployment: "Docker, Kubernetes and Helm for containerized deployment, Terraform for infrastructure, with OpenTelemetry, Prometheus and Grafana for observability.",
-      engineeringDecisions: [
-        "Organized the domain into bounded-context Spring Boot microservices with OpenAPI contracts and shared event schemas as the source of truth.",
-        "Built a deterministic-only fallback mode so core flows work without live AI calls, decoupling the platform from AI provider availability.",
-      ],
-    },
   },
 ];
 
-export const systemArchitecture = [
-  "REACT",
-  "REST APIs",
-  "API GATEWAY",
-  "MICROSERVICES",
-  "SERVICE DISCOVERY",
-  "DATABASE",
-  "EVENT-DRIVEN MESSAGING",
-  "AI SERVICES",
-  "CLOUD",
-] as const;
+// ---------------------------------------------------------------------------
+// Case studies (professional client / employer work only)
+// ---------------------------------------------------------------------------
 
-export const architectureTech = [
-  "API Gateway",
-  "Service Discovery",
-  "Microservices",
-  "Kafka",
-  "RabbitMQ",
-  "PostgreSQL",
-  "MySQL",
-  "Redis",
-  "Azure",
-  "AWS",
-  "Docker",
-] as const;
+export type FlowNode = { label: string; detail?: string };
 
-export const aiWorkflow = [
-  "LLM",
-  "PROMPT / CONTEXT",
-  "RAG",
-  "LLM ORCHESTRATION",
-  "AI AGENTS",
-  "TOOLS / APIs",
-  "VALIDATION",
-  "HUMAN-IN-THE-LOOP",
-  "PRODUCTION WORKFLOW",
-] as const;
-
-export const aiTechnologies = [
-  "LangGraph",
-  "RAG",
-  "LLM Orchestration",
-  "AI Agents",
-  "Spring AI",
-  "Azure AI Foundry",
-  "Azure OpenAI",
-  "Claude",
-] as const;
-
-export const engineeringProcess = [
-  { step: "01", label: "UNDERSTAND", description: "Clarify the problem, constraints and users before writing code." },
-  { step: "02", label: "DESIGN", description: "Shape services, data models and API contracts up front." },
-  { step: "03", label: "BUILD", description: "Implement in Java/Spring Boot and React with clean, focused commits." },
-  { step: "04", label: "SECURE", description: "Bake in OAuth2/JWT, Keycloak and RBAC rather than bolting it on later." },
-  { step: "05", label: "TEST", description: "Cover behavior with JUnit 5 and Mockito before it ships." },
-  { step: "06", label: "OPTIMIZE", description: "Tune database queries and service boundaries under real load." },
-  { step: "07", label: "DEPLOY", description: "Automate releases with Docker, GitHub Actions and Azure Container Apps." },
-  { step: "08", label: "MONITOR", description: "Track health with Azure Monitor and AWS CloudWatch, then iterate." },
-] as const;
-
-export type ImpactPillar = { title: string; description: string; tags: string[] };
-
-// Qualitative engineering strengths grounded in verified experience/skills —
-// no invented metrics, since none exist in the source resume.
-export const engineeringImpact: ImpactPillar[] = [
-  {
-    title: "Scalable Backend Systems",
-    description:
-      "Designs and ships Spring Boot microservices behind an API Gateway with service discovery and event-driven messaging.",
-    tags: ["Spring Boot", "Microservices", "API Gateway", "Eureka", "RabbitMQ"],
-  },
-  {
-    title: "Secure by Design",
-    description:
-      "Builds authentication and authorization into services from the start with OAuth2, JWT and Keycloak-backed RBAC.",
-    tags: ["Spring Security", "OAuth2", "JWT", "Keycloak", "RBAC"],
-  },
-  {
-    title: "Applied AI Engineering",
-    description:
-      "Ships production AI features — multi-agent LangGraph workflows, Spring AI orchestration and Human-in-the-Loop review — on Azure AI.",
-    tags: ["LangGraph", "Spring AI", "Azure AI Foundry", "Azure OpenAI", "RAG"],
-  },
-  {
-    title: "Cloud-Native Delivery",
-    description:
-      "Automates the path from commit to production with Docker, GitHub Actions and Azure Container Apps, backed by Azure Monitor and AWS CloudWatch.",
-    tags: ["Docker", "CI/CD", "GitHub Actions", "Azure", "AWS"],
-  },
-];
-
-export type CertificationEntry = {
-  name: string;
-  issuer: string;
-  issued: string;
-  credentialId: string;
-  // Omitted for certifications whose badge image hasn't been supplied yet —
-  // the carousel falls back to an icon tile rather than a placeholder photo.
-  image?: string;
-  url?: string;
+export type CaseStudy = {
+  slug: string;
+  title: string;
+  kind: string; // one-line descriptor
+  employer: string;
+  client?: string;
+  role: string;
+  period: string;
+  overview: {
+    problem: string;
+    contribution: string;
+  };
+  stack: string[];
+  context: string[];
+  myRole: string[];
+  problem: string[];
+  workflows: { title: string; body: string }[];
+  contribution: { area: string; points: string[] }[];
+  flow: { caption: string; nodes: FlowNode[]; note?: string };
+  constraints: string[];
+  outcomes: string[];
 };
 
-export const certifications: CertificationEntry[] = [
+export const caseStudies: CaseStudy[] = [
   {
-    name: "Microsoft Certified: Azure AI Apps and Agents Developer Associate",
-    issuer: "Microsoft",
-    issued: "Aug 2026",
-    credentialId: "1900ADC283B321B5",
-    image: "/certifications/microsoft-azure-ai.jpeg",
-    url: "https://learn.microsoft.com/en-us/users/amarkumar-7087/credentials/1900adc283b321b5",
+    slug: "esic-esis",
+    title: "ESIC & ESIS Healthcare Dashboard",
+    kind: "Healthcare analytics & reporting services",
+    employer: "Calance Software Pvt. Ltd.",
+    client: "UTIITSL",
+    role: "Java Developer",
+    period: "Sep 2026 – Present",
+    overview: {
+      problem:
+        "Healthcare operations need one consistent view of beneficiaries, referrals, claims, payments and hospital activity — sliceable by period, region and hospital without the numbers drifting apart.",
+      contribution:
+        "Backend dashboard services, reporting REST APIs and the complex SQL behind admissions, claims, settlements and deductions — plus multi-level dashboard filtering.",
+    },
+    stack: ["Java", "Spring Boot", "MySQL", "SQL", "REST APIs", "React.js"],
+    context: [
+      "Client engagement delivered through Calance Software for UTIITSL on the ESIC and ESIS projects.",
+      "The work centres on healthcare dashboards: the services and queries that turn operational and financial records into KPIs, summaries and hospital-level reports.",
+    ],
+    myRole: [
+      "Java Developer on the dashboard services — designing and integrating the REST APIs that feed React.js dashboards, and writing the SQL that produces their figures.",
+      "Investigating data discrepancies and API integration issues when reported values or responses don't line up.",
+    ],
+    problem: [
+      "Dashboard consumers need healthcare KPIs, financial summaries and hospital-level reports that stay consistent across modules.",
+      "The same figures must be filterable across date ranges, financial years, Regional Centres, states and hospitals, and rankable as Top-N lists.",
+      "Reporting covers money as well as activity — admissions, claim submissions, settlements, approved amounts and deductions — so query logic has to be precise.",
+    ],
+    workflows: [
+      { title: "Beneficiaries", body: "Beneficiary-level dashboard services." },
+      { title: "Referrals", body: "Referral analytics within the dashboard." },
+      { title: "Claims", body: "Claim submissions, settlements, approved amounts and deductions." },
+      { title: "Payments", body: "Payment and financial summary reporting." },
+      { title: "Hospital analytics", body: "Hospital-level reports, admissions and Top-N rankings." },
+    ],
+    contribution: [
+      {
+        area: "Dashboard services",
+        points: [
+          "Healthcare dashboard services in Java, Spring Boot and MySQL across beneficiaries, referrals, claims, payments and hospital analytics.",
+        ],
+      },
+      {
+        area: "Reporting APIs",
+        points: [
+          "REST APIs delivering healthcare KPIs, financial summaries and hospital-level reports to React.js dashboards.",
+        ],
+      },
+      {
+        area: "SQL",
+        points: [
+          "Complex queries for admissions, claim submissions, settlements, approved amounts and deductions, supporting operational and financial reporting.",
+          "Query optimisation as part of developing those reports.",
+        ],
+      },
+      {
+        area: "Filtering",
+        points: [
+          "Dynamic KPI dashboards with multi-level filters: date ranges, financial years, Regional Centres (RC), states, hospitals and Top-N rankings.",
+        ],
+      },
+      {
+        area: "Accuracy",
+        points: [
+          "Investigation of data discrepancies and API integration issues, refining query logic and backend responses to improve reporting accuracy.",
+        ],
+      },
+    ],
+    flow: {
+      caption: "Conceptual reporting flow",
+      nodes: [
+        { label: "MySQL", detail: "Admissions, claims, settlements, payments" },
+        { label: "SQL", detail: "Aggregations, deductions, Top-N" },
+        { label: "Spring Boot services", detail: "Dashboard modules" },
+        { label: "REST APIs", detail: "KPIs, financial summaries, reports" },
+        { label: "React.js dashboards", detail: "Date · FY · RC · State · Hospital" },
+      ],
+      note: "Simplified to the layers described in this case study. It is not the client's actual system architecture.",
+    },
+    constraints: [
+      "Client confidentiality: no screenshots, data, endpoints or code from the client system are shown here. Previews on this site are conceptual.",
+      "Figures must reconcile across filters — the same claim or admission should report consistently by period, region and hospital.",
+      "Financial reporting (approved amounts, settlements, deductions) leaves little room for approximate query logic.",
+    ],
+    outcomes: [
+      "Dashboard services covering five healthcare modules: beneficiaries, referrals, claims, payments and hospital analytics.",
+      "REST APIs serving KPIs, financial summaries and hospital-level reports to React.js dashboards.",
+      "Multi-level filtering across date ranges, financial years, Regional Centres, states, hospitals and Top-N rankings.",
+      "Refined query logic and backend responses following discrepancy investigations, improving reporting accuracy.",
+    ],
   },
   {
-    name: "Data Structures and Algorithms: Deep Dive Using Java",
-    issuer: "Udemy",
-    issued: "Jan 2023",
-    credentialId: "UC-4efd7c4e-4516-467e-acfa-d7fdbb6c3241",
-    image: "/certifications/dsa-java.jpg",
-    url: "https://ude.my/UC-4efd7c4e-4516-467e-acfa-d7fdbb6c3241",
-  },
-  {
-    name: "The Complete 2023 Web Development Bootcamp",
-    issuer: "Udemy",
-    issued: "Apr 2023",
-    credentialId: "UC-38e6a4ff-4f52-4b3f-87be-b669d7d2a4d3",
-    image: "/certifications/web-dev-bootcamp.jpg",
-    url: "https://ude.my/UC-38e6a4ff-4f52-4b3f-87be-b669d7d2a4d3",
-  },
-  {
-    name: "AI Automation: Build LLM Apps & AI-Agents with n8n & APIs",
-    issuer: "Udemy",
-    issued: "Nov 2025",
-    credentialId: "UC-b5d4f9ec-a88d-48e9-b441-41dde32961a5",
-    image: "/certifications/ai-automation-n8n.jpg",
-    url: "https://ude.my/UC-b5d4f9ec-a88d-48e9-b441-41dde32961a5",
+    slug: "credassist360",
+    title: "CredAssist360",
+    kind: "AI-powered healthcare provider credentialing",
+    employer: "Migun India Pvt. Ltd.",
+    role: "Software Engineer",
+    period: "Within May 2024 – Aug 2026",
+    overview: {
+      problem:
+        "Credentialing a healthcare provider means collecting documents, checking them against primary sources and making compliance calls — work that is slow by hand but too consequential to fully automate.",
+      contribution:
+        "Built the platform in Java, Spring Boot and Spring AI with Azure OpenAI: onboarding, document processing, AI-assisted verification against external services, and human review.",
+    },
+    stack: [
+      "Java",
+      "Spring Boot",
+      "Spring AI",
+      "Azure OpenAI",
+      "PostgreSQL",
+      "Spring Data JPA",
+      "Azure Blob Storage",
+      "GitHub Actions",
+      "Azure Container Apps",
+    ],
+    context: [
+      "Developed at Migun India Pvt. Ltd. as an AI-powered healthcare provider credentialing platform.",
+      "Credentialing combines document handling, Primary Source Verification (PSV) and compliance decisions about whether a provider's credentials hold up.",
+    ],
+    myRole: [
+      "Developed the platform using Java, Spring Boot, Spring AI and Azure OpenAI.",
+      "Implemented the AI-assisted verification workflows, the persistence layer, document storage integration and deployment automation.",
+    ],
+    problem: [
+      "Provider onboarding produces documents that must be processed and validated before a provider can be credentialed.",
+      "Verification depends on external credentialing services — Primary Source Verification rather than self-reported data.",
+      "Document validation and compliance decisions carry real consequences, so AI output needs a human checkpoint rather than the final word.",
+    ],
+    workflows: [
+      { title: "Provider onboarding", body: "Capturing provider information and supporting documents." },
+      { title: "Document processing", body: "AI-assisted processing of submitted documents with Spring AI and Azure OpenAI." },
+      { title: "Primary Source Verification", body: "Verification workflows integrating external credentialing services." },
+      { title: "Human-in-the-Loop review", body: "Reviewers validate documents and make compliance decisions." },
+    ],
+    contribution: [
+      {
+        area: "AI integration",
+        points: [
+          "Spring AI with Azure OpenAI for document processing inside a Java / Spring Boot application.",
+          "AI-assisted verification workflows integrating external credentialing services.",
+        ],
+      },
+      {
+        area: "Review workflow",
+        points: ["Human-in-the-Loop (HITL) review for document validation and compliance decisions."],
+      },
+      {
+        area: "Persistence & documents",
+        points: [
+          "Persistence workflows with PostgreSQL and Spring Data JPA.",
+          "Azure Blob Storage integration for document management.",
+        ],
+      },
+      {
+        area: "Delivery",
+        points: ["Automated deployments with GitHub Actions to Azure Container Apps."],
+      },
+    ],
+    flow: {
+      caption: "Conceptual credentialing flow",
+      nodes: [
+        { label: "Provider onboarding", detail: "Details and documents" },
+        { label: "Azure Blob Storage", detail: "Document management" },
+        { label: "Spring Boot + Spring AI", detail: "Document processing" },
+        { label: "Azure OpenAI", detail: "AI assistance" },
+        { label: "External credentialing services", detail: "Primary Source Verification" },
+        { label: "Human-in-the-Loop review", detail: "Validation and compliance decisions" },
+        { label: "PostgreSQL", detail: "Spring Data JPA persistence" },
+      ],
+      note: "A conceptual sequence of the workflows described here, not a deployment diagram. Delivery: GitHub Actions → Azure Container Apps.",
+    },
+    constraints: [
+      "Compliance-relevant decisions stay with people: AI assists verification, while HITL review validates documents and makes compliance calls.",
+      "Verification depends on external credentialing services, so the workflow has to integrate sources it doesn't control.",
+      "Provider documents need managed storage outside the database — handled through Azure Blob Storage.",
+    ],
+    outcomes: [
+      "Provider onboarding, document processing and Primary Source Verification supported in one platform.",
+      "AI-assisted verification workflows with a Human-in-the-Loop review step.",
+      "Persistence on PostgreSQL with Spring Data JPA, and document management on Azure Blob Storage.",
+      "Automated deployments through GitHub Actions to Azure Container Apps.",
+    ],
   },
 ];
+
+export function getCaseStudy(slug: string): CaseStudy | undefined {
+  return caseStudies.find((c) => c.slug === slug);
+}
+
+// ---------------------------------------------------------------------------
+// Independent projects (self-directed, public on GitHub — not employer work).
+// Summaries are condensed from each repository's README; caveats the README
+// states (demo data, phase status) are kept.
+// ---------------------------------------------------------------------------
+
+export type IndependentProject = {
+  repo: string; // GitHub repository name
+  title: string;
+  domain: string;
+  // Colour-standard category for the project's primary domain (lib/tones.ts).
+  tone: "backend" | "frontend" | "data" | "security" | "ai" | "cloud" | "testing";
+  summary: string;
+  stack: string[];
+  note?: string;
+  featured?: boolean;
+};
+
+export const githubProfile = "https://github.com/Amarkr1998";
+export const repoUrl = (repo: string) => `${githubProfile}/${repo}`;
+
+export const independentProjects: IndependentProject[] = [
+  {
+    repo: "Meridian-Bank",
+    title: "Meridian Bank",
+    domain: "Fintech · Microservices",
+    tone: "security",
+    summary:
+      "Digital banking and payments platform: Spring Boot microservices with a double-entry ledger, idempotent payment APIs, fraud/AML and maker-checker controls, a full audit trail, and React customer and operations portals.",
+    stack: ["Java 21", "Spring Boot", "Kafka", "PostgreSQL", "Redis", "React", "TypeScript", "Kubernetes"],
+    note: "Fictional demo bank — no real customer or payment data.",
+    featured: true,
+  },
+  {
+    repo: "DeployForge",
+    title: "DeployForge",
+    domain: "Platform engineering",
+    tone: "cloud",
+    summary:
+      "AI-assisted internal developer platform for secure delivery: deployment orchestration, release approval, health-based automatic rollback, incident automation and release-risk assessment, with a React engineering dashboard.",
+    stack: ["Java 21", "Spring Boot", "Kafka", "PostgreSQL", "Keycloak", "React", "Kubernetes", "Terraform"],
+    featured: true,
+  },
+  {
+    repo: "Agentguard",
+    title: "AgentGuard",
+    domain: "AI security",
+    tone: "ai",
+    summary:
+      "Security and governance control plane for autonomous AI agents: identity-aware authorization, policy enforcement, runtime risk evaluation, human approval and quarantine, a security graph, and Azure AI-assisted incident investigation.",
+    stack: ["Java 21", "Spring Boot", "Keycloak", "Kafka", "PostgreSQL", "Neo4j", "Azure OpenAI", "React"],
+    featured: true,
+  },
+  {
+    repo: "Agastyai",
+    title: "Agastya AI",
+    domain: "AI · RAG",
+    tone: "ai",
+    summary:
+      "Multi-tenant document Q&A over policies and SOPs with page-level citations. If retrieval finds nothing relevant, the model is never called — it answers “not found” instead of guessing.",
+    stack: ["Spring Boot", "Spring AI", "PostgreSQL", "pgvector", "Ollama / OpenAI"],
+  },
+  {
+    repo: "IntelliMail",
+    title: "IntelliMail",
+    domain: "AI · Productivity",
+    tone: "ai",
+    summary:
+      "Writes, rewrites, summarises and translates email with Azure OpenAI via Spring AI — delivered as a REST API, a React app and a Chrome extension inside Gmail.",
+    stack: ["Spring Boot", "Spring AI", "Azure OpenAI", "PostgreSQL", "React", "Chrome Extension"],
+  },
+  {
+    repo: "HealthSync360",
+    title: "HealthSync360",
+    domain: "Full stack · Wellness",
+    tone: "frontend",
+    summary:
+      "Wellness-technology platform: a Spring Boot REST API with JWT and Redis-backed refresh tokens, plus a React storefront, customer portal and admin console.",
+    stack: ["Spring Boot", "Spring Security", "MySQL", "Redis", "React", "TypeScript"],
+  },
+  {
+    repo: "FitTrack",
+    title: "FitTrack",
+    domain: "Microservices · AI",
+    tone: "backend",
+    summary:
+      "Fitness platform on Spring Cloud microservices — Eureka, API gateway and config server — with RabbitMQ workout events and an Azure OpenAI coaching service.",
+    stack: ["Spring Cloud", "Keycloak", "RabbitMQ", "PostgreSQL", "MySQL", "React"],
+  },
+  {
+    repo: "FoodLoop",
+    title: "FoodLoop",
+    domain: "AI · Geospatial",
+    tone: "data",
+    summary:
+      "Hyperlocal surplus-food redistribution platform designed around AI-assisted donor–receiver matching on an event-driven, geospatial, multi-tenant architecture.",
+    stack: ["Spring Boot", "Next.js", "PostGIS", "Kafka", "RabbitMQ", "Keycloak"],
+    note: "In development — Phase 1, platform foundation.",
+  },
+  {
+    repo: "AI-COMPANION",
+    title: "AI Companion",
+    domain: "AI · Desktop",
+    tone: "frontend",
+    summary:
+      "Desktop AI assistant that lives on screen as an animated floating cat: chat, coding help, opt-in screen understanding, voice, memory and reminders.",
+    stack: ["Spring Boot", "React", "Electron", "PostgreSQL", "Redis"],
+  },
+  {
+    repo: "Customer-churn-ai",
+    title: "Customer Churn AI",
+    domain: "Machine learning",
+    tone: "data",
+    summary:
+      "End-to-end ML platform for churn and lifetime-value prediction, segmentation and anomaly detection, with SHAP explanations, a FastAPI service and a Streamlit dashboard.",
+    stack: ["Python", "XGBoost", "LightGBM", "SHAP", "FastAPI", "MLflow"],
+    note: "Trained on a synthetic demo dataset.",
+  },
+  {
+    repo: "Merger-Agent-",
+    title: "Excel Merge Agent",
+    domain: "AI agent",
+    tone: "ai",
+    summary:
+      "AutoGen agent on Azure OpenAI that inspects two Excel files, finds the join key, scores its confidence and writes a merge report — with a manual override.",
+    stack: ["Python", "AutoGen", "Azure OpenAI", "Streamlit"],
+  },
+];
+
+// Which independent repos use a skill, as stated in each repo's README.
+// Keyed by the skill names in `skillGroups`. Kept apart from `evidence`,
+// which is professional work only.
+export const skillRepos: Record<string, string[]> = {
+  "Java 17/21": ["Meridian-Bank", "DeployForge", "Agentguard", "Agastyai", "IntelliMail", "HealthSync360", "FitTrack", "FoodLoop", "AI-COMPANION"],
+  "Spring Boot": ["Meridian-Bank", "DeployForge", "Agentguard", "Agastyai", "IntelliMail", "HealthSync360", "FitTrack", "FoodLoop", "AI-COMPANION"],
+  "REST APIs": ["HealthSync360", "IntelliMail"],
+  "Spring Data JPA": ["Meridian-Bank", "HealthSync360", "IntelliMail"],
+  Hibernate: ["Meridian-Bank", "HealthSync360"],
+  "Spring Cloud": ["FitTrack"],
+  Python: ["Customer-churn-ai", "Merger-Agent-"],
+  Microservices: ["Meridian-Bank", "FitTrack"],
+  "API Gateway": ["Meridian-Bank", "FitTrack"],
+  "Service Discovery": ["FitTrack"],
+  "Event-Driven Architecture": ["Meridian-Bank", "FoodLoop"],
+  "React.js": ["Meridian-Bank", "DeployForge", "Agentguard", "IntelliMail", "HealthSync360", "FitTrack", "AI-COMPANION"],
+  MySQL: ["HealthSync360", "FitTrack"],
+  PostgreSQL: ["Meridian-Bank", "DeployForge", "Agentguard", "Agastyai", "IntelliMail", "FitTrack", "FoodLoop", "AI-COMPANION"],
+  Redis: ["Meridian-Bank", "DeployForge", "HealthSync360", "AI-COMPANION"],
+  "Spring Security": ["Meridian-Bank", "HealthSync360", "IntelliMail"],
+  "OAuth2 / JWT": ["Agentguard", "HealthSync360", "IntelliMail"],
+  Keycloak: ["DeployForge", "Agentguard", "FitTrack", "FoodLoop"],
+  RBAC: ["Meridian-Bank", "Agentguard"],
+  Kafka: ["Meridian-Bank", "DeployForge", "Agentguard", "FoodLoop"],
+  RabbitMQ: ["FitTrack", "FoodLoop"],
+  "Spring AI": ["IntelliMail", "Agastyai"],
+  "Azure OpenAI": ["IntelliMail", "FitTrack", "Agentguard", "AI-COMPANION", "Merger-Agent-"],
+  "Human-in-the-Loop workflows": ["Agentguard"],
+  RAG: ["Agastyai", "AI-COMPANION"],
+  "AI Agents": ["Merger-Agent-"],
+  Docker: ["Meridian-Bank", "DeployForge", "Agastyai", "IntelliMail", "HealthSync360", "FoodLoop", "AI-COMPANION"],
+  "GitHub Actions": ["HealthSync360", "AI-COMPANION"],
+  Kubernetes: ["Meridian-Bank", "DeployForge"],
+  "JUnit 5": ["Meridian-Bank"],
+  Mockito: ["Meridian-Bank"],
+};
+
+export const projectTitle = (repo: string) => independentProjects.find((p) => p.repo === repo)?.title ?? repo;
+
+// ---------------------------------------------------------------------------
+// Expertise
+// ---------------------------------------------------------------------------
+
+// Where a skill appears in the resume's professional experience. Skills with
+// no evidence key are listed in the resume's skills section only.
+export type Evidence = "esic" | "migun" | "credassist";
+
+export const evidenceLabels: Record<Evidence, string> = {
+  esic: "ESIC & ESIS",
+  migun: "Migun apps",
+  credassist: "CredAssist360",
+};
+
+// Context for each body of work, used by the stack map's hubs and panel.
+export const evidenceDetails: Record<Evidence, { title: string; context: string; href: string }> = {
+  esic: { title: "ESIC & ESIS", context: "Calance Software · Client UTIITSL · 2026 – present", href: "/work/esic-esis" },
+  migun: { title: "Migun applications", context: "Migun India · healthcare & customer management · 2024 – 2026", href: "/#experience" },
+  credassist: { title: "CredAssist360", context: "Migun India · AI-powered provider credentialing", href: "/work/credassist360" },
+};
+
+export type Skill = { name: string; evidence?: Evidence[] };
+export type SkillGroup = { id: string; title: string; skills: Skill[] };
+
+export const skillGroups: SkillGroup[] = [
+  {
+    id: "backend",
+    title: "Java & backend",
+    skills: [
+      { name: "Java 17/21", evidence: ["esic", "migun", "credassist"] },
+      { name: "Spring Boot", evidence: ["esic", "migun", "credassist"] },
+      { name: "REST APIs", evidence: ["esic", "migun"] },
+      { name: "Spring Data JPA", evidence: ["migun", "credassist"] },
+      { name: "Hibernate", evidence: ["migun"] },
+      { name: "Spring MVC" },
+      { name: "Spring Cloud" },
+      { name: "Python" },
+      { name: "Microservices" },
+      { name: "API Gateway" },
+      { name: "Service Discovery" },
+      { name: "Event-Driven Architecture" },
+      { name: "Distributed Systems" },
+    ],
+  },
+  {
+    id: "frontend",
+    title: "Frontend",
+    skills: [
+      { name: "React.js", evidence: ["esic", "migun"] },
+      { name: "JavaScript" },
+      { name: "HTML5" },
+      { name: "CSS3" },
+    ],
+  },
+  {
+    id: "data",
+    title: "Databases & caching",
+    skills: [
+      { name: "SQL", evidence: ["esic"] },
+      { name: "MySQL", evidence: ["esic", "migun"] },
+      { name: "PostgreSQL", evidence: ["credassist"] },
+      { name: "Redis" },
+    ],
+  },
+  {
+    id: "security",
+    title: "Security & messaging",
+    skills: [
+      { name: "Spring Security", evidence: ["migun"] },
+      { name: "OAuth2 / JWT", evidence: ["migun"] },
+      { name: "Keycloak", evidence: ["migun"] },
+      { name: "RBAC", evidence: ["migun"] },
+      { name: "Kafka" },
+      { name: "RabbitMQ" },
+    ],
+  },
+  {
+    id: "ai",
+    title: "AI integrations",
+    skills: [
+      { name: "Spring AI", evidence: ["credassist"] },
+      { name: "Azure OpenAI", evidence: ["credassist"] },
+      { name: "Human-in-the-Loop workflows", evidence: ["credassist"] },
+      { name: "LangGraph" },
+      { name: "RAG" },
+      { name: "LLM Orchestration" },
+      { name: "AI Agents" },
+    ],
+  },
+  {
+    id: "cloud",
+    title: "Cloud & delivery",
+    skills: [
+      { name: "Docker", evidence: ["migun"] },
+      { name: "GitHub Actions", evidence: ["credassist"] },
+      { name: "Azure Container Apps", evidence: ["credassist"] },
+      { name: "Azure Blob Storage", evidence: ["credassist"] },
+      { name: "Kubernetes" },
+      { name: "CI/CD" },
+      { name: "AWS" },
+      { name: "Azure" },
+    ],
+  },
+  {
+    id: "testing",
+    title: "Testing & observability",
+    skills: [
+      { name: "JUnit 5", evidence: ["migun"] },
+      { name: "Mockito", evidence: ["migun"] },
+      { name: "Integration Testing" },
+      { name: "Azure Monitor" },
+      { name: "AWS CloudWatch" },
+    ],
+  },
+];
+
+export const tools = [
+  "Git",
+  "GitHub",
+  "Maven",
+  "Postman",
+  "IntelliJ IDEA",
+  "VS Code",
+  "GitHub Copilot",
+  "Claude Code",
+  "Cursor",
+] as const;
+
+// ---------------------------------------------------------------------------
+// About, education, certification
+// ---------------------------------------------------------------------------
+
+export const about = {
+  lead: "I work where enterprise software gets specific: the API contract a dashboard depends on, the SQL that decides whether a settlement figure is right, the access rule that keeps a booking workflow safe.",
+  paragraphs: [
+    "Most of my professional work has been in healthcare. At Calance, for the ESIC and ESIS projects, I build dashboard services and reporting APIs over beneficiaries, referrals, claims, payments and hospital activity. At Migun India I built customer-management and healthcare applications — inquiries, consultant appointments, therapy bookings — with Spring Security, OAuth2/JWT and Keycloak handling access.",
+    "My AI work is practical rather than speculative. On CredAssist360 I used Spring AI and Azure OpenAI inside a Java application to support provider onboarding, document processing and Primary Source Verification, and kept people in the loop for validation and compliance decisions.",
+  ],
+  focus: [
+    { title: "Enterprise applications", body: "Java and Spring Boot services with React.js front ends." },
+    { title: "Healthcare domain", body: "Claims, referrals, hospital analytics, bookings and credentialing." },
+    { title: "APIs & data workflows", body: "REST APIs, JPA/Hibernate and reporting SQL on MySQL and PostgreSQL." },
+    { title: "Practical AI integration", body: "Spring AI and Azure OpenAI with human review built in." },
+  ],
+} as const;
 
 export const education = {
   institution: "RCC Institute of Information Technology",
-  degree: "B.Tech – Information Technology",
+  degree: "B.Tech in Information Technology",
   period: "2019 – 2023",
   cgpa: "9.02",
 } as const;
 
-export const contact = {
-  headline: "Have a system worth building?",
-  subheadline: "Let's build something scalable.",
+export const certification = {
+  name: "Microsoft Certified: Azure AI Apps and Agents Developer Associate",
+  issuer: "Microsoft",
+  issued: "Aug 2026",
+  url: "https://learn.microsoft.com/en-us/users/amarkumar-7087/credentials/1900adc283b321b5",
 } as const;
 
-export type RoleMatch = { role: string; keywords: string[] };
+export const contact = {
+  headline: "Let’s discuss your next engineering challenge.",
+  body: "Whether it's a Java backend, a reporting-heavy dashboard or an AI-assisted workflow, email is the quickest way to reach me.",
+} as const;
 
-// For Recruiter View's "Match My Profile" section — each list is a reorganized
-// view of technologies already verified above (techStack / experience /
-// projects), grouped by the roles they're most relevant to. No new tech.
-export const roleKeywordMatches: RoleMatch[] = [
-  {
-    role: "Software Engineer",
-    keywords: ["Java 17/21", "Spring Boot", "REST APIs", "MySQL", "PostgreSQL", "Docker", "CI/CD", "Git", "JUnit 5", "Mockito"],
-  },
-  {
-    role: "Java Backend Engineer",
-    keywords: ["Java 17/21", "Spring Boot", "Spring Security", "JPA/Hibernate", "REST APIs", "MySQL", "PostgreSQL", "OAuth2/JWT", "Kafka/RabbitMQ"],
-  },
-  {
-    role: "Java Full Stack Engineer",
-    keywords: ["Java 17/21", "Spring Boot", "React.js", "REST APIs", "MySQL", "PostgreSQL", "OAuth2/JWT", "Docker", "CI/CD"],
-  },
-  {
-    role: "Microservices Engineer",
-    keywords: ["Microservices", "Spring Cloud", "API Gateway", "Service Discovery", "Event-Driven Architecture", "Kafka/RabbitMQ", "Docker", "Kubernetes", "Distributed Systems"],
-  },
-  {
-    role: "AI Engineer",
-    keywords: ["Python", "LangGraph", "RAG", "LLM Orchestration", "AI Agents", "Azure AI Foundry", "Azure OpenAI", "Claude", "PostgreSQL"],
-  },
-];
-
-// The chat widget only ever shows the first 5 (see AIAssistant.tsx) — keep
-// those the most broadly useful for a recruiter skimming quickly.
-export const suggestedQuestions = [
-  "What backend experience does Amar have?",
-  "What Spring Boot experience does Amar have?",
-  "What security technologies does Amar use?",
-  "What projects has Amar built?",
-  "Does Amar have Azure experience?",
-  "What is Amar's experience with microservices?",
-  "What kind of roles is Amar looking for?",
-  "Explain CredAssist360.",
-] as const;
+// ---------------------------------------------------------------------------
+// Navigation & assistant
+// ---------------------------------------------------------------------------
 
 export const navSections = [
-  { id: "hero", label: "Home" },
-  { id: "about", label: "About" },
-  { id: "experience", label: "Experience" },
+  { id: "work", label: "Work" },
   { id: "projects", label: "Projects" },
-  { id: "architecture", label: "Architecture" },
-  { id: "ai-engineering", label: "AI Engineering" },
-  { id: "tech-stack", label: "Skills" },
-  { id: "certification", label: "Certification" },
-  { id: "education", label: "Education" },
+  { id: "experience", label: "Experience" },
+  { id: "expertise", label: "Expertise" },
+  { id: "about", label: "About" },
   { id: "contact", label: "Contact" },
+] as const;
+
+export const suggestedQuestions = [
+  "What is Amar’s Java experience?",
+  "What did Amar contribute to ESIC and ESIS?",
+  "Explain CredAssist360.",
+  "Which technologies does Amar use?",
 ] as const;
