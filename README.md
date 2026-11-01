@@ -1,57 +1,63 @@
 # Amar Kumar — Portfolio
 
-A premium, animated portfolio for **Amar Kumar**, Java Full Stack Developer & AI Engineer.
-Built with Next.js (App Router), TypeScript, Tailwind CSS, Framer Motion, GSAP and Lenis,
-with a server-side "Ask Amar AI" assistant backed by Azure AI.
+Portfolio for **Amar Kumar**, Java Full Stack Developer (Enterprise Applications & AI
+Integrations). Built with Next.js 16 (App Router), TypeScript and Tailwind CSS v4, with an
+optional server-side "Ask Amar AI" assistant backed by Azure OpenAI.
 
-All professional content lives in [`data/portfolio.ts`](data/portfolio.ts) and is sourced
-directly from Amar's resume — nothing fabricated. Update that file to change any content
-on the site.
+All professional content lives in [`data/portfolio.ts`](data/portfolio.ts) and is taken from
+the resume in [`public/resume/Amar_Kumar_Resume.pdf`](public/resume/Amar_Kumar_Resume.pdf).
+No metrics, testimonials, repositories or availability claims are invented. To change content,
+edit that one file — the pages, Recruiter View, structured data and the AI assistant's grounding
+all read from it.
 
-## Stack
+## Routes
 
-- **Next.js 16** (App Router) + **TypeScript**
-- **Tailwind CSS v4**
-- **Framer Motion** — component/UI animation
-- **GSAP** + **ScrollTrigger** — hero timeline & scroll storytelling
-- **Lenis** — smooth scrolling
-- **Lucide React** — icons
+| Route | What it is |
+| --- | --- |
+| `/` | Hero, selected work, experience, expertise, about (education + certification), contact |
+| `/work/esic-esis`, `/work/credassist360` | Case studies, statically generated from `caseStudies` |
+| `/recruiter` | One-page Recruiter View (linked in the header, mobile menu, footer and command palette) |
+| `/api/ai/chat` | `GET` → `{ configured }`; `POST` → streamed assistant answer |
+| `/opengraph-image`, `/work/[slug]/opengraph-image`, `/icon`, `/apple-icon` | Generated social images and icons (AK monogram) |
+| `/sitemap.xml`, `/robots.txt` | Generated from `lib/site.ts` |
 
-## Project structure
+## Stack and what each piece is for
 
-```
-app/                 routes, layout, metadata, API route for the AI assistant
-components/
-  sections/           one component per page section
-  providers/           Lenis, global UI state, ssr:false client-widget bundle
-  ui/                   CommandPalette, FlowDiagram, MarkdownLite
-  ProjectCard.tsx / ProjectDetails.tsx
-  AIAssistant.tsx       chat widget UI
-  RecruiterView.tsx     fast recruiter-facing summary (Ctrl/Cmd+K → "Recruiter View")
-  Footer.tsx
-data/portfolio.ts     single source of truth for all resume-derived content
-lib/
-  azure-ai.ts           server-side Azure AI client (never imported client-side)
-  portfolio-context.ts  builds the AI assistant's grounded context + system prompt
-  rate-limit.ts         best-effort in-memory rate limiting for /api/ai/chat
-hooks/                 useReducedMotion, useIsTouchDevice, useFocusTrap
-```
+- **Next.js 16 / React 19 / TypeScript** — Server Components by default; client components only
+  for the header, theme toggle, hero pointer response, expertise filter, copy-email, command
+  palette and AI panel.
+- **Tailwind CSS v4** — design tokens live in [`app/globals.css`](app/globals.css) (colour for
+  both themes, type, spacing, radii, shadows, motion).
+- **Framer Motion** — dialog and menu transitions only.
+- **CSS** — hover/focus states, the one-time hero entrance, and section reveals via scroll-driven
+  animations (progressive enhancement: content is fully visible where unsupported).
+- **Three.js** — the hero's WebGL scene (`components/hero/heroScene.ts`): lit glass layers,
+  bloom, data packets and an AI core. Loaded with a dynamic import after the page is idle, so it
+  is never in the initial bundle. It pauses offscreen and in hidden tabs, caps device pixel
+  ratio, drops bloom on low-power devices, renders one still frame under reduced motion, and
+  falls back to the CSS 3D sculpture (also the no-JS composition) if WebGL is unavailable.
+- **Fonts** — Sora (headings), Geist (body), Geist Mono (labels) via `next/font`, self-hosted at
+  build time.
+- **lucide-react** — icons.
+
+GSAP, Lenis and React Three Fiber were removed in the redesign: nothing needed them, and
+Lenis's wheel hijacking conflicted with native scrolling. Three.js is used directly (no R3F).
 
 ## Getting started
 
-### 1. Install dependencies
-
 ```bash
 npm install
+cp .env.example .env.local   # optional — only needed for Ask Amar AI
+npm run dev                  # http://localhost:3005
 ```
-
-### 2. Configure environment variables
-
-Copy the example file and fill in your Azure AI deployment details:
 
 ```bash
-cp .env.example .env.local
+npm run build && npm run start
+npm run lint
+npx tsc --noEmit
 ```
+
+### Ask Amar AI (optional)
 
 ```env
 AZURE_AI_ENDPOINT=https://<your-resource>.openai.azure.com
@@ -60,43 +66,52 @@ AZURE_AI_DEPLOYMENT=<your-deployment-name>
 AZURE_AI_API_VERSION=2024-06-01
 ```
 
-`.env.local` is gitignored and never committed. The AI assistant is called exclusively
-from the server (`app/api/ai/chat/route.ts`) — the API key is never sent to the browser.
-If these variables are absent, the chat widget still renders but returns a clear
-"not configured" message instead of erroring.
+- Credentials and provider calls stay on the server ([`lib/azure-ai.ts`](lib/azure-ai.ts)).
+- Without these variables the site works normally; the chat panel states that the assistant
+  isn't configured and offers email instead.
+- The route validates request shape, roles, per-role message length, history length and body
+  size (64 KB), and enforces connect, read and overall timeouts. Closing the panel or pressing
+  Stop cancels the request.
+- Answers are grounded by a system prompt built from `data/portfolio.ts`
+  ([`lib/portfolio-context.ts`](lib/portfolio-context.ts)). Prompting reduces but cannot
+  guarantee off-context answers, so the UI labels responses as AI-generated.
+- Logs contain only an error code — never visitor messages or upstream response bodies.
+- **Rate limiting** ([`lib/rate-limit.ts`](lib/rate-limit.ts)) is in-memory and per instance. On
+  Vercel, serverless instances don't share memory, so it limits bursts from one client to one
+  instance rather than enforcing a global quota. For a hard limit, use a shared store (e.g.
+  Upstash Redis or Vercel KV) or Vercel's firewall rate limiting.
 
-### 3. Run locally
+## Deployment
 
-```bash
-npm run dev
-```
+Deploys to Vercel as-is. Add the Azure variables under **Project Settings → Environment
+Variables** if you want the assistant. Canonical URLs, Open Graph URLs and the sitemap use
+`VERCEL_PROJECT_PRODUCTION_URL` (set automatically by Vercel), falling back to the existing
+deployment URL in [`lib/site.ts`](lib/site.ts). Update that fallback if you attach a custom domain
+outside Vercel.
 
-Visit [http://localhost:3005](http://localhost:3005) (the dev/start scripts pin this port).
+## Colour standard
 
-### 4. Build
+Product-style restraint: neutrals carry the interface, one brand accent marks what matters, and
+category colour appears only where colour *is* information.
 
-```bash
-npm run build
-npm run start
-```
+| Layer | Tokens | Used for |
+| --- | --- | --- |
+| Neutrals | `--bg`, `--surface`, `--fg`, `--fg-2`, `--line` | Surfaces, text, borders, section numbering rules |
+| Brand | `--accent` (blue), `--accent-2` (violet), `--teal` (sparingly) | Buttons, links, focus, active states, the hero phrase and illustration |
+| Category (data) | `--c-*` in [`lib/tones.ts`](lib/tones.ts) | Technology chip dots, the stack map — never decoration |
+| Status | `--danger` | Error states (AI assistant) |
 
-### 5. Deploy to Vercel
+- Technology names render with `<TechChip name="…" />`; `techTone()` picks the category dot.
+- Category hues are muted and similar in brightness; each is at least 4.5:1 as text on the site's
+  surfaces in both themes.
 
-1. Push this repository to GitHub.
-2. Import it in [Vercel](https://vercel.com/new).
-3. Add the same environment variables from `.env.local` under
-   **Project Settings → Environment Variables**.
-4. Deploy. No separate backend is required — the AI assistant runs as a Next.js
-   server route on Vercel.
+## Accessibility and motion
 
-## Notes
-
-- All animations respect `prefers-reduced-motion`.
-- The system's default mouse pointer is used throughout — no custom cursor.
-  The command palette (`⌘K` / `Ctrl+K`) is desktop-only.
-- The AI assistant answers strictly from `data/portfolio.ts` — if something isn't in
-  the data, it responds with "I don't have that information in Amar's portfolio."
-  It streams responses, renders basic markdown, and is rate-limited and
-  timeout-bounded server-side (`lib/rate-limit.ts`, `lib/azure-ai.ts`).
-- "Recruiter View" (Navbar, mobile menu, or the command palette) gives a
-  one-minute condensed summary of the profile for time-pressed recruiters.
+- Skip link, landmarks, one `h1` per page, visible focus states, labelled icon controls, 44px
+  touch targets, sticky-header anchor offsets.
+- Mobile menu, command palette and AI panel trap focus, close on Escape and restore focus.
+- Theme follows the system preference until the visitor chooses; the choice persists and is
+  applied before first paint.
+- `prefers-reduced-motion`: no reveals, hero assembly, pulse, tilt or smooth scrolling; every
+  feature and all content remain.
+- Token colour pairs used for text and controls meet WCAG AA (4.5:1) in both themes.

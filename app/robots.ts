@@ -1,18 +1,9 @@
 import type { MetadataRoute } from "next";
-
-// See app/layout.tsx for why this tracks Vercel's own production URL
-// instead of a hardcoded domain.
-const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : "https://portfolio-ten-omega-40sz2fb2ue.vercel.app";
+import { SITE_URL } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: "/api/",
-    },
+    rules: { userAgent: "*", allow: "/", disallow: "/api/" },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

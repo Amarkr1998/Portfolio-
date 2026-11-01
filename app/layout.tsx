@@ -1,137 +1,115 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono, Sora } from "next/font/google";
 import "./globals.css";
 import { UIStateProvider } from "@/components/providers/UIStateProvider";
-import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 import ClientWidgets from "@/components/providers/ClientWidgets";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { profile, socials } from "@/data/portfolio";
+import Header from "@/components/site/Header";
+import Footer from "@/components/site/Footer";
+import { themeInitScript } from "@/hooks/useTheme";
+import { caseStudies, certification, education, profile, skillGroups, socials } from "@/data/portfolio";
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "@/lib/site";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-// Tracks whatever Vercel currently considers the production URL — the
-// project's .vercel.app address by default, or a custom domain automatically
-// once one is actually attached — instead of a hardcoded domain that isn't
-// owned yet and would silently go stale the moment that changes.
-const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : "https://portfolio-ten-omega-40sz2fb2ue.vercel.app";
-const TITLE = "Amar Kumar | Java Full Stack Engineer & AI Engineer";
-const DESCRIPTION =
-  "Java Full Stack Developer with 2+ years of experience building scalable, secure applications using Java, Spring Boot, React, microservices, distributed systems and AI/LLM integrations.";
+// next/font downloads these at build time and serves them from this origin —
+// no runtime requests to Google.
+const geist = Geist({ variable: "--font-geist", subsets: ["latin"], display: "swap" });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap" });
+const sora = Sora({ variable: "--font-sora", subsets: ["latin"], weight: ["500", "600"], display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: {
-    default: TITLE,
-    template: "%s | Amar Kumar",
-  },
-  description: DESCRIPTION,
+  title: { default: SITE_TITLE, template: "%s — Amar Kumar" },
+  description: SITE_DESCRIPTION,
+  applicationName: "Amar Kumar — Portfolio",
+  authors: [{ name: profile.name, url: SITE_URL }],
+  creator: profile.name,
   keywords: [
     "Amar Kumar",
     "Java Full Stack Developer",
+    "Java Developer",
     "Spring Boot",
-    "React",
-    "Microservices",
-    "AI Engineer",
-    "LangGraph",
+    "React.js",
+    "REST APIs",
+    "SQL",
+    "Healthcare software",
+    "Spring AI",
     "Azure OpenAI",
+    "New Delhi",
   ],
-  authors: [{ name: profile.name }],
-  creator: profile.name,
   alternates: { canonical: "/" },
   openGraph: {
-    type: "website",
-    url: SITE_URL,
-    title: TITLE,
-    description: DESCRIPTION,
-    siteName: `${profile.name} — Portfolio`,
+    type: "profile",
+    url: "/",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    siteName: "Amar Kumar",
+    locale: "en_IN",
+    firstName: "Amar",
+    lastName: "Kumar",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: TITLE,
-    description: DESCRIPTION,
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  twitter: { card: "summary_large_image", title: SITE_TITLE, description: SITE_DESCRIPTION },
+  robots: { index: true, follow: true },
+  formatDetection: { telephone: false },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#080D19" },
+    { media: "(prefers-color-scheme: light)", color: "#F5F7FC" },
+  ],
+  // Lets the chat panel shrink with the on-screen keyboard instead of
+  // being covered by it.
+  interactiveWidget: "resizes-content",
 };
 
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: profile.name,
-  jobTitle: profile.identity,
-  description: profile.positioning,
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "New Delhi",
-    addressCountry: "IN",
-  },
-  worksFor: {
-    "@type": "Organization",
-    name: profile.currentCompany,
-  },
-  sameAs: [socials.github, socials.linkedin],
+  jobTitle: profile.title,
+  description: profile.summary,
   url: SITE_URL,
-};
-
-const websiteJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: `${profile.name} — Portfolio`,
-  url: SITE_URL,
-  description: DESCRIPTION,
-  author: { "@type": "Person", name: profile.name },
+  email: `mailto:${socials.emailAddress}`,
+  address: { "@type": "PostalAddress", addressLocality: "New Delhi", addressCountry: "IN" },
+  worksFor: { "@type": "Organization", name: profile.current.company },
+  alumniOf: { "@type": "CollegeOrUniversity", name: education.institution },
+  hasCredential: {
+    "@type": "EducationalOccupationalCredential",
+    name: certification.name,
+    credentialCategory: "certification",
+    recognizedBy: { "@type": "Organization", name: certification.issuer },
+    url: certification.url,
+  },
+  knowsAbout: Array.from(
+    new Set(skillGroups.flatMap((g) => g.skills.filter((s) => s.evidence?.length).map((s) => s.name)))
+  ),
+  sameAs: [socials.linkedin, socials.github],
+  subjectOf: caseStudies.map((c) => ({ "@type": "CreativeWork", name: c.title, url: `${SITE_URL}/work/${c.slug}` })),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geist.variable} ${geistMono.variable} ${sora.variable} antialiased`}
       suppressHydrationWarning
     >
-      <body
-        className="min-h-full flex flex-col bg-background text-foreground"
-        suppressHydrationWarning
-      >
-        {/* Anti-flash: applies the persisted theme before first paint, so
-            there's no dark->light (or vice versa) flicker on load. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "try{if(localStorage.getItem('theme')==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}",
-          }}
-        />
+      <head>
+        {/* Applies the stored or system theme before first paint — no flash. */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-        />
+      </head>
+      <body className="flex min-h-dvh flex-col">
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
         <UIStateProvider>
-          <SmoothScrollProvider>
-            <Navbar />
-            {children}
-            <Footer />
-            <ClientWidgets />
-          </SmoothScrollProvider>
+          <Header />
+          <div className="flex-1">{children}</div>
+          <Footer />
+          <ClientWidgets />
         </UIStateProvider>
       </body>
     </html>

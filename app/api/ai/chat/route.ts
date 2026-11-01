@@ -20,11 +20,16 @@ export const maxDuration = 60;
 // plain setTimeout here doesn't depend on the stuck operation ever
 // resolving or honoring its own abort signal — it guarantees the route
 // always responds within this window regardless of what's hanging upstream.
-const HARD_TIMEOUT_MS = 25_000;
+const HARD_TIMEOUT_MS = 25_000; // connect phase only — the stream itself has its own deadline (lib/azure-ai.ts)
 
 function timeoutAfter(ms: number): Promise<never> {
   return new Promise((_, reject) => setTimeout(() => reject(new Error("AZURE_REQUEST_TIMEOUT")), ms));
 }
+
+// Upper bound on the raw request body: MAX_HISTORY turns at their per-role
+// caps plus JSON overhead fits comfortably; anything larger is rejected
+// before it's parsed.
+const MAX_BODY_BYTES = 160 * 1024;
 
 type ClientMessage = { role: "user" | "assistant"; content: string };
 
@@ -48,6 +53,12 @@ function getClientKey(req: NextRequest): string {
   // forwarded-for header when present (typical behind Vercel/a reverse proxy).
   const forwardedFor = req.headers.get("x-forwarded-for");
   return forwardedFor?.split(",")[0]?.trim() || "unknown";
+}
+
+// Lets the chat panel state up front whether the assistant is available on
+// this deployment. Reveals nothing beyond a boolean.
+export function GET() {
+  return Response.json({ configured: isAzureAIConfigured() }, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function POST(req: NextRequest) {
@@ -75,9 +86,18 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const tooLarge = () =>
+    new Response(JSON.stringify({ error: "Request is too large." }), {
+      status: 413,
+      headers: { "Content-Type": "application/json" },
+    });
+  if (Number(req.headers.get("content-length") ?? 0) > MAX_BODY_BYTES) return tooLarge();
+
   let body: unknown;
   try {
-    body = await req.json();
+    const raw = await req.text();
+    if (raw.length > MAX_BODY_BYTES) return tooLarge();
+    body = JSON.parse(raw);
   } catch {
     return new Response(JSON.stringify({ error: "Invalid request body." }), {
       status: 400,
@@ -118,9 +138,10 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (err) {
-    // Never leak upstream error details (may contain endpoint/config info).
+    // Never leak upstream error details (may contain endpoint/config info),
+    // and log only an error code — never visitor messages or upstream bodies.
     const message = err instanceof Error ? err.message : "unknown error";
-    console.error("AI chat error:", message);
+    console.error("AI chat error:", message.split(":").slice(0, 2).join(":"));
 
     const isTimeout = message === "AZURE_REQUEST_TIMEOUT";
     return new Response(
